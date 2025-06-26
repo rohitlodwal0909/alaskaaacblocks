@@ -5,6 +5,9 @@ const sequelize = require("./config/db");
 const authRoutes = require("./routes/authentication/AuthRoutes");
 const userRoutes = require("./routes/usermanagment/UserRoutes");
 const leadRoutes = require("./routes/leadmanagment/LeadRoutes");
+const NotificationRouter = require("./routes/notification/NotificationRoutes");
+const startLeadReminderJob = require("./cron/leadReminder");
+
 dotenv.config();
 const app = express();
 
@@ -16,8 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(leadRoutes);
-
+app.use(NotificationRouter)
 //  DB connection and start
+
+// Start cron
+
+startLeadReminderJob();
+
 sequelize
   .authenticate()
   .then(() => {

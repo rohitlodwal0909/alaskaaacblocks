@@ -1,0 +1,108 @@
+{
+   "states" :[
+     {  "state": "Madhya Pradesh",
+     "districts": [
+    { "name": "Agar Malwa", "tehsils": ["Agar", "Susner", "Nalkheda", "Badod"] },
+    { "name": "Alirajpur", "tehsils": ["Alirajpur", "Jobat", "Kathiwada", "Chandpur"] },
+    { "name": "Anuppur", "tehsils": ["Anuppur", "Jaithari", "Kotma", "Pushprajgarh"] },
+    { "name": "Ashoknagar", "tehsils": ["Ashoknagar", "Chanderi", "Isagarh", "Mungaoli", "Shadora"] },
+    { "name": "Balaghat", "tehsils": ["Balaghat", "Baihar", "Lanji", "Waraseoni", "Katangi", "Paraswada", "Khairlanji", "Birsa"] },
+    { "name": "Barwani", "tehsils": ["Barwani", "Sendhwa", "Pansemal", "Niwali", "Thikri", "Anjad", "Rajpur"] },
+    { "name": "Betul", "tehsils": ["Betul", "Multai", "Amla", "Shahpur", "Chicholi", "Bhainsdehi", "Ghoradongri", "Prabhat Pattan"] },
+    { "name": "Bhind", "tehsils": ["Bhind", "Ater", "Lahar", "Gohad", "Mehgaon", "Raun", "Mau", "Gormi"] },
+    { "name": "Bhopal", "tehsils": ["Huzur", "Berasia", "Kolar"] },
+    { "name": "Burhanpur", "tehsils": ["Burhanpur", "Nepanagar", "Khaknar"] },
+    { "name": "Chhatarpur", "tehsils": ["Chhatarpur", "Nowgong", "Rajnagar", "Bijawar", "Maharajpur", "Laundi", "Buxwaha", "Gaurihar", "Chandla", "Badamalhera", "Ghuwara"] },
+    { "name": "Chhindwara", "tehsils": ["Chhindwara", "Parasia", "Pandhurna", "Saunsar", "Mohkhed", "Junnardeo", "Tamia", "Amoha", "Umreth", "Harrai"] },
+    { "name": "Damoh", "tehsils": ["Damoh", "Tendukheda", "Jabera", "Batiyagarh", "Hatta", "Patera", "Patharia"] },
+    { "name": "Datia", "tehsils": ["Datia", "Seondha", "Bhander", "Indergarh"] },
+    { "name": "Dewas", "tehsils": ["Dewas", "Bagli", "Kannod", "Hatpipliya", "Khategaon", "Sonkatch", "Tonk Khurd", "Satwas", "Udainagar"] },
+    { "name": "Dhar", "tehsils": ["Dhar", "Badnawar", "Gandhwani", "Sardarpur", "Manawar", "Kukshi", "Dahi", "Nalchha"] },
+    { "name": "Dindori", "tehsils": ["Dindori", "Mehandwani", "Shahpura", "Bajag", "Karanjia"] },
+    { "name": "Guna", "tehsils": ["Guna", "Raghogarh", "Aron", "Chachoda", "Bamori", "Kumbhraj"] },
+    { "name": "Gwalior", "tehsils": ["Gwalior", "Dabra", "Bhitarwar", "Chinor"] },
+    { "name": "Harda", "tehsils": ["Harda", "Khirkiya", "Timarni"] },
+    { "name": "Hoshangabad", "tehsils": ["Hoshangabad", "Pipariya", "Babai", "Sohagpur", "Seoni Malwa", "Bankhedi"] },
+    {"name": "Indore", "tehsils": [ "Indore","Sanwer", "Depalpur","Hatod","Mhow", "Rau", "Juni Indore","Banganga", "Chhota Bangarda","Khudel","Kanadia", "Tejaji Nagar", "Rajendra Nagar"]},
+    { "name": "Jabalpur", "tehsils": ["Jabalpur", "Kundam", "Panagar", "Majholi", "Patan", "Shahpura", "Sihora"] },
+    { "name": "Jhabua", "tehsils": ["Jhabua", "Thandla", "Meghnagar", "Ranapur", "Petlawad"] },
+    { "name": "Katni", "tehsils": ["Katni", "Vijayraghavgarh", "Murwara", "Bahoriband", "Dhimarkheda", "Barhi"] },
+    { "name": "Khandwa", "tehsils": ["Khandwa", "Pandhana", "Harsud", "Khalwa", "Punasa"] },
+    { "name": "Khargone", "tehsils": ["Khargone", "Barwah", "Bhikangaon", "Kasrawad", "Sanawad", "Jhirniya", "Gogawan", "Maheshwar", "Bhagwanpura"] },
+    { "name": "Mandla", "tehsils": ["Mandla", "Nainpur", "Bichhiya", "Niwas", "Ghughri", "Bamhani"] },
+    { "name": "Mandsaur", "tehsils": ["Mandsaur", "Malhargarh", "Sitamau", "Garoth", "Shamgarh", "Bhanpura"] },
+    { "name": "Morena", "tehsils": ["Morena", "Ambah", "Porsa", "Joura", "Sabalgarh", "Kailaras"] },
+    { "name": "Narsinghpur", "tehsils": ["Narsinghpur", "Gadarwara", "Gotegaon", "Kareli", "Chawarpatha"] },
+    { "name": "Neemuch", "tehsils": ["Neemuch", "Jawad", "Manasa", "Singoli"] },
+    { "name": "Panna", "tehsils": ["Panna", "Ajaigarh", "Gunnor", "Shahnagar", "Devendra Nagar", "Simariya"] },
+    { "name": "Raisen", "tehsils": ["Raisen", "Begamganj", "Gairatganj", "Goharganj", "Silwani", "Udaipura"] },
+    { "name": "Rajgarh", "tehsils": ["Rajgarh", "Sarangpur", "Narsinghgarh", "Pachore", "Khilchipur", "Biaora", "Jirapur"] },
+    { "name": "Ratlam", "tehsils": ["Ratlam", "Jaora", "Alot", "Sailana", "Piploda", "Bajna"] },
+    { "name": "Rewa", "tehsils": ["Rewa", "Mangawan", "Hanumana", "Gurh", "Teonthar", "Sirmaur", "Mauganj"] },
+    { "name": "Sagar", "tehsils": ["Sagar", "Rehli", "Khurai", "Shahgarh", "Banda", "Garhakota", "Deori", "Kesli"] },
+    { "name": "Satna", "tehsils": ["Satna", "Raghurajnagar", "Nagod", "Maihar", "Amarpatan", "Majhgawan", "Ramnagar"] },
+    { "name": "Sehore", "tehsils": ["Sehore", "Ashta", "Ichhawar", "Jawar", "Nasrullaganj", "Shyampur"] },
+    { "name": "Seoni", "tehsils": ["Seoni", "Lakhnadon", "Ghansaur", "Chhapara", "Barghat", "Keolari", "Kurai", "Dhanora", "Seoni Rural"] },
+    { "name": "Shahdol", "tehsils": ["Shahdol", "Beohari", "Jaisinghnagar", "Burhar", "Sohagpur"] },
+    { "name": "Shajapur", "tehsils": ["Shajapur", "Agar", "Badod", "Shujalpur", "Moman Badodiya", "Sundarsi", "Kalapipal"] },
+    { "name": "Sheopur", "tehsils": ["Sheopur", "Vijaypur", "Baroda"] },
+    { "name": "Shivpuri", "tehsils": ["Shivpuri", "Kolaras", "Pichhore", "Badarwas", "Pohri", "Karera", "Narwar"] },
+    { "name": "Sidhi", "tehsils": ["Sidhi", "Churhat", "Rampur Naikin", "Majhauli", "Gopadbanas"] },
+    { "name": "Singrauli", "tehsils": ["Singrauli", "Deosar", "Waidhan", "Chitrangi", "Sarai"] },
+    { "name": "Tikamgarh", "tehsils": ["Tikamgarh", "Baldeogarh", "Jatara", "Prithvipur", "Palera", "Niwari", "Lidhora"] },
+    { "name": "Ujjain", "tehsils": ["Ujjain", "Nagda", "Khachrod", "Ghatiya", "Badnagar", "Tarana", "Mahidpur"] },
+    { "name": "Umaria", "tehsils": ["Umaria", "Pali", "Manpur", "Nowrozabad", "Chandia"] },
+    { "name": "Vidisha", "tehsils": ["Vidisha", "Ganj Basoda", "Sironj", "Kurwai", "Lateri", "Gyaraspur", "Shamshabad"] }
+  ]},
+{
+   "state": "Rajasthan",
+    "districts": [
+    { "name": "Ajmer", "tehsils": ["Ajmer", "Kishangarh", "Beawar", "Masuda", "Sarwar", "Nasirabad", "Pushkar", "Peepalu", "Arain"] },
+    { "name": "Alwar", "tehsils": ["Alwar", "Behror", "Kotkasim", "Laxmangarh", "Rajgarh", "Ramgarh", "Tijara", "Kathumar", "Bansur", "Mundawar"] },
+    { "name": "Banswara", "tehsils": ["Banswara", "Bagidora", "Ghatol", "Kushalgarh", "Garhi", "Talwara", "Sajjangarh"] },
+    { "name": "Baran", "tehsils": ["Baran", "Anta", "Atru", "Chhabra", "Kishanganj", "Mangrol", "Shahabad", "Chhipabarod"] },
+    { "name": "Barmer", "tehsils": ["Barmer", "Balotra", "Baytu", "Chohtan", "Gudamalani", "Pachpadra", "Sheo", "Siwana", "Dhorimanna"] },
+    { "name": "Bharatpur", "tehsils": ["Bharatpur", "Bayana", "Kumher", "Nadbai", "Nagar", "Pahari", "Rupwas", "Weir", "Kaman", "Deeg"] },
+    { "name": "Bhilwara", "tehsils": ["Bhilwara", "Shahpura", "Jahazpur", "Mandal", "Mandalgarh", "Sahada", "Banera", "Kotri", "Asind", "Raipur", "Hurda"] },
+    { "name": "Bikaner", "tehsils": ["Bikaner", "Nokha", "Lunkaransar", "Kolayat", "Dungargarh", "Khajuwala", "Sri Dungargarh"] },
+    { "name": "Bundi", "tehsils": ["Bundi", "Hindoli", "Keshoraipatan", "Nainwa", "Talera", "Indergarh"] },
+    { "name": "Chittorgarh", "tehsils": ["Chittorgarh", "Begun", "Bari Sadri", "Bhopalsagar", "Gangrar", "Kapasan", "Nimbahera", "Rashmi", "Rawatbhata"] },
+    { "name": "Churu", "tehsils": ["Churu", "Ratangarh", "Sardarshahar", "Sujangarh", "Taranagar", "Rajgarh", "Bidasar"] },
+    { "name": "Dausa", "tehsils": ["Dausa", "Baswa", "Lalsot", "Mahwa", "Sikrai", "Bandikui"] },
+    { "name": "Dholpur", "tehsils": ["Dholpur", "Baseri", "Rajakhera", "Saipau", "Sarmathura"] },
+    { "name": "Dungarpur", "tehsils": ["Dungarpur", "Aspur", "Sagwara", "Bichhiwara", "Simalwara"] },
+    { "name": "Hanumangarh", "tehsils": ["Hanumangarh", "Pilibanga", "Rawatsar", "Sangaria", "Tibbi", "Nohar", "Bhadra"] },
+    { "name": "Jaipur", "tehsils": ["Jaipur", "Amber", "Jamwa Ramgarh", "Chomu", "Phagi", "Sanganer", "Bassi", "Kotputli", "Shahpura", "Viratnagar", "Maujabad"] },
+    { "name": "Jaisalmer", "tehsils": ["Jaisalmer", "Fatehgarh", "Sam", "Pokaran"] },
+    { "name": "Jalore", "tehsils": ["Jalore", "Ahore", "Bhinmal", "Raniwara", "Sanchore", "Sayla", "Bagoda"] },
+    { "name": "Jhalawar", "tehsils": ["Jhalawar", "Khanpur", "Manohar Thana", "Piruwa", "Raipur", "Aklera", "Bhawani Mandi"] },
+    { "name": "Jhunjhunu", "tehsils": ["Jhunjhunu", "Chirawa", "Mandawa", "Nawalgarh", "Surajgarh", "Udaipurwati", "Khetri", "Buhana"] },
+    { "name": "Jodhpur", "tehsils": ["Jodhpur", "Bilara", "Bhopalgarh", "Luni", "Osian", "Shergarh", "Phalodi", "Baap", "Balesar", "Pipar City"] },
+    { "name": "Karauli", "tehsils": ["Karauli", "Hindaun", "Sapotra", "Todabhim", "Mandrail", "Masalpur"] },
+    { "name": "Kota", "tehsils": ["Kota", "Ladpura", "Sangod", "Digod", "Ramganj Mandi", "Pipalda"] },
+    { "name": "Nagaur", "tehsils": ["Nagaur", "Kuchaman City", "Merta", "Ladnun", "Parbatsar", "Didwana", "Jayal", "Makrana", "Nawan", "Degana"] },
+    { "name": "Pali", "tehsils": ["Pali", "Sojat", "Jaitaran", "Raipur", "Bali", "Rohat", "Sumerpur", "Marwar Junction", "Desuri"] },
+    { "name": "Pratapgarh", "tehsils": ["Pratapgarh", "Arnod", "Chhoti Sadri", "Dhariyawad", "Pipalkhunt", "Peepal Khoont"] },
+    { "name": "Rajsamand", "tehsils": ["Rajsamand", "Amet", "Kumbhalgarh", "Nathdwara", "Bhimal", "Railmagra", "Devgarh"] },
+    { "name": "Sawai Madhopur", "tehsils": ["Sawai Madhopur", "Bonli", "Chauth Ka Barwara", "Khandar", "Gangapur City", "Bamanwas", "Malarna Dungar"] },
+    { "name": "Sikar", "tehsils": ["Sikar", "Fatehpur", "Laxmangarh", "Danta Ramgarh", "Neem Ka Thana", "Shrimadhopur", "Reengus", "Khandela"] },
+    { "name": "Sirohi", "tehsils": ["Sirohi", "Abu Road", "Mount Abu", "Sheoganj", "Pindwara", "Reodar"] },
+    { "name": "Sri Ganganagar", "tehsils": ["Sri Ganganagar", "Sadulshahar", "Karanpur", "Raisinghnagar", "Padampur", "Suratgarh", "Vijaynagar", "Anupgarh", "Gharsana"] },
+    { "name": "Tonk", "tehsils": ["Tonk", "Deoli", "Malpura", "Niwai", "Uniara", "Peeplu", "Newai", "Todaraisingh"] },
+    { "name": "Udaipur", "tehsils": ["Udaipur", "Girwa", "Mavli", "Kherwara", "Jhadol", "Salumber", "Gogunda", "Vallabhnagar", "Sarada", "Lasadiya", "Rishabhdeo"] }
+  ]
+}
+
+   ]
+}
+
+
+
+
+
+
+
+
+
+
+

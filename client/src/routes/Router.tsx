@@ -8,6 +8,7 @@ import ProtectedRoute from 'src/components/shared/ProtectedRoute'; // ✅ Import
 import AuthGuard from 'src/utils/Authcard';
 import Chats from 'src/views/Chat/Chats';
 import Leads from 'src/views/Leadmanagement/Leads';
+import SeeAllNotifications from 'src/views/Notifications/SeeAllNotifications';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
 
@@ -44,6 +45,7 @@ const Router = [
         { path: '/user-profile/user-managment', element: <Usermanagment /> },
         { path: '/user-profile', element: <Userprofile /> },
         { path: '/Chats', element: <Chats/> },
+        { path: '/notifications', element: <SeeAllNotifications/> },
       
         { path: '/lead-managment/leads', element: <Leads /> },
         { path: '/permission', element: <PermissionsTable /> },

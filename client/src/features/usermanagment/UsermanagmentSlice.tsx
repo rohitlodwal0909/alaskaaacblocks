@@ -11,11 +11,19 @@ const initialState = {
   deleteResult: null 
 };
 
-export const GetUsermodule = createAsyncThunk("users/fetch", async () => {
-  const response = await axios.get( `${apiUrl}/user/all`);
-  return response.data;
-});
-
+export const GetUsermodule = createAsyncThunk(
+  "users/fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/user/all`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
 
 export const addUser = createAsyncThunk(
   "users/add",
@@ -33,7 +41,7 @@ export const addUser = createAsyncThunk(
   }
 );
 
-export const updateUser = createAsyncThunk("users/update", async (updatedUser) => {
+  export const updateUser = createAsyncThunk("users/update", async (updatedUser) => {
   const response = await axios.put(
      `${apiUrl}/endpoint`,
     updatedUser

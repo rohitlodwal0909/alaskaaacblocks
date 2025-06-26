@@ -13,8 +13,13 @@ import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
 import { toast } from "react-toastify";
 import PaginationComponent from "src/utils/PaginationComponent";
 import ComonDeletemodal from "../../../utils/deletemodal/ComonDeletemodal";
-import { DeleteLeads, GetLeads, UpdateLeads } from "src/features/leadmanagment/LeadmanagmentSlice";
+import { DeleteLeads, GetFollowupLeads, GetLeads, UpdateLeads } from "src/features/leadmanagment/LeadmanagmentSlice";
 import noData from "../../../../src/assets/images/svgs/no-data.webp"
+
+import Select from 'react-select';
+import ViewLeadmodal from "./ViewLeadmodal";
+import FollowUpmodal from "./FollowUpmodal";
+
 export interface PaginationTableType {
   id?: string;
   avatar?: string | any;
@@ -23,7 +28,16 @@ export interface PaginationTableType {
   status?: any;
   phone?: string;
   sourse?: any;
+  material?: string;
+  quantity?: string;
+  unit?: string;
+  size?: string;
+  state?: string;
+  district?: string;
+  tehsil?: string;
+  address?: string;
 }
+
 
 const columnHelper = createColumnHelper<PaginationTableType>();
 const leadStatuses = ["New", "Contacted", "Interested", "Converted", "Lost"];
@@ -31,12 +45,25 @@ const leadStatuses = ["New", "Contacted", "Interested", "Converted", "Lost"];
 function LeadsTable() {
   const [isOpen, setIsOpen] = useState(false);
   const users = useSelector((state: any) => state.leadmanagement.leadsdata);
+  const notesLeads = useSelector((state: any) => state.leadmanagement.getnotesData);
   const [data, setData] = useState<PaginationTableType[]>(users);
   const [selectedRow, setSelectedRow] = useState<PaginationTableType | null>(null);
-  const [filters, setFilters] = useState<{ [key: string]: string }>({ source: '', status: '' });
+  const[followupdata,setFollowupData] = useState(notesLeads)
+  const [filters, setFilters] = useState<{ [key: string]: string }>({ qa_qc_status: '' });
   const dispatch = useDispatch();
   const [editModal, setEditModal] = useState(false);
   const modalPlacement = "center";
+
+  const [viewModal, setViewModal] = useState(false);
+  const [followUpModal, setFollowupModal] = useState(false);
+  const options = data?.map((district) => ({
+    value: district?.district,
+    label: district?.district,
+  }));
+  const tehsileoptions = data?.map((district) => ({
+    value: district?.tehsil,
+    label: district?.tehsil,
+  }));
 
   const handleEdit = (row: PaginationTableType) => {
     triggerGoogleTranslateRescan();
@@ -44,8 +71,21 @@ function LeadsTable() {
     setEditModal(true);
   };
 
-  useEffect(() => { setData(users); }, [users]);
-  useEffect(() => { dispatch(GetLeads()); }, []);
+  useEffect(() => { setData(users) ,setFollowupData(notesLeads)  }, [users,notesLeads]);
+
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        await dispatch(GetLeads()).unwrap(); // unwrap makes it throw on error
+      } catch (error) {
+        toast.error(error || "Failed to fetch leads"); // or use alert or console
+        console.error("Error fetching leads:", error);
+      }
+    };
+
+   
+    fetchLeads();
+  }, []);
 
   const handleupdateuser = (updatedata) => {
     dispatch(UpdateLeads(updatedata)).unwrap().then(() => {
@@ -87,18 +127,47 @@ function LeadsTable() {
     });
   };
 
+  const handleView = async (row: PaginationTableType) => {
+    setViewModal(true);
+    setSelectedRow(row)
+      if(row){
+      try {
+         await dispatch(GetFollowupLeads(row?.id)).unwrap(); // unwrap makes it throw on error
+       } catch (error) {
+         toast.error(error || "Failed to fetch leads"); // or use alert or console
+         console.error("Error fetching leads:", error);
+       }
+    }
+  };
+  const handleNotes = async (row: PaginationTableType) => {
+    setFollowupModal(true);
+    setSelectedRow(row)
+  };
   const filteredData = useMemo(() => {
+    if (!filters || Object.keys(filters).length === 0) return data;
+
     return data.filter((item) =>
       Object.keys(filters).every((key) => {
-        const filterValue = filters[key].toLowerCase();
+        const filterValue = filters[key]?.toLowerCase(); // safe access
+        if (!filterValue) return true; // ignore empty filter values
+
         const value = item[key as keyof PaginationTableType];
         if (!value) return false;
-        if (typeof value === "string") return value.toLowerCase().includes(filterValue);
-        if (Array.isArray(value)) return value.some((v) => typeof v === "string" && v.toLowerCase().includes(filterValue));
-        return false;
-      }));
-  }, [data, filters]);
 
+        if (typeof value === "string") {
+          return value.toLowerCase().includes(filterValue);
+        }
+
+        if (Array.isArray(value)) {
+          return value.some(
+            (v) => typeof v === "string" && v.toLowerCase().includes(filterValue)
+          );
+        }
+
+        return false;
+      })
+    );
+  }, [data, filters]);
   const columns = [
     columnHelper.accessor("name", {
       cell: (info) => (
@@ -139,33 +208,61 @@ function LeadsTable() {
       cell: (info) => {
         const source = info.getValue();
         const roleMap = {
-          "Facebook Ads": "Facebook Ads",
-          "Google Ads": "Google Ads",
-          "Referral": "Referral",
-          "Website Form": "Website Form",
+          "India mart": "India mart",
+          "Gudgedial": "Gudgedial",
+          "Instagram": "Instagram",
+          "Youtube": "Youtube",
           "Other": "Other"
         };
-        return <p className="text-darklink dark:text-bodytext text-sm">{roleMap[source] || "Facebook Ads"}</p>;
+        return <p className="text-darklink dark:text-bodytext text-sm">{roleMap[source] || ""}</p>;
       },
       header: () => <span>Source</span>,
     }),
+    columnHelper.accessor("district", {
+      cell: (info) => <span>{info.getValue() || "—"}</span>,
+      header: () => <span>District</span>,
+    }),
+    // columnHelper.accessor("tehsil", {
+    //   cell: (info) => <span>{info.getValue() || "—"}</span>,
+    //   header: () => <span>Tehsil</span>,
+    // }),
     columnHelper.accessor("actions", {
       cell: (info) => {
         const rowData = info.row.original;
         return (
           <div className="flex justify-start items-center gap-2">
-            <Dropdown label="Lead Status" dismissOnClick={true} className="flex-wrap" color="primary" size="xs">
+          
+
+            <Dropdown label=" Status" dismissOnClick={true} className="flex-wrap " color="primary" size="xs">
               {leadStatuses.map((status) => (
                 <DropdownItem key={status} onClick={() => handleStatuschange(status, rowData.id)}>
                   {status}
                 </DropdownItem>
               ))}
             </Dropdown>
+          {info.row.original.status !== "Interested" && info.row.original.status !== "Lost" && (
+  <Tooltip content="Follow up" placement="bottom">
+    <Button
+      size="sm"
+      color={"lightinfo"}
+      className="p-0"
+      onClick={() => handleNotes(rowData)}
+    >
+      <Icon icon="simple-line-icons:user-follow" height={18} />
+    </Button>
+  </Tooltip>
+)}
+            <Tooltip content="View" placement="bottom" >
+              <Button size="sm" color={"lightsecondary"} className="p-0" onClick={() => handleView(rowData)}>
+                <Icon icon="hugeicons:view" height={18} />
+              </Button>
+            </Tooltip>
             <Tooltip content="Edit" placement="bottom">
               <Button size="sm" className="p-0 bg-lightsuccess text-success hover:bg-success hover:text-white" onClick={() => handleEdit(rowData)}>
                 <Icon icon="solar:pen-outline" height={18} />
               </Button>
             </Tooltip>
+
             <Tooltip content="Delete" placement="bottom">
               <Button size="sm" color="lighterror" className="p-0" onClick={() => handleDelete(rowData)}>
                 <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
@@ -195,17 +292,37 @@ function LeadsTable() {
             <select id="source" value={filters.source} className="w-full border border-pink-200 focus:border-gray-300 focus:ring-0 rounded"
               onChange={(e) => setFilters(prev => ({ ...prev, source: e.target.value }))}>
               <option value="">Filter Source</option>
-              <option value="Facebook Ads">Facebook Ads</option>
-              <option value="Google Ads">Google Ads</option>
-              <option value="Referral">Referral</option>
-              <option value="Website Form">Website Form</option>
-              <option value="Other">Other</option>
+              {["India mart", "Gudgedial", "Instagram", "Youtube", "Other"].map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
             </select>
             <select id="status" value={filters.status} className="w-full border border-pink-200 focus:border-gray-300 focus:ring-0 rounded"
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}>
               <option value="">Filter Status</option>
               {leadStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
             </select>
+            <Select
+              id="status"
+              className="w-full"
+              classNamePrefix="react-select"
+              placeholder="Filter District"
+              options={options}
+              isClearable
+              onChange={(selectedOption) =>
+                setFilters(prev => ({ ...prev, district: selectedOption ? selectedOption.value : "" }))
+              }
+            />
+            <Select
+              id="status"
+              className="w-full"
+              classNamePrefix="react-select"
+              placeholder="Filter Tehsil"
+              options={tehsileoptions}
+              isClearable
+              onChange={(selectedOption) =>
+                setFilters(prev => ({ ...prev, tehsil: selectedOption ? selectedOption.value : "" }))
+              }
+            />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -221,41 +338,43 @@ function LeadsTable() {
                 </tr>
               ))}
             </thead>
-           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-  {table.getRowModel().rows.length > 0 ? (
-    table.getRowModel().rows.map((row) => (
-      <tr key={row.id} className="bg-white dark:bg-gray-900">
-        {row.getVisibleCells().map((cell) => (
-          <td
-            key={cell.id}
-            className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </td>
-        ))}
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan={columns.length} className="text-center py-8 px-4">
-        <div className="flex flex-col items-center">
-          <img
-            src={noData}
-            alt="No data"
-            height={100}
-            width={100}
-            className="mb-4"
-          />
-          <p className="text-gray-500 dark:text-gray-400">No data available</p>
-        </div>
-      </td>
-    </tr>
-  )}
-</tbody>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className="bg-white dark:bg-gray-900">
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-8 px-4">
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={noData}
+                        alt="No data"
+                        height={100}
+                        width={100}
+                        className="mb-4"
+                      />
+                      <p className="text-gray-500 dark:text-gray-400">No data available</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
         <PaginationComponent table={table} />
       </div>
+      <FollowUpmodal  setPlaceModal={setFollowupModal} modalPlacement={modalPlacement} selectedRow={selectedRow} placeModal={followUpModal}  setFollowupData={setFollowupData} />
+      <ViewLeadmodal setPlaceModal={setViewModal} modalPlacement={modalPlacement} selectedRow={selectedRow} placeModal={viewModal} followupdata={followupdata} />
       <ComonDeletemodal
         handleConfirmDelete={handleConfirmDelete}
         isOpen={isOpen}

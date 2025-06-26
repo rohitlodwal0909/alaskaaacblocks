@@ -55,12 +55,32 @@ function PaginationTable() {
   setData(users);
 }, [users]);
 
-   useEffect(()=>{
-   dispatch(GetUsermodule())
-  },[])
-  const handleupdateuser = (updatedata) => {
-    dispatch(updateUser(updatedata))
-  }
+  useEffect(() => {
+    const fetchUserModules = async () => {
+      try {
+        await dispatch(GetUsermodule()).unwrap(); // Unwrap to catch errors
+      } catch (error) {
+        toast.error(error || "Failed to fetch user modules");
+        console.error("Error fetching user modules:", error);
+      }
+    };
+
+    fetchUserModules();
+  }, [dispatch]);
+ 
+const handleupdateuser = async (updatedata) => {
+  // try {
+   
+  //   await dispatch(updateUser(updatedata)).unwrap();
+  //   toast.success("User updated successfully");
+
+   
+  //   await dispatch(GetUsermodule()).unwrap();
+  // } catch (error) {
+  //   toast.error(error || "Failed to update user");
+  //   console.error("Update error:", error);
+  // }
+};
   const handleDelete = (row: PaginationTableType) => {
     triggerGoogleTranslateRescan();
     setSelectedRow(row);

@@ -536,48 +536,48 @@ const ChatData: ChatsType[] = [
 // All Mocked Apis
 export const Chathandlers = [
   //  Api endpoint to get chats
-  http.get('/api/data/chat/ChatData', () => {
-    try {
-      return HttpResponse.json({ status: 200, msg: 'success', data: ChatData });
-    } catch (error) {
-      return HttpResponse.json({ status: 200, msg: 'failed', data: error });
-    }
-  }),
+  // http.get('/api/data/chat/ChatData', () => {
+  //   try {
+  //     return HttpResponse.json({ status: 200, msg: 'success', data: ChatData });
+  //   } catch (error) {
+  //     return HttpResponse.json({ status: 200, msg: 'failed', data: error });
+  //   }
+  // }),
 
   //  Api endpoint to add message
-  http.post('/api/sendMessage', async ({ request }: any) => {
-    try {
-      const { chatId, message } = await request.json();
-      if (!chatId || !message) {
-        return HttpResponse.json({
-          status: 400,
-          msg: 'failed',
-          error: 'Invalid request. Missing parameters.',
-        });
-      }
+  // http.post('/api/sendMessage', async ({ request }: any) => {
+  //   try {
+  //     const { chatId, message } = await request.json();
+  //     if (!chatId || !message) {
+  //       return HttpResponse.json({
+  //         status: 400,
+  //         msg: 'failed',
+  //         error: 'Invalid request. Missing parameters.',
+  //       });
+  //     }
 
-      // Simulate creating a new message
-      const newMessage: any = {
-        id: Math.random(), // Use a random ID for simplicity
-        senderId: uniqueId(), // Generate a new senderId
-        msg: message,
-        createdAt: new Date().toISOString(),
-        type: 'text', // Assuming the message type is text for simplicity
-        attachment: [], // No attachment initially
-      };
+  //     // Simulate creating a new message
+  //     const newMessage: any = {
+  //       id: Math.random(), // Use a random ID for simplicity
+  //       senderId: uniqueId(), // Generate a new senderId
+  //       msg: message,
+  //       createdAt: new Date().toISOString(),
+  //       type: 'text', // Assuming the message type is text for simplicity
+  //       attachment: [], // No attachment initially
+  //     };
 
-      // Find the chat by chatId and push the new message
-      const chat = ChatData.find((chat) => chat.id === chatId);
-      if (chat) {
-        chat.messages.push(newMessage);
-      } else {
-        return HttpResponse.json({ status: 400, msg: 'failed', error: 'Chat not found.' });
-      }
-      return HttpResponse.json({ status: 201, msg: 'Success', data: ChatData });
-    } catch (error) {
-      return HttpResponse.json({ status: 400, msg: 'failed', error: 'Failed to add message' });
-    }
-  }),
+  //     // Find the chat by chatId and push the new message
+  //     const chat = ChatData.find((chat) => chat.id === chatId);
+  //     if (chat) {
+  //       chat.messages.push(newMessage);
+  //     } else {
+  //       return HttpResponse.json({ status: 400, msg: 'failed', error: 'Chat not found.' });
+  //     }
+  //     return HttpResponse.json({ status: 201, msg: 'Success', data: ChatData });
+  //   } catch (error) {
+  //     return HttpResponse.json({ status: 400, msg: 'failed', error: 'Failed to add message' });
+  //   }
+  // }),
 ];
 
 

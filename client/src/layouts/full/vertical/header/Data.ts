@@ -201,54 +201,63 @@ interface NotificationType {
   bgcolor: string;
   color:string;
   time: string;
+  is_read:any,
+  id:any
 }
 
 const Notification: NotificationType[] = [
-  {
+  {id:1,
     icon: "solar:widget-3-line-duotone",
     bgcolor: "bg-lighterror dark:bg-lighterror",
     color:'text-error',
     title: "Launch Admin",
+    is_read: 0,
     subtitle: "Just see the my new admin!",
     time: "9:30 AM",
   },
-  {
+  {id:2,
     icon: "solar:calendar-line-duotone",
     bgcolor: "bg-lightprimary dark:bg-lightprimary",
     color:'text-primary',
+    is_read:0,
     title: "Event Today",
     subtitle: "Just a reminder that you have event",
     time: "9:15 AM",
   },
   {
+    id:3,
     icon: "solar:settings-line-duotone",
     bgcolor: "bg-lightsecondary dark:bg-lightsecondary",
     color:'text-secondary',
+     is_read:0,
     title: "Settings",
     subtitle: "You can customize this template as you want",
     time: "4:36 PM",
   },
-  {
+  {id:4,
     icon: "solar:widget-4-line-duotone",
     bgcolor: "bg-lightwarning dark:bg-lightwarning ",
     color:'text-warning',
     title: "Launch Admin",
+     is_read:0,
     subtitle: "Just see the my new admin!",
     time: "9:30 AM",
   },
-  {
+  {id:5,
     icon: "solar:calendar-line-duotone",
     bgcolor: "bg-lightprimary dark:bg-lightprimary",
     color:'text-primary',
     title: "Event Today",
+     is_read:0,
     subtitle: "Just a reminder that you have event",
     time: "9:15 AM",
   },
-  {
+  {id:6,
     icon: "solar:settings-line-duotone",
     bgcolor: "bg-lightsecondary dark:bg-lightsecondary",
     color:'text-secondary',
     title: "Settings",
+     is_read:0,
     subtitle: "You can customize this template as you want",
     time: "4:36 PM",
   },

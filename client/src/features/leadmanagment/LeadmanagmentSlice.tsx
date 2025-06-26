@@ -8,13 +8,23 @@ const initialState = {
   leadsdata: [],         
   addResult: null,  
   updateResult: null,
-  deleteResult: null 
+  deleteResult: null ,
+  getnotesData:null
 };
 
-export const GetLeads = createAsyncThunk("GetLeads/fetch", async () => {
-  const response = await axios.get( `${apiUrl}/get-all-leads`);
-  return response.data;
-});
+export const GetLeads = createAsyncThunk(
+  "GetLeads/fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-all-leads`);
+      return response.data;
+    } catch (error) {
+      // Optional: Customize error message
+      const errorMessage = error.response?.data?.message || "Failed to fetch leads.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
 
 
 export const CreateLeads = createAsyncThunk(
@@ -82,6 +92,35 @@ export const StatuschangeLeads = createAsyncThunk(
   }
 );
 
+export const FollowupLeads = createAsyncThunk(
+  "FollowupLeads/add",
+  async (formdata, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${apiUrl}/add-lead-notes`,
+        formdata);
+      return response.data;
+    } catch (error) {
+      // Return a rejected action containing the error message
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+export const GetFollowupLeads = createAsyncThunk(
+  "GetFollowupLeads/add",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-leads-notes/${id}`);
+      return response.data;
+    } catch (error) {
+      // Return a rejected action containing the error message
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Something went wrong"
+      );
+    }
+  }
+);
 
 const LeadmanagmentSlice = createSlice({
   name: "leadmanagement",
@@ -119,6 +158,12 @@ const LeadmanagmentSlice = createSlice({
         state.error = action.error.message;
       })
 
+      .addCase(GetFollowupLeads.fulfilled, (state, action) => {
+        state.getnotesData = action.payload;
+      })
+      .addCase(GetFollowupLeads.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
       // DELETE user
       .addCase(DeleteLeads.fulfilled, (state, action) => {
         state.deleteResult = action.payload;

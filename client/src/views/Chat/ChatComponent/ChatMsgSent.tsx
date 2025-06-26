@@ -6,7 +6,7 @@ import  { ChangeEvent, FormEvent, useContext, useState } from "react";
 
 
 const ChatMsgSent = () => {
-  const { sendMessage, selectedChat } = useContext(ChatContext);
+  const {  selectedChat } = useContext(ChatContext);
   const [msg, setMsg] = useState<string>("");
 
   const handleChatMsgChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +16,7 @@ const ChatMsgSent = () => {
   const onChatMsgSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!msg.trim() || !selectedChat) return;
-    sendMessage(selectedChat.id, msg.trim() as any);
+    // sendMessage(selectedChat.id, msg.trim() as any);
     setMsg("");
   };
 
@@ -41,7 +41,7 @@ const ChatMsgSent = () => {
               <Icon icon="solar:plain-linear"
                 height="20"
                 onClick={() => {
-                  sendMessage(selectedChat?.id || "", msg as any);
+                  // sendMessage(selectedChat?.id || "", msg as any);
                   setMsg("");
                 }}
               />

@@ -14,13 +14,13 @@ const Miniicons: MiniiconsType[] = [
   {
     id: 2,
     icon: "material-symbols:inventory-sharp",
-    tooltip: "Inventory",
+    tooltip: "Lead Managment",
   },
-  {
-    id: 3,
-    icon: "solar:lock-keyhole-minimalistic-bold-duotone",
-    tooltip: "Authentiction",
-  },
+  // {
+  //   id: 3,
+  //   icon: "solar:lock-keyhole-minimalistic-bold-duotone",
+  //   tooltip: "Authentiction",
+  // },
 
 ];
 

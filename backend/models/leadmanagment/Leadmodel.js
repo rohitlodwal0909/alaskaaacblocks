@@ -2,20 +2,47 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db");
 
 const Lead = sequelize.define(
-  "leads", // Model name
+  "leads",
   {
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
     },
     phone: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
+    },
+    date: {
+      type: DataTypes.STRING
     },
     source: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
+    },
+    material: {
+      type: DataTypes.STRING
+    },
+    quantity: {
+      type: DataTypes.STRING
+    },
+    unit: {
+      type: DataTypes.STRING
+    },
+    size: {
+      type: DataTypes.STRING
+    },
+    state: {
+      type: DataTypes.STRING
+    },
+    district: {
+      type: DataTypes.STRING
+    },
+    tehsil: {
+      type: DataTypes.STRING
+    },
+    address: {
+      type: DataTypes.TEXT
     },
     status: {
       type: DataTypes.ENUM(
@@ -25,23 +52,17 @@ const Lead = sequelize.define(
         "Converted",
         "Lost"
       ),
-      defaultValue: "New",
-    },
-    assigned_to: {
-      type: DataTypes.STRING,
-    },
-    notes: {
-      type: DataTypes.TEXT,
-    },
+      defaultValue: "New"
+    }
   },
   {
     tableName: "leads",
-    timestamps: true, // Automatically creates `createdAt` and `updatedAt`
+    timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
-    paranoid: true, // Enables soft delete
-    deletedAt: "deleted_at", // Custom name for soft delete field
-    underscored: true, // Converts camelCase fields to snake_case in DB
+    paranoid: true,
+    deletedAt: "deleted_at",
+    underscored: true
   }
 );
 

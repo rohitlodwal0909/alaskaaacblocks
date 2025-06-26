@@ -9,4 +9,7 @@ router.put("/api/update-leads/:id", LeadController.updateLead);
 router.delete("/api/delete-leads/:id", LeadController.deleteLead);
 router.patch("/api/update-status/:id/status", LeadController.updateStatus);
 
+router.post("/api/add-lead-notes", LeadController.addNotes);
+router.get("/api/get-leads-notes/:id", LeadController.getLeadNotes);
+
 module.exports = router;

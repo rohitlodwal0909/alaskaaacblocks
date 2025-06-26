@@ -10,6 +10,9 @@ import { CustomizerContext } from "src/context/CustomizerContext";
 import Notifications from "./Notifications";
 import Profile from "./Profile";
 import ReactFlagsSelect from "react-flags-select";
+import { GetNotification } from "src/features/Notifications/NotificationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 interface HeaderPropsType {
   layoutType: string;
@@ -106,7 +109,7 @@ const handleLanguageChange = (code: string) => {
   const { setIsCollapse, isCollapse, isLayout, setActiveMode, activeMode } = useContext(CustomizerContext);
   const [mobileMenu, setMobileMenu] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
+     const notifications = useSelector((state: any) => state.notifications.notificationData);
   const toggleMode = () =>
     setActiveMode((prevMode: string) => (prevMode === "light" ? "dark" : "light"));
 
@@ -162,7 +165,7 @@ const handleLanguageChange = (code: string) => {
                 />
               </div>
 
-              <Notifications />
+              <Notifications  />
               <Profile />
             </div>
           </Navbar.Collapse>
