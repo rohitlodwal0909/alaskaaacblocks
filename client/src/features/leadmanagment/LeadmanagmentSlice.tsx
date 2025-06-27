@@ -29,7 +29,7 @@ export const GetLeads = createAsyncThunk(
 
 export const CreateLeads = createAsyncThunk(
   "CreateLeads/add",
-  async (formdata, { rejectWithValue }) => {
+  async (formdata:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${apiUrl}/create-lead`,
         formdata);
@@ -43,7 +43,17 @@ export const CreateLeads = createAsyncThunk(
   }
 );
 
-export const UpdateLeads = createAsyncThunk(
+type LeadUpdatePayload = {
+  id: any;
+  status?: any;
+  // Add other optional fields here if needed
+  [key: string]: any;
+};
+export const UpdateLeads =  createAsyncThunk<
+  any, // or a specific return type if you know it
+  LeadUpdatePayload,
+  { rejectValue: string }
+>(
   "Leads/update",
   async (updatedUser, { rejectWithValue }) => {
     try {
@@ -76,7 +86,11 @@ export const DeleteLeads = createAsyncThunk(
     }
   }
 );
-export const StatuschangeLeads = createAsyncThunk(
+export const StatuschangeLeads = createAsyncThunk<
+  any, // or a specific return type if you know it
+  LeadUpdatePayload,
+  { rejectValue: string }
+>(
   "Leads/update",
   async ({status,id}, { rejectWithValue }) => {
     try {
@@ -94,7 +108,7 @@ export const StatuschangeLeads = createAsyncThunk(
 
 export const FollowupLeads = createAsyncThunk(
   "FollowupLeads/add",
-  async (formdata, { rejectWithValue }) => {
+  async (formdata:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${apiUrl}/add-lead-notes`,
         formdata);
@@ -106,8 +120,11 @@ export const FollowupLeads = createAsyncThunk(
       );
     }
   }
-);
-export const GetFollowupLeads = createAsyncThunk(
+);export const GetFollowupLeads = createAsyncThunk<
+  any, // <- Replace with correct response type if known
+  string, // ✅ This is the type for the payload (id)
+  { rejectValue: string }
+>(
   "GetFollowupLeads/add",
   async (id, { rejectWithValue }) => {
     try {
@@ -121,6 +138,7 @@ export const GetFollowupLeads = createAsyncThunk(
     }
   }
 );
+
 
 const LeadmanagmentSlice = createSlice({
   name: "leadmanagement",

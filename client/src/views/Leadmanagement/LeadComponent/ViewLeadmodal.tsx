@@ -13,6 +13,7 @@ type Props = {
   modalPlacement: string;
   setPlaceModal: (value: boolean) => void;
   selectedRow: any;
+  followupdata:any
 };
 
 const ViewLeadmodal = ({

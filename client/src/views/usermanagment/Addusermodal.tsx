@@ -1,14 +1,21 @@
 
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Toast } from 'flowbite-react';
-import {   Label, TextInput,FileInput } from "flowbite-react";
-import { useEffect, useState } from 'react';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader,  } from 'flowbite-react';
+import {   Label, TextInput } from "flowbite-react";
+import {  useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { addUser, GetUsermodule } from 'src/features/usermanagment/UsermanagmentSlice';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { AppDispatch } from 'src/store';
+interface RegisterFormType {
+  username: string;
+  email: string;
+  password: string;
+  role_id: string;
+}
 const Addusermodal = ({placeModal, modalPlacement , setPlaceModal }) => {
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterFormType>({
   username: '',
   email: '',
   password: '',
@@ -16,8 +23,8 @@ const Addusermodal = ({placeModal, modalPlacement , setPlaceModal }) => {
  
    });
    const [showPassword, setShowPassword] = useState(false);
-const [errors, setErrors] = useState({});
-const dispatch = useDispatch()
+const [errors, setErrors] = useState<Partial<RegisterFormType>>({});
+const dispatch = useDispatch<AppDispatch>()
 
  
 const handleChange = (field, value) => {
@@ -26,7 +33,7 @@ const handleChange = (field, value) => {
 };
  
 const validateForm = () => {
-  const newErrors = {};
+const newErrors: Partial<RegisterFormType> = {};
   if (!formData.username) newErrors.username = 'Username is required';
   if (!formData.email) newErrors.email = 'Email is required';
   if (!formData.password) newErrors.password = 'Password is required';

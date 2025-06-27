@@ -9,11 +9,7 @@ import HorizontalMenu from "../../horizontal/header/HorizontalMenu";
 import { CustomizerContext } from "src/context/CustomizerContext";
 import Notifications from "./Notifications";
 import Profile from "./Profile";
-import ReactFlagsSelect from "react-flags-select";
-import { GetNotification } from "src/features/Notifications/NotificationSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-
+import {default as ReactFlagsSelect } from "react-flags-select";
 interface HeaderPropsType {
   layoutType: string;
 }
@@ -29,7 +25,7 @@ declare global {
 const Header = ({ layoutType }: HeaderPropsType) => {
   const [isSticky, setIsSticky] = useState(false);
   const [selected, setSelected] = useState("US");
-
+const FlagsSelect = ReactFlagsSelect as unknown as React.ComponentType<any>;
   const languageMap: Record<string, string> = {
     US: "en", GB: "en", FR: "fr", DE: "de", ES: "es", IT: "it",
     CN: "zh-CN", TW: "zh-TW", JP: "ja", KR: "ko", IN: "hi", PK: "ur",
@@ -109,7 +105,7 @@ const handleLanguageChange = (code: string) => {
   const { setIsCollapse, isCollapse, isLayout, setActiveMode, activeMode } = useContext(CustomizerContext);
   const [mobileMenu, setMobileMenu] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-     const notifications = useSelector((state: any) => state.notifications.notificationData);
+    
   const toggleMode = () =>
     setActiveMode((prevMode: string) => (prevMode === "light" ? "dark" : "light"));
 
@@ -143,7 +139,7 @@ const handleLanguageChange = (code: string) => {
             <div className="flex gap-3 items-center">
               <div className="flex items-center gap-2">
                 <div id="google_translate_element" style={{ display: "none" }} />
-                <ReactFlagsSelect
+                <FlagsSelect
                   searchable
                   countries={Object.keys(languageMap)}
                   customLabels={customLabels}

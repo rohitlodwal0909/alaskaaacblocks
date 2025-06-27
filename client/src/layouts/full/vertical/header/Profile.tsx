@@ -11,7 +11,7 @@ import Logoutmodel from "./Logoutmodel";
 
 const Profile = () => {
   const navigate = useNavigate()
-    const { setIsCollapse, isCollapse, isLayout, setActiveMode, activeMode } = useContext(CustomizerContext);
+    const { setIsCollapse, isCollapse} = useContext(CustomizerContext);
 
     const  [isOpen,setIsOpen] = useState(false)
     const handlelogout =()=>{
@@ -100,7 +100,7 @@ navigate("/admin/login");
         <div className="pt-6 px-6">
           <Button
             color={"primary"}
-            as={Link}
+        
             onClick={() => setIsOpen(true)}
             
             className="w-full"

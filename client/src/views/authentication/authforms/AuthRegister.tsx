@@ -1,14 +1,18 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import { useState } from "react";
-
+interface FormDataType {
+  name: string;
+  email: string;
+  password: string;
+}
 const AuthRegister = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
   name: '',
   email: '',
   password: '',
 });
 
-const [errors, setErrors] = useState({});
+const [errors, setErrors] = useState<Partial<FormDataType>>({});
 const handleChange = (field, value) => {
   setFormData((prev) => ({ ...prev, [field]: value }));
   setErrors((prev) => ({ ...prev, [field]: '' }));
@@ -17,8 +21,8 @@ const handleChange = (field, value) => {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  const newErrors = {};
-  if (!formData.name) newErrors.name = 'Name is required';
+ const newErrors: Partial<FormDataType> = {};
+  if (!formData.name) newErrors.name  = 'Name is required';
   if (!formData.email) newErrors.email = 'Email is required';
   if (!formData.password) newErrors.password = 'Password is required';
   setErrors(newErrors);

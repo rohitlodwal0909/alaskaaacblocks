@@ -27,7 +27,7 @@ export const GetUsermodule = createAsyncThunk(
 
 export const addUser = createAsyncThunk(
   "users/add",
-  async (formdata, { rejectWithValue }) => {
+  async (formdata:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${apiUrl}/register`,
         formdata);

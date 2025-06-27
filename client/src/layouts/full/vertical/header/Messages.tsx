@@ -1,10 +1,8 @@
 
 import { Icon } from "@iconify/react";
-import * as MessagesData from "./Data";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-import { Badge, Button, Dropdown } from "flowbite-react";
-import { Link } from "react-router";
+import { Button, Dropdown } from "flowbite-react";
 
 const Messages = () => {
   return (

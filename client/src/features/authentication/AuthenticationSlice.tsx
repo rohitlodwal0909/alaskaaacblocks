@@ -11,7 +11,7 @@ const initialState = {
 };
 export const Authenticationmodule = createAsyncThunk(
   "authentication/authenticationmodule",
-  async (formdata, { rejectWithValue }) => {
+  async (formdata:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${apiUrl}/login`, formdata, {
         headers: {

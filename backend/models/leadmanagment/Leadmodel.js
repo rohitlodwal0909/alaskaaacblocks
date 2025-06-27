@@ -15,7 +15,7 @@ const Lead = sequelize.define(
       type: DataTypes.STRING
     },
     date: {
-      type: DataTypes.STRING
+      type: DataTypes.DATE
     },
     source: {
       type: DataTypes.STRING

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Label, Select, TextInput } from "flowbite-react";
+import React from "react";
+import { Button, Label, TextInput } from "flowbite-react";
 interface UserProfileProps {
   initialData: {
     username: string;

@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FollowupLeads } from "src/features/leadmanagment/LeadmanagmentSlice";
-
+import { AppDispatch } from 'src/store';
 
 const FollowUpmodal = ({ placeModal, modalPlacement,setPlaceModal,selectedRow,setFollowupData }) => {
 
@@ -24,7 +24,7 @@ const FollowUpmodal = ({ placeModal, modalPlacement,setPlaceModal,selectedRow,se
 const [errors, setErrors] = useState({
     notes: "",
   });
-const dispatch = useDispatch()
+ const dispatch = useDispatch<AppDispatch>();
 useEffect(() => {
   if (selectedRow?.id) {
     setFormData((prev) => ({ ...prev, lead_id: selectedRow?.id }));

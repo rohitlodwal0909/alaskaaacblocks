@@ -1,21 +1,46 @@
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
 import { Label, TextInput } from "flowbite-react";
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import data from '../../../utils/Statedata.json';
 import { CreateLeads, GetLeads } from 'src/features/leadmanagment/LeadmanagmentSlice';
 import Select from 'react-select';
+import { AppDispatch } from 'src/store';
 const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', source: '', material: '', quantity: '', unit: '', size: '', state: '', district: '', tehsil: '', address: ''
-  });
+ const [formData, setFormData] = useState<{
+  name: any;
+  email: any;
+  phone: any;
+  source: any;
+  material: any;
+  quantity: any;
+  unit: any;
+  size: any;
+  state: any;
+  district: any;
+  tehsil: any;
+  address: any;
+}>({
+  name: '',
+  email: '',
+  phone: '',
+  source: '',
+  material: '',
+  quantity: '',
+  unit: '',
+  size: '',
+  state: '',
+  district: '',
+  tehsil: '',
+  address: ''
+});
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -46,8 +71,9 @@ const handleDistrictChange = (selectedOption) => {
   handleChange('tehsil', '');
 };
 
- const validateForm = () => {
-  const newErrors = {};
+const validateForm = () => {
+  const newErrors: { [key: string]: string } = {}; // ✅ define the type here
+
   if (!formData.name) newErrors.name = 'Name is required';
   if (!formData.phone) newErrors.phone = 'Phone No. is required';
   if (!formData.source) newErrors.source = 'Source is required';

@@ -15,7 +15,7 @@ import PaginationComponent from "src/utils/PaginationComponent";
 import ComonDeletemodal from "../../../utils/deletemodal/ComonDeletemodal";
 import { DeleteLeads, GetFollowupLeads, GetLeads, UpdateLeads } from "src/features/leadmanagment/LeadmanagmentSlice";
 import noData from "../../../../src/assets/images/svgs/no-data.webp"
-
+import type { AppDispatch } from "src/store";
 import Select from 'react-select';
 import ViewLeadmodal from "./ViewLeadmodal";
 import FollowUpmodal from "./FollowUpmodal";
@@ -48,9 +48,9 @@ function LeadsTable() {
   const notesLeads = useSelector((state: any) => state.leadmanagement.getnotesData);
   const [data, setData] = useState<PaginationTableType[]>(users);
   const [selectedRow, setSelectedRow] = useState<PaginationTableType | null>(null);
-  const[followupdata,setFollowupData] = useState(notesLeads)
+const [followupdata, setFollowupData] = useState<any>(notesLeads);
   const [filters, setFilters] = useState<{ [key: string]: string }>({ qa_qc_status: '' });
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>()
   const [editModal, setEditModal] = useState(false);
   const modalPlacement = "center";
 
@@ -117,7 +117,7 @@ function LeadsTable() {
     }
   };
 
-  const handleStatuschange = (status, id) => {
+  const handleStatuschange = (status:any, id:any) => {
     dispatch(UpdateLeads({ status, id })).unwrap().then(() => {
       toast.success("Lead Status Change successfully!");
       dispatch(GetLeads());
@@ -206,7 +206,7 @@ function LeadsTable() {
     }),
     columnHelper.accessor("source", {
       cell: (info) => {
-        const source = info.getValue();
+        const source = info.getValue() as string;;
         const roleMap = {
           "India mart": "India mart",
           "Gudgedial": "Gudgedial",

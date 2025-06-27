@@ -30,7 +30,6 @@ const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 /* Pages */
 
 
-const localdata = JSON.parse(localStorage.getItem('logincheck') || '{}');
 
 const Router = [
  {

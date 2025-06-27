@@ -6,10 +6,6 @@ import Sidebar from './vertical/sidebar/Sidebar';
 import Header from './vertical/header/Header';
 import ScrollToTop from 'src/components/shared/ScrollToTop';
 
-
-
-
-
 const FullLayout: FC = () => {
   const { activeLayout, isLayout } = useContext(CustomizerContext);
 

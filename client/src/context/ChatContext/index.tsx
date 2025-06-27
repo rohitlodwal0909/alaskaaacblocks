@@ -1,8 +1,11 @@
 'use client'
 import { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
 import React from "react";
-import useSWR from 'swr';
-import  {  ChatsType, MessageType }  from '../../features/chat/Chatdata';
+
+import { ChatsType } from 'src/types/apps/chat';
+import { MessageType } from 'src/types/apps/chat';
+
+
 import  ChatData  from '../../features/chat/Chatdata';
 
 
@@ -80,20 +83,23 @@ useEffect(() => {
     // };
 
     const value: ChatContextProps = {
-        chatData,
-        chatContent,
-        chatSearch,
-        selectedChat,
-        loading,
-        error,
-        activeChatId,
-        setChatContent,
-        setChatSearch,
-        setSelectedChat,
-        setActiveChatId,
-        // sendMessage,
-        setError,
-        setLoading,
+      chatData,
+      chatContent,
+      chatSearch,
+      selectedChat,
+      loading,
+      error,
+      activeChatId,
+      setChatContent,
+      setChatSearch,
+      setSelectedChat,
+      setActiveChatId,
+      // sendMessage,
+      setError,
+      setLoading,
+      sendMessage: function (): void {
+        throw new Error('Function not implemented.');
+      }
     };
     return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

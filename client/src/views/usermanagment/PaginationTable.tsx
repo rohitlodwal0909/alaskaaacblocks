@@ -7,7 +7,7 @@ import {
   useReactTable,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { Badge, Button, Dropdown, Tooltip } from "flowbite-react";
+import { Badge, Button,  Tooltip } from "flowbite-react";
 
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
@@ -15,11 +15,12 @@ import s1 from "../../../src/assets/images/profile/user-1.jpg";
 import Deleteusermodal from "./Deleteusermodal";
 import Editusermodal from "./Editusermodal";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, GetUsermodule, updateUser } from "src/features/usermanagment/UsermanagmentSlice";
+import { deleteUser, GetUsermodule,  } from "src/features/usermanagment/UsermanagmentSlice";
 import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
 import { toast } from "react-toastify";
 import PaginationComponent from "src/utils/PaginationComponent";
 import noData from "../../../src/assets/images/svgs/no-data.webp"
+import { AppDispatch } from "src/store";
 export interface PaginationTableType {
   id?: string;
   avatar?: string | any;
@@ -42,7 +43,7 @@ function PaginationTable() {
     null
   );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const [editModal, setEditModal] = useState(false);
   let modalPlacement = "center"
 
@@ -68,7 +69,7 @@ function PaginationTable() {
     fetchUserModules();
   }, [dispatch]);
  
-const handleupdateuser = async (updatedata) => {
+const handleupdateuser = async () => {
   // try {
    
   //   await dispatch(updateUser(updatedata)).unwrap();

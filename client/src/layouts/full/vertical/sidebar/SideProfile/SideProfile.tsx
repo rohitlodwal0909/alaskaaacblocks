@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { CustomizerContext } from "../../../../../../src/context/CustomizerContext";
 import { toast } from "react-toastify";
 const SideProfile = () => {
-  const { setIsCollapse, isCollapse, isLayout, setActiveMode, activeMode } = useContext(CustomizerContext);
+  const { setIsCollapse, isCollapse } = useContext(CustomizerContext);
   const navigate = useNavigate()
    const handlelogout =()=>{
   localStorage.removeItem("logincheck");
@@ -95,15 +95,10 @@ const SideProfile = () => {
           </SimpleBar>
 
           <div className="pt-6 px-6">
-            <Button
-              color={"primary"}
-              as={Link}
-                onClick={() => handlelogout()}
-             
-              className="w-full"
-             >
-              Logout
-            </Button>
+            
+            <Button color="primary" className="w-full" onClick={() => handlelogout()}>
+            Logout
+          </Button>
           </div>
         </Dropdown>
       </div>

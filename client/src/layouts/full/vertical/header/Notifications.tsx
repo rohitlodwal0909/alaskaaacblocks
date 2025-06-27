@@ -1,9 +1,9 @@
 
 import { Icon } from "@iconify/react";
 import { Badge, Button, Dropdown } from "flowbite-react";
-import * as Notification from "./Data";
+
 import SimpleBar from "simplebar-react";
-import { Link, Links, useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Avatar } from 'flowbite-react';
 import notificationicon from '../../../../assets/images/logos/notification2.png'
@@ -11,14 +11,15 @@ import notificationicon2 from '../../../../assets/images/logos/notification.png'
 import { useDispatch, useSelector } from "react-redux";
 import { GetNotification, ReadNotification } from "src/features/Notifications/NotificationSlice";
 import { toast } from "react-toastify";
-import { useRef } from "react";
+
+import { AppDispatch } from "src/store";
 const Notifications = () => {
   const notifications = useSelector((state: any) => state.notifications.notificationData);
   const [notificationList, setNotificationList] = useState(notifications||[]);
-  const [isOpen, setIsOpen] = useState(false);
+
   const navigate = useNavigate();
-  const dropdownRef = useRef(null);
-      const dispatch = useDispatch()
+ 
+      const dispatch = useDispatch<AppDispatch>()
       useEffect(() => {
          const fetchnotification = async () => {
            try {

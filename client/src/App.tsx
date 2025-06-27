@@ -2,7 +2,7 @@ import { RouterProvider } from "react-router";
 import { Flowbite, ThemeModeScript } from 'flowbite-react';
 import customTheme from './utils/theme/custom-theme';
 import router from "./routes/Router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
   import { ToastContainer} from 'react-toastify';
 

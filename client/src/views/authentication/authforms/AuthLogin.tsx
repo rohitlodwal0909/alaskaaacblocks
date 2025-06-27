@@ -1,27 +1,32 @@
-import { Button, Checkbox, Label, TextInput, Toast } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { Authenticationmodule } from "src/features/authentication/AuthenticationSlice";
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { AppDispatch } from 'src/store';
+interface FormDataType {
 
+  email: string;
+  password: string;
+}
 const AuthLogin = ({ }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
   email: '',
   password: '',
 });
 const [showPassword, setShowPassword] = useState(false);
-const dispatch = useDispatch()
+const dispatch = useDispatch<AppDispatch>()
 const navigate = useNavigate()
-const [errors, setErrors] = useState({});
+const [errors, setErrors] = useState<Partial<FormDataType>>({});
 const handleInputChange = (e) => {
   const { name, value } = e.target;
   setFormData((prev) => ({ ...prev, [name]: value }));
   setErrors((prev) => ({ ...prev, [name]: '' }));
 };
 const validateForm = () => {
-  const newErrors = {};
+  const newErrors : Partial<FormDataType> = {};
   if (!formData.email) newErrors.email = 'Email is required';
   if (!formData.password) newErrors.password = 'Password is required';
   setErrors(newErrors);

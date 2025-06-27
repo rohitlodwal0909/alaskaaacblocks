@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Label, TextInput, FileInput } from 'flowbite-react';
-import { IconUser, IconMail, IconLock } from "@tabler/icons-react";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Label, TextInput } from 'flowbite-react';
+import { IconUser, IconMail} from "@tabler/icons-react";
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 const Editusermodal = ({ setEditModal, modalPlacement, editModal, selectedUser, onUpdateUser }) => {
   // 1. Set form state

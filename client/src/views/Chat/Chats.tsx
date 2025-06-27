@@ -6,15 +6,6 @@ import ChatsApp from "./ChatComponent/ChatsApp";
 
 
 
-const BCrumb = [
-  {
-    to: "/",
-    title: "Home",
-  },
-  {
-    title: "Chat",
-  },
-];
 const Chats = () => {
   return (
     <>

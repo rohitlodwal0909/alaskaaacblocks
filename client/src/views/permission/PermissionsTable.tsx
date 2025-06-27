@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {  Dropdown } from "flowbite-react";
-import { Icon } from "@iconify/react";
-import { IconDots} from "@tabler/icons-react";
+
 import BreadcrumbComp from 'src/layouts/full/shared/breadcrumb/BreadcrumbComp';
 // Define the type for a user and their permissions
 interface UserPermission {
@@ -12,6 +10,7 @@ interface UserPermission {
   query: boolean;
   resize: boolean;
   terminate: boolean;
+  submodule:any
 }
 
 const PermissionsTable: React.FC = () => {

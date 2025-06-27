@@ -1,8 +1,5 @@
-import { Icon } from "@iconify/react";
-import { Badge, Button, Dropdown } from "flowbite-react";
-import * as Notification from "../../layouts/full/vertical/header/Data";
-import SimpleBar from "simplebar-react";
-import { Link, useLocation, useParams} from "react-router"
+
+import {  useLocation} from "react-router"
 import { useEffect, useState } from "react";
 import { Avatar } from 'flowbite-react';
 import notificationicon from '../../assets/images/logos/notification2.png'
@@ -12,12 +9,12 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import CardBox from 'src/components/shared/CardBox';
 import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
-
+import { AppDispatch } from 'src/store';
 const SeeAllNotifications = () => {
 
      const notifications = useSelector((state: any) => state.notifications.notificationData);
      const [notificationList, setNotificationList] = useState(notifications||[]);
-      const dispatch = useDispatch()
+      const dispatch = useDispatch<AppDispatch>()
 const location =useLocation()
 const notificationId = location.key;
 
@@ -70,7 +67,7 @@ const notificationId = location.key;
           {/* <Badge color={"primary"}>{notificationList?.filter((items)=> items?.is_read ==0).length}</Badge> */}
          <CardBox>
          <ul className="w-full  rounded-sm" >
-         {notificationList.map((links, index) => (
+         {notificationList.map((links) => (
                 <li
                   // as={Link}
                   // to="#"

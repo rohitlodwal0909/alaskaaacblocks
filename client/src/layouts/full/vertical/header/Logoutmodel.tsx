@@ -1,5 +1,4 @@
 import { Button, Modal, ModalBody, ModalHeader } from 'flowbite-react';
-import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 const Logoutmodel = ({isOpen,setIsOpen ,handlelogout}) => {
   return (
