@@ -1,0 +1,25 @@
+
+
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "alaska",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "alaska",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "u893732607_alaska_db_crm",
+    "password": "Alaska1#@09",
+    "database": "u893732607_alaska_db_crm",
+    "host": "srv788.hstgr.io",
+    "dialect": "mysql"
+  }
+}

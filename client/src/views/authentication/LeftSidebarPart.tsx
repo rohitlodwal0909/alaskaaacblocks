@@ -1,6 +1,5 @@
 
 import Bgimg from "/src/assets/images/logos/logo-icon.svg";
-import { Button } from "flowbite-react";
 
 const LeftSidebarPart = () => {
   return (

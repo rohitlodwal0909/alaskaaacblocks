@@ -1,14 +1,17 @@
+require("dotenv").config();
+
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
-const sequelize = require("./config/db");
+const path = require("path");
+const { sequelize } = require("./models");
+      sequelize.sync();
+
 const authRoutes = require("./routes/authentication/AuthRoutes");
-const userRoutes = require("./routes/usermanagment/UserRoutes");
+// const userRoutes = require("./routes/usermanagment/UserRoutes");
 const leadRoutes = require("./routes/leadmanagment/LeadRoutes");
 const NotificationRouter = require("./routes/notification/NotificationRoutes");
 const startLeadReminderJob = require("./cron/leadReminder");
 
-dotenv.config();
 const app = express();
 
 //  Body parser middleware
@@ -17,14 +20,35 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(authRoutes);
-app.use(userRoutes);
+//app.use(userRoutes);
 app.use(leadRoutes);
-app.use(NotificationRouter)
+app.use(NotificationRouter);
+
+process.on('uncaoughtException', function (err) {
+console.error('UNCOUGHT EXCEPTION:', err);
+
+});
+
+//startLeadReminderJob();
+
+if(process.env.NODE_ENV === "production") {
+
+const disPath = path.join(__dirname, "../client/dist");
+
+app.use(express.static(disPath));
+
+app.get(/^\/(?!api).*/, (req,res) => {
+  res.sendFile(path.join(disPath, "index.html"));
+
+});
+
+}
+
 //  DB connection and start
 
 // Start cron
 
-startLeadReminderJob();
+
 
 sequelize
   .authenticate()
