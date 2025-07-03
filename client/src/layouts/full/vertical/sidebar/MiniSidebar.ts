@@ -6,13 +6,13 @@ interface MiniiconsType {
 }
 
 const Miniicons: MiniiconsType[] = [
+  // {
+  //   id: 1,
+  //   icon: "solar:layers-line-duotone",
+  //   tooltip: "Dashboards",
+  // },
   {
     id: 1,
-    icon: "solar:layers-line-duotone",
-    tooltip: "Dashboards",
-  },
-  {
-    id: 2,
     icon: "material-symbols:inventory-sharp",
     tooltip: "Lead Managment",
   },

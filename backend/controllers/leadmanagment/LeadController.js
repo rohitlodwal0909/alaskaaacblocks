@@ -1,19 +1,30 @@
 // controllers/LeadController.js
 const Lead = require("../../models/leadmanagment/Leadmodel");
 const LeadNote = require("../../models/leadmanagment/Leadnotesmodel");
-
-// Create new lead
 exports.createLead = async (req, res) => {
   try {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
+    // Ensure values are arrays (JSON fields)
+    const formatField = (field) => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === "string") return field.split(",");
+      return [];
+    };
+
     const lead = await Lead.create({
       ...req.body,
+      material: formatField(req.body.material),
+      quantity: formatField(req.body.quantity),
+      unit: formatField(req.body.unit),
+      size: formatField(req.body.size),
       date: tomorrow
     });
+
     res.status(201).json(lead);
   } catch (error) {
+    console.error("Create Lead Error:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -34,9 +45,31 @@ exports.updateLead = async (req, res) => {
     const lead = await Lead.findByPk(req.params.id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
 
-    await lead.update(req.body);
+    const formatField = (field) => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === "string") return field.split(",");
+      return [];
+    };
+
+    const {
+      material,
+      quantity,
+      unit,
+      size,
+      ...otherFields
+    } = req.body;
+
+    await lead.update({
+      ...otherFields,
+      material: formatField(material),
+      quantity: formatField(quantity),
+      unit: formatField(unit),
+      size: formatField(size),
+    });
+
     res.status(200).json(lead);
   } catch (error) {
+    console.error("Update Lead Error:", error);
     res.status(500).json({ error: error.message });
   }
 };

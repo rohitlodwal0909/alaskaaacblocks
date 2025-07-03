@@ -15,6 +15,10 @@ const LeadNote = sequelize.define("lead_notes", {
     type: DataTypes.DATEONLY,
     allowNull: true
   },
+  give_range:{
+     type: DataTypes.STRING,
+    allowNull: true
+  },
   lead_id: {
     type: DataTypes.INTEGER,
     allowNull: true

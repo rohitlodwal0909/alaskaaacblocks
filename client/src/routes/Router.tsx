@@ -45,7 +45,6 @@ const Router = [
         { path: '/user-profile', element: <Userprofile /> },
         { path: '/Chats', element: <Chats/> },
         { path: '/notifications', element: <SeeAllNotifications/> },
-      
         { path: '/lead-managment/leads', element: <Leads /> },
         { path: '/permission', element: <PermissionsTable /> },
         { path: '*', element: <Navigate to="/auth/404" /> },

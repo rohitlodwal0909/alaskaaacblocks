@@ -29,7 +29,7 @@ console.error('UNCOUGHT EXCEPTION:', err);
 
 });
 
-//startLeadReminderJob();
+startLeadReminderJob();
 
 if(process.env.NODE_ENV === "production") {
 

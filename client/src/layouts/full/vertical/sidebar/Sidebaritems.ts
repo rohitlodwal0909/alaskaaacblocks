@@ -24,29 +24,29 @@ import { uniqueId } from "lodash";
 const SidebarContent: MenuItem[] = [
   
 
-  {
-    id: 1,
-    name: "Dashboard",
-    items: [
-      {
-        heading: "Dashboard",
-        children: [
-          {
-            name: "Chat",
-            icon: "carbon:report",
-            id: uniqueId(),
-            url: "/chats",
-          },
-          // {
-          //   name: "Permission",
-          //   icon: "arcticons:permissionsmanager",
-          //   id: uniqueId(),
-          //   url: "/permission",
-          // }
-        ],
-      },
-    ],
-  },
+  // {
+  //   id: 2,
+  //   name: "Dashboard",
+  //   items: [
+  //     {
+  //       heading: "Dashboard",
+  //       children: [
+  //         {
+  //           name: "Chat",
+  //           icon: "carbon:report",
+  //           id: uniqueId(),
+  //           url: "/chats",
+  //         },
+  //         {
+  //           name: "Permission",
+  //           icon: "arcticons:permissionsmanager",
+  //           id: uniqueId(),
+  //           url: "/permission",
+  //         }
+  //       ],
+  //     },
+  //   ],
+  // },
   // {
   //   id: 2,
   //   name: "Menu",
@@ -142,7 +142,7 @@ const SidebarContent: MenuItem[] = [
   //   ],
   // },
    {
-    id: 2,
+    id: 1,
     name: "Lead management",
     items: [
       {

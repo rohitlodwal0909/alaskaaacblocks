@@ -44,7 +44,7 @@ const handleSubmit = async (e) => {
         localStorage.setItem("logincheck", JSON.stringify(result));
         const localdata = JSON.parse(localStorage.getItem('logincheck') || '{}');
         if(localdata){
-          navigate("/");
+          navigate("/lead-managment/leads");
         }
     } catch (error) {
       // error = object from rejectWithValue

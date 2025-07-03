@@ -6,6 +6,7 @@ import {
   ModalHeader,
    Label,
   Textarea,
+  TextInput,
 } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -20,8 +21,9 @@ const FollowUpmodal = ({ placeModal, modalPlacement,setPlaceModal,selectedRow,se
     notes: "",
     followUpDate: "",
     callType: "",
+    give_range:''
   });
-const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState({
     notes: "",
   });
  const dispatch = useDispatch<AppDispatch>();
@@ -54,7 +56,9 @@ useEffect(() => {
      lead_id:'',
     notes: "",
     followUpDate: "",
-    callType: "",})
+    callType: "",
+  give_range:""
+})
     setPlaceModal(false);
   } catch (error) {
     console.error("Follow-up submission failed:", error);
@@ -94,7 +98,18 @@ useEffect(() => {
               <p className="text-sm text-red-600 mt-1">{errors.notes}</p>
             )}
           </div>
-
+       <div className="">
+            <Label htmlFor="give_range" value="Give Rate" />
+            <TextInput
+              id="give_range"
+              style={{ borderRadius: '8px' }}
+              value={formData.give_range}
+              onChange={(e) => handleChange('give_range', e.target.value)}
+              placeholder="Enter Rate"
+             
+            />
+            
+          </div>
           {/* Follow-up Date */}
           <div>
             <Label htmlFor="followUpDate" value="Follow-up Date" className="mb-1 block" />
@@ -116,12 +131,11 @@ useEffect(() => {
               value={formData.callType}
               onChange={(e) => handleChange("callType", e.target.value)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-
             >
               <option value="">Select Call Type</option>
-              <option value="outbound">Outbound</option>
-              <option value="inbound">Inbound</option>
-              <option value="missed">Missed</option>
+              <option value="Call Received">Call Received</option>
+              <option value="Not Receiveded">Not Receiveded</option>
+              <option value="Not Available">Not Available</option>
             </select>
           </div>
         </form>

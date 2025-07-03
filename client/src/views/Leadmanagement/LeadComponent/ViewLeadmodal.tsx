@@ -23,21 +23,52 @@ const ViewLeadmodal = ({
   selectedRow,
   followupdata
 }: Props) => {
+const formatArray = (value: any) => {
+  try {
+    const parsed = typeof value == "string" ? JSON.parse(value) : value;
+    return Array.isArray(parsed)
+      ? parsed.filter(Boolean).map((v: string, i: number) => <div key={i}>{v}</div>)
+      : parsed || "-";
+  } catch {
+    return value || "-";
+  }
+};
   const fields = [
-    ["Name", selectedRow?.name],
-    ["Email", selectedRow?.email],
-    ["Status", selectedRow?.status],
-    ["Phone", selectedRow?.phone],
-    ["Source", selectedRow?.source],
-    ["Material", selectedRow?.material],
-    ["Quantity", selectedRow?.quantity],
-    ["Unit", selectedRow?.unit],
-    ["Size", selectedRow?.size],
-    ["State", selectedRow?.state],
-    ["District", selectedRow?.district],
-    ["Tehsil", selectedRow?.tehsil],
-    ["Address", selectedRow?.address],
-  ];
+  ["Name", selectedRow?.name],
+  ["Email", selectedRow?.email],
+  ["Status", selectedRow?.status],
+  ["Phone", selectedRow?.phone],
+  ["Source", selectedRow?.source],
+   ["Give Rate", selectedRow?.give_range],
+  ["Material", formatArray(selectedRow?.material)],
+ [
+  "Quantity (Unit)",
+  (() => {
+    try {
+      const quantities = JSON.parse(selectedRow?.quantity || "[]");
+      const units = JSON.parse(selectedRow?.unit || "[]");
+
+      if (Array.isArray(quantities) && Array.isArray(units)) {
+        return quantities.map((qty: string, i: number) => (
+          <div key={i}>
+            {qty} ({units[i] || "-"})
+          </div>
+        ));
+      }
+      return "-";
+    } catch {
+      return "-";
+    }
+  })(),
+],
+   ["Size", formatArray(selectedRow?.size)],
+  ["State", selectedRow?.state],
+  ["District", selectedRow?.district],
+  ["Tehsil", selectedRow?.tehsil],
+  ["Party Address", selectedRow?.address],
+  ["Delivery Address", selectedRow?.delivery_address],
+ 
+];
   const [showFollowup, setShowFollowup] = useState([]);
 
 useEffect(() => {
@@ -71,8 +102,8 @@ useEffect(() => {
             title="Leads View"
             icon={() => <Icon icon="solar:shield-user-outline" height={20} />}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 my-2">
-        {fields.map(([label, value]) => (
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 my-2">
+           {fields.map(([label, value]) => (
           <div
             key={label}
             className="bg-gray-50 rounded-md p-4 shadow-sm hover:shadow-md transition-shadow"
@@ -100,6 +131,7 @@ useEffect(() => {
           <th className="px-4 py-3 border">Notes</th>
           <th className="px-4 py-3 border">Follow-up Date</th>
           <th className="px-4 py-3 border">Call Type</th>
+          <th className="px-4 py-3 border">Range </th>
         </tr>
       </thead>
       <tbody>
@@ -109,6 +141,7 @@ useEffect(() => {
             <td className="px-4 py-2 border break-words">{item.notes}</td>
             <td className="px-4 py-2 border">{item.followUpDate || "-"}</td>
             <td className="px-4 py-2 border capitalize">{item.callType}</td>
+            <td className="px-4 py-2 border capitalize">{item.give_range}</td>
           </tr>
         ))}
       </tbody>

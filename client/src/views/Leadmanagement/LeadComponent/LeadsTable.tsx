@@ -27,7 +27,7 @@ export interface PaginationTableType {
   email?: string;
   status?: any;
   phone?: string;
-  sourse?: any;
+  source?: any;
   material?: string;
   quantity?: string;
   unit?: string;
@@ -36,19 +36,21 @@ export interface PaginationTableType {
   district?: string;
   tehsil?: string;
   address?: string;
+  created_at:any;
+  actions:any
 }
 
 
 const columnHelper = createColumnHelper<PaginationTableType>();
 const leadStatuses = ["New", "Contacted", "Interested", "Converted", "Lost"];
 
-function LeadsTable() {
+function LeadsTable({searchText ,toDate ,fromDate}) {
   const [isOpen, setIsOpen] = useState(false);
   const users = useSelector((state: any) => state.leadmanagement.leadsdata);
   const notesLeads = useSelector((state: any) => state.leadmanagement.getnotesData);
   const [data, setData] = useState<PaginationTableType[]>(users);
   const [selectedRow, setSelectedRow] = useState<PaginationTableType | null>(null);
-const [followupdata, setFollowupData] = useState<any>(notesLeads);
+    const [followupdata, setFollowupData] = useState<any>(notesLeads);
   const [filters, setFilters] = useState<{ [key: string]: string }>({ qa_qc_status: '' });
   const dispatch = useDispatch<AppDispatch>()
   const [editModal, setEditModal] = useState(false);
@@ -56,14 +58,24 @@ const [followupdata, setFollowupData] = useState<any>(notesLeads);
 
   const [viewModal, setViewModal] = useState(false);
   const [followUpModal, setFollowupModal] = useState(false);
-  const options = data?.map((district) => ({
-    value: district?.district,
-    label: district?.district,
-  }));
-  const tehsileoptions = data?.map((district) => ({
-    value: district?.tehsil,
-    label: district?.tehsil,
-  }));
+ const uniqueDistricts = Array.from(
+  new Set(data?.map((item) => item?.district))
+);
+
+const uniquetehsile = Array.from(
+  new Set(data?.map((item) => item?.tehsil))
+);
+
+
+const options = uniqueDistricts?.map((district) => ({
+  value: district,
+  label: district,
+}));
+
+const tehsileoptions = uniquetehsile?.map((tehsil) => ({
+  value: tehsil,
+  label: tehsil,
+}));
 
   const handleEdit = (row: PaginationTableType) => {
     triggerGoogleTranslateRescan();
@@ -143,31 +155,52 @@ const [followupdata, setFollowupData] = useState<any>(notesLeads);
     setFollowupModal(true);
     setSelectedRow(row)
   };
-  const filteredData = useMemo(() => {
-    if (!filters || Object.keys(filters).length === 0) return data;
+const filteredData = useMemo(() => {
+  if (!data) return [];
 
-    return data.filter((item) =>
-      Object.keys(filters).every((key) => {
-        const filterValue = filters[key]?.toLowerCase(); // safe access
-        if (!filterValue) return true; // ignore empty filter values
+  return data.filter((item) => {
 
-        const value = item[key as keyof PaginationTableType];
-        if (!value) return false;
+    const bySearch =
+      !searchText ||
+      Object.values(item).some((v) =>
+        String(v).toLowerCase().includes(searchText.toLowerCase())
+      );
+    const byFilters = !filters || Object.keys(filters).every((key) => {
+      const filterValue = filters[key]?.toLowerCase();
+      if (!filterValue) return true;
+      const value = item[key as keyof typeof item];
 
-        if (typeof value === "string") {
-          return value.toLowerCase().includes(filterValue);
-        }
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(filterValue);
+      }
+      if (Array.isArray(value)) {
+        return value.some(
+          (v) => typeof v === "string" && v.toLowerCase().includes(filterValue)
+        );
+      }
+      return false;
+    });
+    const byDate = (() => {
+      if (!fromDate && !toDate) return true;
 
-        if (Array.isArray(value)) {
-          return value.some(
-            (v) => typeof v === "string" && v.toLowerCase().includes(filterValue)
-          );
-        }
+const itemDate = new Date(item?.created_at);
+itemDate.setHours(0, 0, 0, 0);
 
-        return false;
-      })
-    );
-  }, [data, filters]);
+const from = fromDate ? new Date(fromDate) : null;
+from?.setHours(0, 0, 0, 0);
+
+const to = toDate ? new Date(toDate) : null;
+to?.setHours(0, 0, 0, 0);
+
+if (from && to) return itemDate >= from && itemDate <= to;
+if (from) return itemDate >= from;
+if (to) return itemDate <= to;
+return true;
+    })();
+    return bySearch && byFilters && byDate;
+  });
+}, [data, filters, searchText,fromDate,toDate]);
+
   const columns = [
     columnHelper.accessor("name", {
       cell: (info) => (
@@ -209,10 +242,13 @@ const [followupdata, setFollowupData] = useState<any>(notesLeads);
         const source = info.getValue() as string;;
         const roleMap = {
           "India mart": "India mart",
-          "Gudgedial": "Gudgedial",
+          "Justdial": "Justdial",
           "Instagram": "Instagram",
           "Youtube": "Youtube",
-          "Other": "Other"
+          "FaceBook" :"FaceBook" ,
+          "google": "google",
+          "Refrence":"Refrence",
+          "Other": "Other",
         };
         return <p className="text-darklink dark:text-bodytext text-sm">{roleMap[source] || ""}</p>;
       },
@@ -286,13 +322,13 @@ const [followupdata, setFollowupData] = useState<any>(notesLeads);
 
   return (
     <>
-      <div className="border rounded-md border-ld overflow-auto">
+      <div className="overflow-auto">
         <div className="p-4">
           <div className="flex sm:flex-row flex-col gap-6 mb-4">
             <select id="source" value={filters.source} className="w-full border border-pink-200 focus:border-gray-300 focus:ring-0 rounded"
               onChange={(e) => setFilters(prev => ({ ...prev, source: e.target.value }))}>
               <option value="">Filter Source</option>
-              {["India mart", "Gudgedial", "Instagram", "Youtube", "Other"].map(opt => (
+              {["India mart", "Justdial", "Instagram", "Youtube", "FaceBook", "google", "Refrence","Other"].map(opt => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>

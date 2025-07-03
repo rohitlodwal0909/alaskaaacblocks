@@ -21,15 +21,21 @@ const Lead = sequelize.define(
       type: DataTypes.STRING
     },
     material: {
-      type: DataTypes.STRING
+      type: DataTypes.JSON
     },
     quantity: {
-      type: DataTypes.STRING
+      type: DataTypes.JSON
     },
     unit: {
-      type: DataTypes.STRING
+      type: DataTypes.JSON
     },
     size: {
+      type: DataTypes.JSON
+    },
+    give_range:{
+       type: DataTypes.STRING
+    },
+    delivery_address:{
       type: DataTypes.STRING
     },
     state: {
