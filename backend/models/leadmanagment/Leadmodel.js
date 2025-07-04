@@ -33,7 +33,7 @@ const Lead = sequelize.define(
       type: DataTypes.JSON
     },
     give_range:{
-       type: DataTypes.STRING
+       type: DataTypes.JSON
     },
     delivery_address:{
       type: DataTypes.STRING

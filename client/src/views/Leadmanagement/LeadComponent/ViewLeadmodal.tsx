@@ -39,7 +39,7 @@ const formatArray = (value: any) => {
   ["Status", selectedRow?.status],
   ["Phone", selectedRow?.phone],
   ["Source", selectedRow?.source],
-   ["Give Rate", selectedRow?.give_range],
+  ["Give Rate", formatArray(selectedRow?.give_range)],
   ["Material", formatArray(selectedRow?.material)],
  [
   "Quantity (Unit)",

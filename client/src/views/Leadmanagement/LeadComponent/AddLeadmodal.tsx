@@ -9,24 +9,16 @@ import Select from 'react-select';
 import { AppDispatch } from 'src/store';
 import { Icon } from "@iconify/react";
 const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
+   const dispatch = useDispatch<AppDispatch>();
+
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);
-  const dispatch = useDispatch<AppDispatch>();
-
   const [formData, setFormData] = useState<any>({
-    name: '',
-    email: '',
-    phone: '',
-    source: '',
-    state: '',
-    district: '',
-    tehsil: '',
-    delivery_address: '',
-    give_range: '',
-    address: '',
-    materials: [{ material: '', quantity: '', unit: '', size: '' }]
+    name: '', email: '', phone: '', source: '',
+    state: '', district: '', tehsil: '',
+    address: '', delivery_address: '',
+    materials: [{ material: '', quantity: '', unit: '', size: '', give_range: '' }]
   });
-  console.log(formData)
   const [errors, setErrors] = useState<any>({});
 
   const handleChange = (field, value) => {
@@ -34,67 +26,52 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
     setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  const handleStateChange = (selectedOption) => {
-    const stateName = selectedOption?.value || "";
-    handleChange('state', stateName);
-    const selectedState = data.states.find(s => s.state === stateName);
-    setDistricts(selectedState?.districts || []);
+  const handleStateChange = ({ value }) => {
+    handleChange('state', value);
+    const stateObj = data.states.find(s => s.state === value);
+    setDistricts(stateObj?.districts || []);
     handleChange('district', '');
     handleChange('tehsil', '');
     setTehsils([]);
   };
 
-  const handleDistrictChange = (selectedOption) => {
-    const districtName = selectedOption?.value || "";
-    handleChange('district', districtName);
-    const selectedDistrict = districts.find(d => d.name === districtName);
-    setTehsils(selectedDistrict?.tehsils || []);
+  const handleDistrictChange = ({ value }) => {
+    handleChange('district', value);
+    const districtObj = districts.find(d => d.name === value);
+    setTehsils(districtObj?.tehsils || []);
     handleChange('tehsil', '');
+  };
+
+  const updateMaterialRow = (index, field, value) => {
+    const updated = [...formData.materials];
+    updated[index][field] = value;
+    setFormData(prev => ({ ...prev, materials: updated }));
   };
 
   const addMaterialRow = () => {
     setFormData(prev => ({
       ...prev,
-      materials: [...prev.materials, { material: '', quantity: '', unit: '', size: '' }]
+      materials: [...prev.materials, { material: '', quantity: '', unit: '', size: '', give_range: '' }]
     }));
   };
 
-  const removeMaterialRow = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      materials: prev.materials.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateMaterialRow = (index: number, field: string, value: string) => {
-    const updated = [...formData.materials];
-    updated[index][field] = value;
-    setFormData(prev => ({
-      ...prev,
-      materials: updated
-    }));
+  const removeMaterialRow = (index) => {
+    const updated = formData.materials.filter((_, i) => i !== index);
+    setFormData(prev => ({ ...prev, materials: updated }));
   };
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.phone) newErrors.phone = 'Phone No. is required';
-    if (!formData.source) newErrors.source = 'Source is required';
-    if (!formData.state) newErrors.state = 'State is required';
-    if (!formData.district) newErrors.district = 'District is required';
-    if (!formData.tehsil) newErrors.tehsil = 'Tehsil is required';
-    if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.give_range) newErrors.give_range = 'Give rate is required';
-    if (!formData.delivery_address) newErrors.delivery_address = 'Give rate is required';
-
-    formData.materials.forEach((row, index) => {
-      if (!row.material) newErrors[`material_${index}`] = 'Material is required';
-      if (!row.quantity) newErrors[`quantity_${index}`] = 'Quantity is required';
-      if (!row.unit) newErrors[`unit_${index}`] = 'Unit is required';
-      if (!row.size) newErrors[`size_${index}`] = 'Size is required';
+    const newErrors = {};
+    ['name', 'phone', 'source', 'state', 'district', 'tehsil', 'address', 'delivery_address'].forEach(field => {
+      if (!formData[field]) newErrors[field] = `${field} is required`;
     });
-
+    formData.materials.forEach((row, i) => {
+      if (!row.material) newErrors[`material_${i}`] = 'Material required';
+      if (!row.quantity) newErrors[`quantity_${i}`] = 'Quantity required';
+      if (!row.unit) newErrors[`unit_${i}`] = 'Unit required';
+      if (!row.give_range) newErrors[`give_range_${i}`] = 'Give range required';
+      if (row.material !== 'Adhesive Bag' && !row.size) newErrors[`size_${i}`] = 'Size required';
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -102,44 +79,37 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     try {
       const { materials, ...rest } = formData;
-
       const payload = {
         ...rest,
         material: materials.map(m => m.material).join(','),
         quantity: materials.map(m => m.quantity).join(','),
         unit: materials.map(m => m.unit).join(','),
-        size: materials.map(m => m.size).join(',')
+        size: materials.map(m => m.size || '').join(','),
+        give_range: materials.map(m => m.give_range).join(',')
       };
-
       const result = await dispatch(CreateLeads(payload)).unwrap();
-      toast.success(result?.message || "Lead Added Successfully");
+      toast.success(result.message || 'Lead added');
       dispatch(GetLeads());
-
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        source: '',
-        state: '',
-        district: '',
-        tehsil: '',
-        delivery_address: '',
-        give_range: '',
-        address: '',
-        materials: [{ material: '', quantity: '', unit: '', size: '' }]
+        name: '', email: '', phone: '', source: '',
+        state: '', district: '', tehsil: '',
+        address: '', delivery_address: '',
+        materials: [{ material: '', quantity: '', unit: '', size: '', give_range: '' }]
       });
-
       setPlaceModal(false);
-    } catch (error) {
-      toast.error(error);
+    } catch (err) {
+      toast.error(err);
     }
   };
 
+  const statesOptions = data.states.map(s => ({ label: s.state, value: s.state }));
+  const districtsOptions = districts.map(d => ({ label: d.name, value: d.name }));
+  const tehsilOptions = tehsils.map(t => ({ label: t, value: t }));
+
   return (
-    <Modal show={placeModal} position={modalPlacement} onClose={() => setPlaceModal(false)} size="3xl">
+    <Modal show={placeModal} position={modalPlacement} onClose={() => setPlaceModal(false)} size="4xl">
       <ModalHeader className="pb-0">Create New Lead</ModalHeader>
       <ModalBody className="overflow-auto max-h-[90vh]">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
@@ -180,28 +150,16 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
           </div>
 
           {/* State, District, Tehsil */}
-          {[
-            { id: "state", label: "State", data: data.states.map(s => s.state), handler: handleStateChange },
-            { id: "district", label: "District", data: districts.map(d => d.name), handler: handleDistrictChange },
-            { id: "tehsil", label: "Tehsil", data: tehsils, handler: (e) => handleChange('tehsil', e?.value) }
-          ].map(({ id, label, data, handler }) => {
-            const options = data.map(val => ({ value: val, label: val }));
-            return (
+          {[{ id: 'state', options: statesOptions, handler: handleStateChange },
+            { id: 'district', options: districtsOptions, handler: handleDistrictChange },
+            { id: 'tehsil', options: tehsilOptions, handler: val => handleChange('tehsil', val?.value) }]
+            .map(({ id, options, handler }) => (
               <div className="col-span-4" key={id}>
-                <Label htmlFor={id} value={label} />
-                <span className="text-red-700 ps-1">*</span>
-                <Select
-                  id={id}
-                  isSearchable
-                  options={options}
-                  onChange={handler}
-                  value={options.find(opt => opt.value === formData[id]) || null}
-                  isDisabled={!options.length}
-                />
-                {errors[id] && <span className="text-red-500 text-xs">{errors[id]}</span>}
+                <Label value={id.charAt(0).toUpperCase() + id.slice(1)} />
+                <Select options={options} value={options.find(opt => opt.value === formData[id]) || null} onChange={handler} />
+                {errors[id] && <p className="text-red-500 text-xs">{errors[id]}</p>}
               </div>
-            );
-          })}
+            ))}
 
           {/* Party Address */}
           <div className="col-span-6">
@@ -217,24 +175,8 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
             />
             {errors.address && <span className="text-red-500 text-xs">{errors.address}</span>}
           </div>
-
-          {/* Give Range */}
-          <div className="col-span-6">
-            <Label htmlFor="give_range" value="Give Rate" />
-             <span className="text-red-700 ps-1">*</span>
-            <TextInput
-              id="give_range"
-              style={{ borderRadius: '8px' }}
-              value={formData.give_range}
-              onChange={(e) => handleChange('give_range', e.target.value)}
-              placeholder="Enter Rate"
-              color={errors.give_range ? 'failure' : 'gray'}
-            />
-            {errors.give_range && <span className="text-red-500 text-xs">{errors.give_range}</span>}
-          </div>
-
           {/* Delivery Address */}
-          <div className="col-span-12">
+          <div className="col-span-6">
             <Label htmlFor="delivery_address" value="Delivery Address" />
              <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -252,19 +194,19 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
           {formData.materials.map((item, index) => {
       const selectedMaterials = formData.materials.map(m => m.material).filter((_, i) => i !== index);
      const selectedSizes = formData.materials.map(m => m.size).filter((_, i) => i !== index);
-
+const isAdhesive = item.material === 'Adhesive Bag';
   const materialOptions = ["AAC block", "Adhesive Bag"].filter(m => !selectedMaterials.includes(m));
   const sizeOptions = ["600x200x225", "600x200x200", "600x200x150", "600x200x100", "600x200x75"]
     .filter(s => !selectedSizes.includes(s));
   return (
     <div className="col-span-12 grid grid-cols-12 gap-3 items-end" key={index}>
-      <div className="col-span-4">
+      <div className="col-span-3">
         <Label value="Material" />
          <span className="text-red-700 ps-1">*</span>
         <select
           value={item.material}
           onChange={(e) => updateMaterialRow(index, "material", e.target.value)}
-          className="w-full p-2 border rounded-sm border-gray-300"
+          className="w-full p-2 border rounded-sm border-gray-300 text-sm"
         >
           <option value="">Select material</option>
           {materialOptions.map((m) => (
@@ -276,7 +218,7 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
 )}
       </div>
 
-      <div className="col-span-4">
+      <div className="col-span-3">
         <Label value="Quantity" />
          <span className="text-red-700 ps-1">*</span>
         <div className="flex ">
@@ -285,16 +227,15 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
             placeholder="Enter quantity"
             value={item.quantity}
             onChange={(e) => updateMaterialRow(index, "quantity", e.target.value)}
-            className="w-full border border-gray-300 rounded-l-sm px-3 py-2"
+            className="w-full border border-gray-300 rounded-l-sm px-3 py-2 text-sm"
           />
           <select
             value={item.unit}
             onChange={(e) => updateMaterialRow(index, "unit", e.target.value)}
-            className="rounded-r-sm border border-l-0 border-gray-300 "
+            className="rounded-r-sm border border-l-0 border-gray-300 text-sm"
           >
-            <option value="">Unit</option>
-            <option value="pcs">pcs</option>
-            <option value="cubic">cubic</option>
+            <option value="">unit</option>
+       {isAdhesive ? <option value="bag">bag</option> : ["pcs", "cubic","bag"].map(opt => <option key={opt}>{opt}</option>)}
           </select>
         </div>
         {errors[`quantity_${index}`] && (
@@ -304,14 +245,14 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
   <span className="text-red-500 text-xs mt-1">{errors[`unit_${index}`]}</span>
 )}
       </div>
-
+   {!isAdhesive && (
       <div className="col-span-3">
         <Label value="Size" />
          <span className="text-red-700 ps-1">*</span>
         <select
           value={item.size}
           onChange={(e) => updateMaterialRow(index, "size", e.target.value)}
-          className="w-full p-2 border rounded-sm border-gray-300" 
+          className="w-full p-2 border rounded-sm border-gray-300 text-sm" 
         >
           <option value="">Select Size</option>
           {sizeOptions.map((s) => (
@@ -322,7 +263,14 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
   <p className="text-red-500 text-xs mt-1">{errors[`size_${index}`]}</p>
 )}
       </div>
+   )}
+       <div className="col-span-2 ">
+                  <Label value="Give Rate" />
+             <span className="text-red-700 ps-1">*</span>
 
+                  <TextInput value={item.give_range} onChange={e => updateMaterialRow(index, 'give_range', e.target.value)} placeholder="Give rate" color='gray'       style={{ borderRadius: '8px' }}   />
+                  {errors[`give_range_${index}`] && <p className="text-red-500 text-xs">{errors[`give_range_${index}`]}</p>}
+                </div>
       <div className="col-span-1">
         {index === 0 ? (
           <Button onClick={addMaterialRow} color='primary'>

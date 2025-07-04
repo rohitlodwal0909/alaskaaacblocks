@@ -19,6 +19,7 @@ exports.createLead = async (req, res) => {
       quantity: formatField(req.body.quantity),
       unit: formatField(req.body.unit),
       size: formatField(req.body.size),
+      give_range: formatField(req.body.give_range),
       date: tomorrow
     });
 
@@ -56,6 +57,7 @@ exports.updateLead = async (req, res) => {
       quantity,
       unit,
       size,
+      give_range,
       ...otherFields
     } = req.body;
 
@@ -65,6 +67,7 @@ exports.updateLead = async (req, res) => {
       quantity: formatField(quantity),
       unit: formatField(unit),
       size: formatField(size),
+      give_range: formatField(give_range),
     });
 
     res.status(200).json(lead);
