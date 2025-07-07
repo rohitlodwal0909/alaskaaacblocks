@@ -67,7 +67,8 @@ navigate("/admin/login");
         {profileData.profileDD.map((items, index) => (
           <Dropdown.Item
             as={Link}
-            to={items.url}
+            to="#"
+            // to={items.url}
             className="px-6 py-3 flex justify-between items-center bg-hover group/link w-full"
             key={index}
              onClick={() => {

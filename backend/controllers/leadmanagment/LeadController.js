@@ -13,6 +13,16 @@ exports.createLead = async (req, res) => {
       return [];
     };
 
+const today = new Date();
+    const formatted = today.toLocaleString('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,
+});
+
     const lead = await Lead.create({
       ...req.body,
       material: formatField(req.body.material),
@@ -20,7 +30,8 @@ exports.createLead = async (req, res) => {
       unit: formatField(req.body.unit),
       size: formatField(req.body.size),
       give_range: formatField(req.body.give_range),
-      date: tomorrow
+      date: tomorrow,
+      datetime:formatted
     });
 
     res.status(201).json(lead);

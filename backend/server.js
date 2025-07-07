@@ -7,7 +7,6 @@ const { sequelize } = require("./models");
       sequelize.sync();
 
 const authRoutes = require("./routes/authentication/AuthRoutes");
-// const userRoutes = require("./routes/usermanagment/UserRoutes");
 const leadRoutes = require("./routes/leadmanagment/LeadRoutes");
 const NotificationRouter = require("./routes/notification/NotificationRoutes");
 const startLeadReminderJob = require("./cron/leadReminder");
@@ -20,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(authRoutes);
-//app.use(userRoutes);
+app.use(userRoutes);
 app.use(leadRoutes);
 app.use(NotificationRouter);
 
@@ -43,11 +42,6 @@ app.get(/^\/(?!api).*/, (req,res) => {
 });
 
 }
-
-//  DB connection and start
-
-// Start cron
-
 
 
 sequelize

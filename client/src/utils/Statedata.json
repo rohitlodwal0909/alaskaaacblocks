@@ -25,12 +25,15 @@
     { "name": "Hoshangabad", "tehsils": ["Hoshangabad", "Pipariya", "Babai", "Sohagpur", "Seoni Malwa", "Bankhedi"] },
     {"name": "Indore", "tehsils": [ "Indore","Sanwer", "Depalpur","Hatod","Mhow", "Rau", "Juni Indore","Banganga", "Chhota Bangarda","Khudel","Kanadia", "Tejaji Nagar", "Rajendra Nagar"]},
     { "name": "Jabalpur", "tehsils": ["Jabalpur", "Kundam", "Panagar", "Majholi", "Patan", "Shahpura", "Sihora"] },
-    { "name": "Jhabua", "tehsils": ["Jhabua", "Thandla", "Meghnagar", "Ranapur", "Petlawad"] },
+    { "name": "Jhabua", "tehsils": [  "Jhabua","Ranapur", "Petlawad","Thandla","Meghnagar","Rama"] },
     { "name": "Katni", "tehsils": ["Katni", "Vijayraghavgarh", "Murwara", "Bahoriband", "Dhimarkheda", "Barhi"] },
     { "name": "Khandwa", "tehsils": ["Khandwa", "Pandhana", "Harsud", "Khalwa", "Punasa"] },
     { "name": "Khargone", "tehsils": ["Khargone", "Barwah", "Bhikangaon", "Kasrawad", "Sanawad", "Jhirniya", "Gogawan", "Maheshwar", "Bhagwanpura"] },
     { "name": "Mandla", "tehsils": ["Mandla", "Nainpur", "Bichhiya", "Niwas", "Ghughri", "Bamhani"] },
-    { "name": "Mandsaur", "tehsils": ["Mandsaur", "Malhargarh", "Sitamau", "Garoth", "Shamgarh", "Bhanpura"] },
+   {
+  "name": "Mandsaur",
+  "tehsils": ["Mandsaur", "Malhargarh", "Sitamau", "Garoth", "Shamgarh", "Bhanpura", "Daloda", "Shangad"]
+},
     { "name": "Morena", "tehsils": ["Morena", "Ambah", "Porsa", "Joura", "Sabalgarh", "Kailaras"] },
     { "name": "Narsinghpur", "tehsils": ["Narsinghpur", "Gadarwara", "Gotegaon", "Kareli", "Chawarpatha"] },
     { "name": "Neemuch", "tehsils": ["Neemuch", "Jawad", "Manasa", "Singoli"] },

@@ -192,12 +192,11 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
 
           {/* Material Rows */}
           {formData.materials.map((item, index) => {
-      const selectedMaterials = formData.materials.map(m => m.material).filter((_, i) => i !== index);
-     const selectedSizes = formData.materials.map(m => m.size).filter((_, i) => i !== index);
+    
 const isAdhesive = item.material === 'Adhesive Bag';
-  const materialOptions = ["AAC block", "Adhesive Bag"].filter(m => !selectedMaterials.includes(m));
+  const materialOptions = ["AAC block", "Adhesive Bag"]
   const sizeOptions = ["600x200x225", "600x200x200", "600x200x150", "600x200x100", "600x200x75"]
-    .filter(s => !selectedSizes.includes(s));
+    
   return (
     <div className="col-span-12 grid grid-cols-12 gap-3 items-end" key={index}>
       <div className="col-span-3">

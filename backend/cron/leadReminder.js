@@ -1,12 +1,11 @@
 const cron = require("node-cron");
 const { Op } = require("sequelize");
-const { Lead, LeadNote } = require("../models");
+const { Lead, LeadNote , Notification } = require("../models");
 
 function startFollowUpReminder() {
   cron.schedule("0 9 * * *", async () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const leadsToday = await Lead.findAll({
       where: {
         date: {
@@ -14,7 +13,6 @@ function startFollowUpReminder() {
         }
       }
     });
-
     const notesToday = await LeadNote.findAll({
       where: {
         follow_up_date: {
@@ -28,7 +26,6 @@ function startFollowUpReminder() {
         }
       ]
     });
-
     for (const lead of leadsToday) {
       const title = "Today's Follow-up Reminder";
       const message = `You have to talk to ${lead.name} today (based on Lead entry date).`;
@@ -42,7 +39,6 @@ function startFollowUpReminder() {
         status: "pending"
       });
     }
-
     for (const note of notesToday) {
       const leadName = note.Lead?.name || "Unknown";
 

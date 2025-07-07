@@ -67,8 +67,18 @@ const formatArray = (value: any) => {
   ["Tehsil", selectedRow?.tehsil],
   ["Party Address", selectedRow?.address],
   ["Delivery Address", selectedRow?.delivery_address],
+["Entry Date-Time", selectedRow?.datetime
+  ? new Date(selectedRow.datetime).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+  : "-"]
  
-];
+]
   const [showFollowup, setShowFollowup] = useState([]);
 
 useEffect(() => {

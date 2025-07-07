@@ -50,6 +50,9 @@ const Lead = sequelize.define(
     address: {
       type: DataTypes.TEXT
     },
+    datetime:{
+      type: DataTypes.DATE,
+    },
     status: {
       type: DataTypes.ENUM(
         "New",
