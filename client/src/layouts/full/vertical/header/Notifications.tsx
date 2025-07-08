@@ -39,8 +39,10 @@ const Notifications = () => {
 }, [notifications]);
 
  const handleSeeAllClick = () => {
-    // ✅ Optional: simulate click outside to close dropdown (if needed)
-    document.body.click();
+     const dropdownBackdrop = document.querySelector('[data-testid="flowbite-dropdown"]');
+    if (dropdownBackdrop) {
+      dropdownBackdrop.classList.add("hidden");
+    }
     navigate("/notifications");
   };
 
@@ -85,7 +87,7 @@ const Notifications = () => {
         </div>
 
         <SimpleBar className="max-h-80 mt-3">
-          {notificationList?.map((links, index) => (
+          {notificationList?.filter((n) => n.is_read == 0)?.map((links, index) => (
             <Dropdown.Item
               // as={Link}
 //           to={{

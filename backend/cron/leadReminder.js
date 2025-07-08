@@ -54,6 +54,7 @@ function startFollowUpReminder() {
         lead_id: lead.id,
         title,
         message,
+        date_time:now,
          status: "pending"
       });
     }
@@ -64,7 +65,8 @@ function startFollowUpReminder() {
 
       await Notification.create({
         title,
-        message
+        message,
+        date_time:now,
       });
     }
   });
