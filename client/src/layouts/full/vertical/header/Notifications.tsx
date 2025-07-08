@@ -25,7 +25,7 @@ const Notifications = () => {
            try {
              await dispatch(GetNotification()).unwrap(); // unwrap makes it throw on error
            } catch (error) {
-             toast.error(error || "Failed to fetch leads"); // or use alert or console
+             console.error(error || "Failed to fetch leads"); // or use alert or console
             //  console.error("Error fetching leads:", error);
            }
          };
