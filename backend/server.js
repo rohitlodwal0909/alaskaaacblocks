@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(authRoutes);
-app.use(userRoutes);
+// app.use(userRoutes);
 app.use(leadRoutes);
 app.use(NotificationRouter);
 

@@ -1,5 +1,6 @@
-const Notification = require("../../models/notification/NotificationModel");
 
+const db = require('../../models');
+const {Notification}= db
 exports.getAllNotification = async (req, res) => {
   try {
     const notification = await Notification.findAll();

@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const Admin = require("../../models/authentication/AuthModel");
+
+const db = require('../../models');
+const {Admin}= db
+
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;

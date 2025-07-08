@@ -1,6 +1,7 @@
 // controllers/LeadController.js
-const Lead = require("../../models/leadmanagment/Leadmodel");
-const LeadNote = require("../../models/leadmanagment/Leadnotesmodel");
+const db = require('../../models');
+const { Lead,LeadNote,Notification}= db
+const { Op } = require("sequelize");
 exports.createLead = async (req, res) => {
   try {
     const tomorrow = new Date();
@@ -43,8 +44,11 @@ const today = new Date();
 
 // Get all leads
 exports.getAllLeads = async (req, res) => {
+ 
   try {
+ 
     const leads = await Lead.findAll();
+
     res.status(200).json(leads);
   } catch (error) {
     res.status(500).json({ error: error.message });

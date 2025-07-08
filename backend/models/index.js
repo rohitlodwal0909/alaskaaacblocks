@@ -3,40 +3,49 @@
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
-const process = require("process");
-require('dotenv').config();
+require("dotenv").config();
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-console.log('ENV =', env);
 const config = require(__dirname + "/../config/config.js")[env];
 
-console.log('ALL config =', config);
 const db = {};
 
-const  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
 
+// ✅ Recursively load all model files in subfolders
+function loadModelsRecursively(dir) {
+  fs.readdirSync(dir).forEach((file) => {
+    const fullPath = path.join(dir, file);
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
+    if (fs.statSync(fullPath).isDirectory()) {
+      loadModelsRecursively(fullPath);
+    } else if (
       file.indexOf(".") !== 0 &&
       file !== basename &&
       file.slice(-3) === ".js"
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
-      sequelize,
-      Sequelize.DataTypes
-    );
-    db[model.name] = model;
-  });
+    ) {
+      const modelDefiner = require(fullPath);
 
+      if (typeof modelDefiner !== "function") {
+        console.warn(`⚠️  Skipped non-model file: ${fullPath}`);
+        return;
+      }
+
+      const model = modelDefiner(sequelize, Sequelize.DataTypes);
+      db[model.name] = model;
+    }
+  });
+}
+
+loadModelsRecursively(__dirname);
+
+// ✅ Call associate if available
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
@@ -45,5 +54,7 @@ Object.keys(db).forEach((modelName) => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+console.log("✅ Loaded models:", Object.keys(db));
 
 module.exports = db;
