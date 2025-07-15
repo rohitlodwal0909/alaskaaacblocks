@@ -1,26 +1,22 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  createColumnHelper,
-} from "@tanstack/react-table";
-import { Badge, Button,  Tooltip } from "flowbite-react";
-
-import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import s1 from "../../../src/assets/images/profile/user-1.jpg";
+import { useDispatch, useSelector } from "react-redux";
+import { Badge, Button, Tooltip } from "flowbite-react";
+import { Icon } from "@iconify/react";
+import { toast } from "react-toastify";
+
+import { AppDispatch } from "src/store";
+import {
+  deleteUser,
+  GetUsermodule,
+} from "src/features/usermanagment/UsermanagmentSlice";
+import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
+
 import Deleteusermodal from "./Deleteusermodal";
 import Editusermodal from "./Editusermodal";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, GetUsermodule,  } from "src/features/usermanagment/UsermanagmentSlice";
-import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
-import { toast } from "react-toastify";
-import PaginationComponent from "src/utils/PaginationComponent";
-import noData from "../../../src/assets/images/svgs/no-data.webp"
-import { AppDispatch } from "src/store";
+
+import s1 from "../../../src/assets/images/profile/user-1.jpg";
+import noData from "../../../src/assets/images/svgs/no-data.webp";
+
 export interface PaginationTableType {
   id?: string;
   avatar?: string | any;
@@ -29,247 +25,238 @@ export interface PaginationTableType {
   status?: any;
   password?: string;
   role_id?: any;
+  code?: string;
 }
 
-
-const columnHelper = createColumnHelper<PaginationTableType>();
-
 function PaginationTable() {
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
   const users = useSelector((state: any) => state.usermanagement.userdata);
-  const [data, setData] = useState<PaginationTableType[]>(users)  
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [data, setData] = useState<PaginationTableType[]>(users);
   const [selectedRow, setSelectedRow] = useState<PaginationTableType | null>(
     null
   );
-
-  const dispatch = useDispatch<AppDispatch>()
+  const [isOpen, setIsOpen] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  let modalPlacement = "center"
+  let modalPlacement = "center";
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleEdit = (row: PaginationTableType) => {
-     triggerGoogleTranslateRescan();
+    triggerGoogleTranslateRescan();
     setSelectedRow(row);
-    setEditModal(true)
+    setEditModal(true);
   };
+
+  const handleDelete = (row: PaginationTableType) => {
+    triggerGoogleTranslateRescan();
+    setSelectedRow(row);
+    setIsOpen(true);
+  };
+
+  const handleConfirmDelete = async (
+    userToDelete: PaginationTableType | null
+  ) => {
+    if (!userToDelete) return;
+    try {
+      await dispatch(deleteUser(userToDelete?.id)).unwrap();
+      const updatedData = data.filter((user) => user.id !== userToDelete.id);
+      setData(updatedData);
+      toast.success("User deleted successfully");
+    } catch (error: any) {
+      console.error("Delete failed:", error);
+      if (error?.response?.status === 404) {
+        toast.error("User not found.");
+      } else if (error?.response?.status === 500) {
+        toast.error("Server error. Try again later.");
+      } else {
+        toast.error("Failed to delete user.");
+      }
+    }
+  };
+
+  const handleupdateuser = async () => {
+    // placeholder if needed later
+  };
+
   useEffect(() => {
-  setData(users);
-}, [users]);
+    setData(users);
+  }, [users]);
 
   useEffect(() => {
     const fetchUserModules = async () => {
       try {
-        await dispatch(GetUsermodule()).unwrap(); // Unwrap to catch errors
+        await dispatch(GetUsermodule()).unwrap();
       } catch (error) {
-        toast.error(error || "Failed to fetch user modules");
+        toast.error("Failed to fetch user modules");
         console.error("Error fetching user modules:", error);
       }
     };
 
     fetchUserModules();
   }, [dispatch]);
- 
-const handleupdateuser = async () => {
-  // try {
-   
-  //   await dispatch(updateUser(updatedata)).unwrap();
-  //   toast.success("User updated successfully");
-
-   
-  //   await dispatch(GetUsermodule()).unwrap();
-  // } catch (error) {
-  //   toast.error(error || "Failed to update user");
-  //   console.error("Update error:", error);
-  // }
-};
-  const handleDelete = (row: PaginationTableType) => {
-    triggerGoogleTranslateRescan();
-    setSelectedRow(row);
-    setIsOpen(true);
-  };
- const handleConfirmDelete = async (userToDelete: PaginationTableType | null) => {
-  if (!userToDelete) return;
-
-  try {
-    await dispatch(deleteUser(userToDelete?.id)).unwrap(); // unwrap to catch errors
-
-    // On success
-    const updatedData = data.filter((user) => user.id !== userToDelete.id);
-    setData(updatedData);
-    toast.success("User deleted successfully");
-  } catch (error: any) {
-    console.error("Delete failed:", error);
-
-    if (error?.response?.status === 404) {
-      toast.error("User not found.");
-    } else if (error?.response?.status === 500) {
-      toast.error("Server error. Try again later.");
-    } else {
-      toast.error("Failed to delete user.");
-    }
-  }
-};
-
-
-  const columns = [
-    columnHelper.accessor("username", {
-      cell: (info) => (
-        <div className="flex gap-3 items-center">
-          <img
-            src={s1}
-            width={50}
-            height={50}
-            alt="icon"
-            className="h-10 w-10 rounded-md"
-          />
-          <div className="truncate line-clamp-2 max-w-56">
-            <h6 className="text-base">{info.row.original.username}</h6>
-            <p className="text-sm text-darklink dark:text-bodytext">
-              {info.row.original.email}
-            </p>
-          </div>
-        </div>
-      ),
-      header: () => <span>User </span>,
-    }),
-    columnHelper.accessor("status", {
-      cell: (info) => (
-        <div className="flex gap-2">
-         
-            <Badge
-          
-              color={`lightprimary`}
-              className="capitalize"
-            >
-              {info.row.original.status}
-            </Badge>
-        
-        </div>
-      ),
-      header: () => <span>Status</span>,
-    }),
-   columnHelper.accessor("role_id", {
-  cell: (info) => {
-    const roleId = info.getValue();
-    let roleName = "";
-
-    if (roleId == 1) roleName = "Manager";
-    else if (roleId == 2) roleName = "Employee";
-    else if (roleId == 3) roleName = "Guard";
-    else roleName = "Unknown";
-
-    return <p className="text-darklink dark:text-bodytext text-sm">{roleName}</p>;
-  },
-  header: () => <span>Role</span>,
-}),
-    columnHelper.accessor("actions", {
-      cell: (info) => {
-        const rowData = info.row.original;
-        return (
-            <div className="flex justify-start  item-center gap-2"> {/* Reduced gap for more compact buttons */}
-                      <Tooltip content="Edit " placement="bottom">
-                        <Button size="sm" className="p-0 bg-lightsuccess text-success hover:bg-success hover:text-white" onClick={() => handleEdit(rowData)}>
-                          <Icon icon="solar:pen-outline" height={18} />
-                        </Button>
-                      </Tooltip>
-                   
-                      <Tooltip content="Delete " placement="bottom">
-                        <Button
-                          size="sm"
-                          color={"lighterror"}
-                          className="p-0"
-                          onClick={() => handleDelete(rowData)}
-                        >
-                          <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
-                        </Button>
-                      </Tooltip>
-                    </div>
-        
-        );
-      },
-      header: () => <span> Action</span>,
-    }),
-  ];
-
-  const table = useReactTable({
-    data,
-    columns,
-    filterFns: {},
-    state: { columnFilters },
-    onColumnFiltersChange: (filters: any) => setColumnFilters(filters),
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
 
   return (
     <>
       <div className="border rounded-md border-ld overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full  divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
+              <tr>
+                <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
+                  User
+                </th>
+                <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
+                  Status
+                </th>
+                <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
+                  Role
+                </th>
+                <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
+                  Code
+                </th>
+                <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
+                  Action
+                </th>
+              </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-               {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="bg-white dark:bg-gray-900">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+              {currentItems.length > 0 ? (
+                currentItems.map((user, index) => (
+                  <tr key={index} className="bg-white dark:bg-gray-900">
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                      <div className="flex gap-3 items-center">
+                        <img
+                          src={s1}
+                          width={50}
+                          height={50}
+                          alt="icon"
+                          className="h-10 w-10 rounded-md"
+                        />
+                        <div className="truncate line-clamp-2 max-w-56">
+                          <h6 className="text-base">{user.username}</h6>
+                          <p className="text-sm text-darklink dark:text-bodytext">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
                     </td>
-                  ))}
-                </tr>
-              ))
-                ) : (
-                  <tr>
-                        <td colSpan={columns.length} className="text-center py-8 px-4">
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={noData}
-                              alt="No data"
-                              height={100}
-                              width={100}
-                              className="mb-4"
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                      <Badge color={`lightprimary`} className="capitalize">
+                        {user.status}
+                      </Badge>
+                    </td>
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                      {user.role_id === 1
+                        ? "Manager"
+                        : user.role_id === 2
+                        ? "Employee"
+                        : user.role_id === 3
+                        ? "Guard"
+                        : "Unknown"}
+                    </td>
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                      {user.code ?? "N/A"}
+                    </td>
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                      <div className="flex justify-start gap-2">
+                        <Tooltip content="Edit" placement="bottom">
+                          <Button
+                            size="sm"
+                            className="p-0 bg-lightsuccess text-success hover:bg-success hover:text-white"
+                            onClick={() => handleEdit(user)}
+                          >
+                            <Icon icon="solar:pen-outline" height={18} />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Delete" placement="bottom">
+                          <Button
+                            size="sm"
+                            color="lighterror"
+                            className="p-0"
+                            onClick={() => handleDelete(user)}
+                          >
+                            <Icon
+                              icon="solar:trash-bin-minimalistic-outline"
+                              height={18}
                             />
-                            <p className="text-gray-500 dark:text-gray-400">No data available</p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 px-4">
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={noData}
+                        alt="No data"
+                        height={100}
+                        width={100}
+                        className="mb-4"
+                      />
+                      <p className="text-gray-500 dark:text-gray-400">
+                        No data available
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-        <PaginationComponent  table={table}/> 
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center p-4">
+          <p className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
-      {/* Delete Modal */}
+
+      {/* Modals */}
       <Deleteusermodal
         handleConfirmDelete={handleConfirmDelete}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         selectedUser={selectedRow}
       />
-      <Editusermodal setEditModal={setEditModal} editModal={editModal} selectedUser={selectedRow} modalPlacement={modalPlacement} onUpdateUser={handleupdateuser} />
+      <Editusermodal
+        setEditModal={setEditModal}
+        editModal={editModal}
+        selectedUser={selectedRow}
+        modalPlacement={modalPlacement}
+        onUpdateUser={handleupdateuser}
+      />
     </>
   );
 }

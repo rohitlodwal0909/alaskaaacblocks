@@ -9,6 +9,13 @@ import AuthGuard from 'src/utils/Authcard';
 import Chats from 'src/views/Chat/Chats';
 import Leads from 'src/views/Leadmanagement/Leads';
 import SeeAllNotifications from 'src/views/Notifications/SeeAllNotifications';
+import Batching from 'src/views/Batching/Batching';
+import Rising from 'src/views/Rising/Rising';
+import WelcomeDashboard from 'src/views/dashboard/WelcomeDashboard.tsx';
+import Cutting from 'src/views/cutting/Cutting';
+import AutoClave from 'src/views/autoclave/AutoClave';
+import AutoclaveView from 'src/views/autoclave/AutoclaveComponent.tsx/AutoclaveView';
+import Segregation from 'src/views/segregation/Segregation';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
 
@@ -40,12 +47,18 @@ const Router = [
       path: '/',
       element: <FullLayout />,
       children: [
-       
+        { path: '/', element: <WelcomeDashboard /> },
         { path: '/user-profile/user-managment', element: <Usermanagment /> },
         { path: '/user-profile', element: <Userprofile /> },
         { path: '/Chats', element: <Chats/> },
         { path: '/notifications', element: <SeeAllNotifications/> },
         { path: '/lead-managment/leads', element: <Leads /> },
+        { path: '/batching', element: <Batching /> },
+        { path: '/rising', element: <Rising /> },
+        { path: '/cutting', element: <Cutting /> },
+        { path: '/autoclave', element: <AutoClave /> },
+        { path: '/segregation', element: <Segregation/> },
+        { path: '/autoclave-view/:id', element: <AutoclaveView /> },
         { path: '/permission', element: <PermissionsTable /> },
         { path: '*', element: <Navigate to="/auth/404" /> },
       ],

@@ -52,7 +52,7 @@ function PaginationComponent<T>({ table }: PaginationComponentProps<T>) {
             disabled={!table.getCanPreviousPage()}
             className="bg-lightgray dark:bg-dark hover:bg-lightprimary dark:hover:bg-lightprimary disabled:opacity-50"
           >
-            <IconChevronsLeft size={20} />
+            <IconChevronsLeft size={20} className="text-gray-900 dark:text-gray-300" />
           </Button>
           <Button
             size="small"
@@ -60,7 +60,7 @@ function PaginationComponent<T>({ table }: PaginationComponentProps<T>) {
             disabled={!table.getCanPreviousPage()}
             className="bg-lightgray dark:bg-dark hover:bg-lightprimary dark:hover:bg-lightprimary disabled:opacity-50"
           >
-            <IconChevronLeft size={20} />
+            <IconChevronLeft size={20} className="text-gray-900 dark:text-gray-300" />
           </Button>
           <Button
             size="small"
@@ -68,7 +68,7 @@ function PaginationComponent<T>({ table }: PaginationComponentProps<T>) {
             disabled={!table.getCanNextPage()}
             className="bg-lightgray dark:bg-dark hover:bg-lightprimary dark:hover:bg-lightprimary disabled:opacity-50"
           >
-            <IconChevronRight size={20} />
+            <IconChevronRight size={20} className="text-gray-900 dark:text-gray-300" />
           </Button>
           <Button
             size="small"
@@ -76,7 +76,7 @@ function PaginationComponent<T>({ table }: PaginationComponentProps<T>) {
             disabled={!table.getCanNextPage()}
             className="bg-lightgray dark:bg-dark hover:bg-lightprimary dark:hover:bg-lightprimary disabled:opacity-50"
           >
-            <IconChevronsRight size={20} />
+            <IconChevronsRight size={20}  className="text-gray-900 dark:text-gray-300" />
           </Button>
         </div>
       </div>

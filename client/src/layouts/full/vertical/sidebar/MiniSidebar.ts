@@ -13,8 +13,18 @@ const Miniicons: MiniiconsType[] = [
   // },
   {
     id: 1,
-    icon: "material-symbols:inventory-sharp",
+    icon: "streamline-ultimate:customer-relationship-management-lead-management-1",
     tooltip: "Lead Managment",
+  },
+   {
+    id: 2,
+    icon: "material-symbols:batch-prediction-outline-rounded",
+    tooltip: "Batching",
+  },
+   {
+    id: 3,
+    icon: "tdesign:sun-rising",
+    tooltip: "Rising",
   },
   // {
   //   id: 3,

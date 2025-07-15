@@ -5,14 +5,25 @@ import SimpleBar from "simplebar-react";
 import user1 from "/src/assets//images/profile/user-1.jpg"
 import { Link, useNavigate } from "react-router";
 import { CustomizerContext } from "src/context/CustomizerContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Logoutmodel from "./Logoutmodel";
+import { GetAuthenticationmodule } from "src/features/authentication/AuthenticationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "src/store";
 
 const Profile = () => {
   const navigate = useNavigate()
     const { setIsCollapse, isCollapse} = useContext(CustomizerContext);
+  const dispatch = useDispatch<AppDispatch>();
+const logindata = useSelector((state: any) => state.authentication.logindata) 
 
+  useEffect(() => {
+      const stored = JSON.parse(localStorage.getItem('logincheck') || '{}');
+      if (stored?.admin?.id) {
+        dispatch(GetAuthenticationmodule(stored?.admin?.id));
+      }
+    }, [dispatch]);
     const  [isOpen,setIsOpen] = useState(false)
     const handlelogout =()=>{
 localStorage.removeItem("logincheck");
@@ -51,14 +62,14 @@ navigate("/admin/login");
               className="rounded-full"
             />
             <div>
-              <h5 className="card-title">Jonathan Deo</h5>
-              <span className="card-subtitle">Admin</span>
+              <h5 className="card-title">{logindata?.user?.name}</h5>
+              {/* <span className="card-subtitle">Admin</span> */}
               <p className="card-subtitle mb-0 mt-1 flex items-center">
                 <Icon
                   icon="solar:mailbox-line-duotone"
                   className="text-base me-1"
                 />
-                info@Materialm.com
+                {logindata?.user?.email}
               </p>
             </div>
           </div>

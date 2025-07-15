@@ -1,7 +1,7 @@
 // controllers/LeadController.js
 const db = require('../../models');
-const { Lead,LeadNote,Notification}= db
-const { Op } = require("sequelize");
+const { Lead,LeadNote}= db
+
 exports.createLead = async (req, res) => {
   try {
     const tomorrow = new Date();

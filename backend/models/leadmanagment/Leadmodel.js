@@ -36,7 +36,6 @@ module.exports = (sequelize) => {
     }
   );
 
-  // 👇 Define association inside .associate
   Lead.associate = (models) => {
     Lead.hasMany(models.LeadNote, {
       foreignKey: "lead_id",

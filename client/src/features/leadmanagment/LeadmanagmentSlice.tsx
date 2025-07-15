@@ -121,8 +121,8 @@ export const FollowupLeads = createAsyncThunk(
     }
   }
 );export const GetFollowupLeads = createAsyncThunk<
-  any, // <- Replace with correct response type if known
-  string, // ✅ This is the type for the payload (id)
+  any, 
+  string, 
   { rejectValue: string }
 >(
   "GetFollowupLeads/add",

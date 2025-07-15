@@ -8,6 +8,11 @@ const { sequelize } = require("./models");
 
 const authRoutes = require("./routes/authentication/AuthRoutes");
 const leadRoutes = require("./routes/leadmanagment/LeadRoutes");
+const batchingRoutes = require("./routes/batching/BatchingRoutes");
+const risingRoutes = require("./routes/rising/risingRoutes");
+const cuttingRoutes = require("./routes/cutting/CuttingRoutes");
+const autoclaveRoutes = require("./routes/autoclave/AutoclaveRoutes");
+const segregationRoutes = require("./routes/Segregation/SegregationRoutes");
 const NotificationRouter = require("./routes/notification/NotificationRoutes");
 const startLeadReminderJob = require("./cron/leadReminder");
 
@@ -19,7 +24,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(authRoutes);
-// app.use(userRoutes);
+ app.use(batchingRoutes);
+ app.use(risingRoutes);
+ app.use(cuttingRoutes);
+ app.use(autoclaveRoutes);
+ app.use(segregationRoutes);
 app.use(leadRoutes);
 app.use(NotificationRouter);
 

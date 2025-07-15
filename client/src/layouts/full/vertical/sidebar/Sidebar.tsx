@@ -2,14 +2,14 @@
 
 import React, { useContext, useEffect } from "react";
 import { Sidebar } from "flowbite-react";
-import { IconSidebar } from "./IconSidebar";
+// import { IconSidebar } from "./IconSidebar";
 import SidebarContent from "./Sidebaritems";
 import NavItems from "./NavItems";
 import NavCollapse from "./NavCollapse";
 import SimpleBar from "simplebar-react";
 import { CustomizerContext } from "src/context/CustomizerContext";
 import { useLocation } from "react-router";
-import SideProfile from "./SideProfile/SideProfile";
+// import SideProfile from "./SideProfile/SideProfile";
 
 
 
@@ -62,10 +62,10 @@ const SidebarLayout = () => {
     <>
       <div className="xl:block hidden">
 
-        <div className="minisidebar-icon border-e border-ld bg-white dark:bg-darkgray fixed start-0 z-[1]">
+        {/* <div className="minisidebar-icon border-e border-ld bg-white dark:bg-darkgray fixed start-0 z-[1]">
           <IconSidebar />
           <SideProfile />
-        </div>
+        </div> */}
         <Sidebar
           className="fixed menu-sidebar pt-8 bg-white dark:bg-darkgray ps-4 rtl:pe-4 rtl:ps-0"
           aria-label="Sidebar with multi-level dropdown example"

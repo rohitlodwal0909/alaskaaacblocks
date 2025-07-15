@@ -1,4 +1,4 @@
-// routes/leadRoutes.js
+
 const express = require("express");
 const router = express.Router();
 const LeadController = require("../../controllers/leadmanagment/LeadController");

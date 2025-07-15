@@ -8,11 +8,11 @@
 
 .menu-sidebar {
     height: 100%;
-    width: 240px !important;
+    width: 250px !important;
     background: var(--bs-white);
     top: 0;
     box-shadow: 7px 7px 10px rgba(0, 0, 0, .03);
-    left: 80px;
+    left: 10px;
     transition: left .4s ease-in-out;
 }
 
@@ -61,7 +61,7 @@
 }
 
 [data-sidebar-type="mini-sidebar"] .page-wrapper {
-    margin-left: 80px;
+    margin-left: 0px;
 }
 
 
