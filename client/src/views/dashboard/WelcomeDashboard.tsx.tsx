@@ -29,7 +29,7 @@ const WelcomeDashboard: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Welcome to Alaska Acc Blocks Dashboard
+          Welcome to Alaska AAC Blocks Dashboard
         </motion.h1>
 
         <motion.p

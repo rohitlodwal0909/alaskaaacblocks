@@ -124,7 +124,7 @@ const RisingTable = () => {
                           <Icon icon="ic:baseline-plus" height={18} />
                         </Button>
                       </Tooltip>:
-                       <Tooltip content="Edit" placement="bottom">
+                      (<> <Tooltip content="Edit" placement="bottom">
                         <Button
                           size="sm"
                           className="p-0 bg-lightsuccess text-success hover:bg-success hover:text-white"
@@ -133,14 +133,16 @@ const RisingTable = () => {
                           <Icon icon="solar:pen-outline" height={18} />
                         </Button>
                       </Tooltip>
-                      }
-                      
-                     
-                      <Tooltip content="Delete" placement="bottom">
+                        <Tooltip content="Delete" placement="bottom">
                         <Button size="sm" color="lighterror" className="p-0" onClick={() =>{ setDeletemodal(true), setSelectedRow(item)}}>
                           <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
                         </Button>
                       </Tooltip>
+                      </>)
+                      }
+                      
+                     
+                    
                     </div>
                   </td>
                 </tr>

@@ -105,6 +105,7 @@ navigate(`/autoclave-view/${autoclave?.autoclave_entries[0]?.id}`)
 
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
+                       
                       {
                         !item?.autoclave_entries[0]?.operator_name ?
                           <Tooltip content="Add" placement="bottom">
@@ -115,7 +116,8 @@ navigate(`/autoclave-view/${autoclave?.autoclave_entries[0]?.id}`)
                             >
                               <Icon icon="ic:baseline-plus" height={18} />
                             </Button>
-                          </Tooltip> :
+                          </Tooltip> :(
+                            <>
                           <Tooltip content="Edit" placement="bottom">
                             <Button
                               size="sm"
@@ -125,19 +127,23 @@ navigate(`/autoclave-view/${autoclave?.autoclave_entries[0]?.id}`)
                               <Icon icon="solar:pen-outline" height={18} />
                             </Button>
                           </Tooltip>
-                      }
-                                 <Tooltip content="View" placement="bottom" >
+                            <Tooltip content="View" placement="bottom" >
                                     <Button size="sm" color={"lightsecondary"} className="p-0" onClick={() =>handleView(item)}>
                                       <Icon icon="hugeicons:view" height={18} />
                                     </Button>
                                   </Tooltip>
-
-
-                      <Tooltip content="Delete" placement="bottom">
+                                     <Tooltip content="Delete" placement="bottom">
                         <Button size="sm" color="lighterror" className="p-0" onClick={() => { setDeletemodal(true), setSelectedRow(item) }}>
                           <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
                         </Button>
                       </Tooltip>
+                      </>
+                        )
+                      }
+                              
+
+
+                   
                     </div>
                   </td>
                 </tr>

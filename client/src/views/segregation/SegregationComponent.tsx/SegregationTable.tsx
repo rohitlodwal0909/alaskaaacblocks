@@ -44,7 +44,7 @@ const SegregationTable = () => {
       console.log
       await dispatch(deleteSegregation(userToDelete?.segregation_entries[0]?.id)).unwrap();
       dispatch(GetSegregation());
-      toast.success("Autoclave  entry Deleted ");
+        toast.success("Segregation entry deleted successfully");
     } catch (error: any) {
       console.error("Delete failed:", error);
       if (error?.response?.status === 404) toast.error("User not found.");
@@ -117,7 +117,8 @@ const SegregationTable = () => {
                             >
                               <Icon icon="ic:baseline-plus" height={18} />
                             </Button>
-                          </Tooltip> :
+                          </Tooltip> :(
+                            <>
                           <Tooltip content="Edit" placement="bottom">
                             <Button
                               size="sm"
@@ -127,7 +128,13 @@ const SegregationTable = () => {
                               <Icon icon="solar:pen-outline" height={18} />
                             </Button>
                           </Tooltip>
-                      }
+                           <Tooltip content="Delete" placement="bottom">
+                        <Button size="sm" color="lighterror" className="p-0" onClick={() => { setDeletemodal(true), setSelectedRow(item) }}>
+                          <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
+                        </Button>
+                      </Tooltip>
+                          </>
+                   )   }
                                  {/* <Tooltip content="View" placement="bottom" >
                                     <Button size="sm" color={"lightsecondary"} className="p-0" onClick={() =>handleView(item)}>
                                       <Icon icon="hugeicons:view" height={18} />
@@ -135,18 +142,14 @@ const SegregationTable = () => {
                                   </Tooltip> */}
 
 
-                      <Tooltip content="Delete" placement="bottom">
-                        <Button size="sm" color="lighterror" className="p-0" onClick={() => { setDeletemodal(true), setSelectedRow(item) }}>
-                          <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
-                        </Button>
-                      </Tooltip>
+                     
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={7} className="text-center py-8 px-4">
+              <tr className="">
+                <td colSpan={8} className="text-center py-8 px-4">
                   <div className="flex flex-col items-center">
                     <img src={noData} alt="No data" height={100} width={100} className="mb-4" />
                     <p className="text-gray-500 dark:text-gray-400">No data available</p>

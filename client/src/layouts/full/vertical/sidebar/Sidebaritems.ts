@@ -52,7 +52,7 @@ const SidebarContent: MenuItem[] = [
     name: "Menu",
     items: [
       {
-        heading: "Alaska Acc Blocks",
+        heading: "Alaska AAC Blocks",
         children: [
            {
             id: uniqueId(),
