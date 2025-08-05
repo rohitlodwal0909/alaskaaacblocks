@@ -8,13 +8,14 @@ import { CreateLeads, GetLeads } from 'src/features/leadmanagment/LeadmanagmentS
 import Select from 'react-select';
 import { AppDispatch } from 'src/store';
 import { Icon } from "@iconify/react";
-const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal }) => {
+const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal ,logindata}) => {
    const dispatch = useDispatch<AppDispatch>();
 
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);
   const [formData, setFormData] = useState<any>({
     name: '', email: '', phone: '', source: '',
+    user_id: logindata?.admin?.id,
     state: '', district: '', tehsil: '',
     address: '', delivery_address: '',
     materials: [{ material: '', quantity: '', unit: '', size: '', give_range: '' }]

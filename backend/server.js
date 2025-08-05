@@ -13,25 +13,33 @@ const risingRoutes = require("./routes/rising/risingRoutes");
 const cuttingRoutes = require("./routes/cutting/CuttingRoutes");
 const autoclaveRoutes = require("./routes/autoclave/AutoclaveRoutes");
 const segregationRoutes = require("./routes/Segregation/SegregationRoutes");
+const BoilerRoutes = require("./routes/Boiler/BoilerRoutes");
+const DieselRoutes = require("./routes/Diesel/DieselRoutes");
+const dispatchRoutes = require("./routes/Dispatch/DispatchRoutes");
 const NotificationRouter = require("./routes/notification/NotificationRoutes");
+const materialRoutes = require("./routes/Material/MaterialRoutes");
+const ReceivingRoutes = require("./routes/Receiving/ReceivingRoutes");
 const startLeadReminderJob = require("./cron/leadReminder");
-
 const app = express();
 
 //  Body parser middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/uploads', express.static('uploads'));
 app.use(authRoutes);
  app.use(batchingRoutes);
  app.use(risingRoutes);
  app.use(cuttingRoutes);
  app.use(autoclaveRoutes);
  app.use(segregationRoutes);
+ app.use(BoilerRoutes);
+ app.use(DieselRoutes);
+ app.use(dispatchRoutes);
+ app.use(materialRoutes);
+ app.use(ReceivingRoutes);
 app.use(leadRoutes);
 app.use(NotificationRouter);
-
 process.on('uncaoughtException', function (err) {
 console.error('UNCOUGHT EXCEPTION:', err);
 

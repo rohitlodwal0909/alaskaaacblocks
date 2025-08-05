@@ -44,9 +44,15 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
       toast.success("Batch updated successfully");
       dispatch(GetBatching());
       setOpen(false);
-    } catch (err) {
-      toast.error("Update failed");
-    }
+    } catch (err: any) {
+  if (typeof err === "string") {
+    toast.error(err); // ✅ string from rejectWithValue
+  } else if (err?.message) {
+    toast.error(err.message); // ✅ fallback if rejectWithValue didn't trigger
+  } else {
+    toast.error("Something went wrong");
+  }
+}
   };
 
   const fields = [
@@ -54,13 +60,13 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
     { id: 'operator_name', label: 'Operator Name', placeholder: 'Enter operator name' },
     { id: 'shift', label: 'Shift', type: 'select', options: ['Day', 'Night'] },
     { id: 'entry_time', label: 'Entry Time', type: 'time', placeholder: 'Enter time' },
-    { id: 'mould_oil_qty', label: 'Mould Oil Qty', type: 'number' },
-    { id: 'slurry_waste', label: 'Slurry Waste (kg)', type: 'number' },
-    { id: 'slurry_fresh', label: 'Slurry Fresh (kg)', type: 'number' },
+    { id: 'mould_oil_qty', label: 'Mould Oil Qty  (ltr)', type: 'number' },
+    { id: 'slurry_waste', label: 'Slurry Waste  (ltr)', type: 'number' },
+    { id: 'slurry_fresh', label: 'Slurry Fresh  (ltr)', type: 'number' },
     { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number' },
     { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number' },
     { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number' },
-    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty (kg)', type: 'number' },
+    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty  (ltr)', type: 'number' },
     { id: 'aluminium_qty', label: 'Aluminium Powder (gm)', type: 'number' },
     { id: 'density', label: 'Density (kg/m3)', type: 'number' },
     { id: 'flow_value', label: 'Flow Value', type: 'number' },

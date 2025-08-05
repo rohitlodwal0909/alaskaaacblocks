@@ -5,9 +5,21 @@ import router from "./routes/Router";
 import { useEffect } from "react";
 
   import { ToastContainer} from 'react-toastify';
+import { GetAuthenticationmodule } from "./features/authentication/AuthenticationSlice";
+import { GetNotification } from "./features/Notifications/NotificationSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./store";
 
 function App() {
- 
+  const dispatch = useDispatch<AppDispatch>()
+  
+  useEffect(() => {
+      const stored = JSON.parse(localStorage.getItem('logincheck') || '{}');
+
+      dispatch(GetAuthenticationmodule(stored?.admin?.id));
+      dispatch(GetNotification())
+
+  },[]);
 
  useEffect(() => {
     const initializeGoogleTranslate = () => {

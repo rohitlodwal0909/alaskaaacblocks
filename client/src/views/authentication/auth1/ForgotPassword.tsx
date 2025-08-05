@@ -29,7 +29,7 @@ const ForgotPassword = () => {
                   color={"lightprimary"}
                   as={Link}
                   to="/admin/login"
-                  className="w-full mt-4"
+                  className="w-full mt-4 rounded-md"
                 >
                   Back to Login
                 </Button>

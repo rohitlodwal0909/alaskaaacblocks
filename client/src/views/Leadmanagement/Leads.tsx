@@ -6,8 +6,9 @@ import { Button } from 'flowbite-react';
 import { triggerGoogleTranslateRescan } from 'src/utils/triggerTranslateRescan';
 import AddLeadmodal from './LeadComponent/AddLeadmodal'
 import CardBox from 'src/components/shared/CardBox';
+import { useSelector } from 'react-redux';
 const Leads: React.FC = () => {
-  
+        const logindata = useSelector((state: any) => state.authentication?.logindata);
       const [placeModal, setPlaceModal] = useState(false);
      let modalPlacement="center"
  const [searchText, setSearchText] = useState('');
@@ -49,7 +50,7 @@ const [toDate, setToDate] = useState('');
             </div>
       <LeadsTable searchText={searchText}   fromDate={fromDate} toDate={toDate}/>
      </CardBox>
-      <AddLeadmodal  setPlaceModal={setPlaceModal} modalPlacement={modalPlacement}  placeModal={placeModal}  />
+      <AddLeadmodal  setPlaceModal={setPlaceModal} modalPlacement={modalPlacement}  placeModal={placeModal} logindata={logindata} />
     </>
   );
 };

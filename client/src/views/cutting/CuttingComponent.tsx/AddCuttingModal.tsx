@@ -9,10 +9,11 @@ import dayjs from 'dayjs';
 import { addCutting, GetCutting } from 'src/features/Cutting/CuttingSlice';
 
 
-const AddCuttingModal = ({ show, setShowmodal, batchingData }) => {
+const AddCuttingModal = ({ show, setShowmodal, batchingData,logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
+    user_id:logindata?.admin?.id,
     mould_no: batchingData?.mould_no || '',
     operator_name: '',
     size: '',
@@ -51,6 +52,7 @@ const AddCuttingModal = ({ show, setShowmodal, batchingData }) => {
       toast.success(result.message || 'Cutting entry created successfully');
       dispatch(GetCutting());
       setFormData({
+       user_id:logindata?.admin?.id,
         mould_no: '',
         operator_name: '',
         size: '',
@@ -58,6 +60,7 @@ const AddCuttingModal = ({ show, setShowmodal, batchingData }) => {
         time: '',
         remark: '',
       });
+      
       setShowmodal(false);
     } catch (err) {
       toast.error('Failed to create cutting entry');
@@ -72,12 +75,28 @@ const AddCuttingModal = ({ show, setShowmodal, batchingData }) => {
           {[
            
             { id: 'operator_name', label: 'Operator Name', type: 'text', placeholder: 'Enter operator name' },
-            { id: 'size', label: 'Size', type: 'text', placeholder: 'Enter size' },
+            { id: 'size', label: ' Cutting size', type: 'text', placeholder: 'Enter size' },
             { id: 'broken_pcs', label: 'No of Broken Pcs', type: 'number', placeholder: 'Enter broken count' },
           ].map(({ id, label, type, placeholder }) => (
             <div className="col-span-6" key={id}>
+
+
               <Label htmlFor={id} value={label} />
                   <span className="text-red-700 ps-1">{id === 'remark' ? "":"*"}</span>
+              {  id === "size" ?
+                <select name={id} id={id} 
+                               
+                value={formData[id]}
+                  onChange={(e) => handleChange(id, e.target.value)}
+                className={`form-rounded-md w-full border px-3 py-2  border-gray-300 rounded-md`}>
+  <option value="">Select size</option>
+  <option value="600*200*75">600*200*75</option>
+  <option value="600*200*100">600*200*100</option>
+  <option value="600*200*150">600*200*150</option>
+  <option value="600*200*200">600*200*200</option>
+  <option value="600*200*225">600*200*225</option>
+  <option value="600*200*250">600*200*250</option>
+</select>  :   
               <TextInput
                 id={id}
                 type={type}
@@ -86,7 +105,7 @@ const AddCuttingModal = ({ show, setShowmodal, batchingData }) => {
                 onChange={(e) => handleChange(id, e.target.value)}
                 color={errors[id] ? 'failure' : 'gray'}
                 className="form-rounded-md"
-              />
+              />}
               {errors[id] && <p className="text-red-500 text-xs">{errors[id]}</p>}
             </div>
           ))}

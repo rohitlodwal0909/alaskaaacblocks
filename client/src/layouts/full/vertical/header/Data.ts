@@ -274,30 +274,30 @@ interface ProfileType {
 }
 
 const profileDD: ProfileType[] = [
-  {
-    icon: "solar:wallet-2-line-duotone",
-    bgcolor: "bg-lightprimary dark:bg-lightprimary",
-    color: "text-primary",
-    title: "User Management",
-     subtitle: "User Add",
-    url: "/user-profile/user-managment",
+  // {
+  //   icon: "solar:wallet-2-line-duotone",
+  //   bgcolor: "bg-lightprimary dark:bg-lightprimary",
+  //   color: "text-primary",
+  //   title: "User Management",
+  //    subtitle: "User Add",
+  //   url: "/user-profile/user-managment",
+  // },
+   {
+    icon: "solar:checklist-minimalistic-line-duotone",
+    color: "text-error",
+    bgcolor: "bg-lighterror dark:bg-lighterror",
+    title: "Change Password",
+    subtitle: "Secure your account with a new password",
+    url: "/change-password",
   },
-  // {
-  //   icon: "solar:inbox-line-duotone",
-  //   color: "text-success",
-  //   bgcolor: "bg-lightsuccess dark:bg-lightsuccess",
-  //   title: "My Notes",
-  //   subtitle: "My Daily Notes",
-  //   url: "/apps/notes",
-  // },
-  // {
-  //   icon: "solar:checklist-minimalistic-line-duotone",
-  //   color: "text-error",
-  //   bgcolor: "bg-lighterror dark:bg-lighterror",
-  //   title: "My Tasks",
-  //   subtitle: "To-do and Daily tasks",
-  //   url: "/apps/kanban",
-  // },
+  {
+    icon: "solar:checklist-minimalistic-line-duotone",
+    color: "text-error",
+    bgcolor: "bg-lighterror dark:bg-lighterror",
+    title: "Logs",
+    subtitle: "View system logs and user actions on time",
+    url: "/log",
+  },
 ];
 
 export {

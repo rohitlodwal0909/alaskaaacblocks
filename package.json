@@ -17,6 +17,7 @@
         "date-fns": "^4.1.0",
         "dayjs": "^1.11.13",
         "jsonwebtoken": "^9.0.2",
+        "multer": "^2.0.2",
         "mysql2": "^3.14.1",
         "pm2": "^6.0.8",
         "react-clock": "^6.0.0",

@@ -13,10 +13,11 @@ import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
 import { addSegregation, GetSegregation } from "src/features/Segregation/SegregationSlice"; // Adjust path if needed
 
-const AddSegregationModal = ({ show, setShowmodal, segregationdata }) => {
+const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
+     user_id:logindata?.admin?.id,
     mould_no: segregationdata?.mould_no || "",
     operator_name: "",
     size: "",
@@ -62,6 +63,7 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata }) => {
       dispatch(GetSegregation());
 
       setFormData({
+         user_id:logindata?.admin?.id,
         mould_no: segregationdata?.mould_no || "",
         operator_name: "",
         size: "",

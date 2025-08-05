@@ -72,11 +72,24 @@ const EditCuttingModal = ({ show, setShowmodal, cuttingData }) => {
           {[
             
             { id: 'operator_name', label: 'Operator Name', type: 'text' },
-            { id: 'size', label: 'Size', type: 'text' },
+            { id: 'size', label: 'Cutting size', type: 'text' },
             { id: 'broken_pcs', label: 'No of Broken Pcs', type: 'number' },
           ].map(({ id, label, type }) => (
             <div className="col-span-6" key={id}>
               <Label htmlFor={id} value={label} />
+               {  id === "size" ?
+                <select name={id} id={id} 
+                value={formData[id]}
+                  onChange={(e) => handleChange(id, e.target.value)}
+                className={`form-rounded-md w-full border px-3 py-2  border-gray-300 rounded-md`}>
+  <option value="">Select size</option>
+  <option value="600*200*75">600*200*75</option>
+  <option value="600*200*100">600*200*100</option>
+  <option value="600*200*150">600*200*150</option>
+  <option value="600*200*200">600*200*200</option>
+  <option value="600*200*225">600*200*225</option>
+  <option value="600*200*250">600*200*250</option>
+</select>  :   
               <TextInput
                 id={id}
                 type={type}
@@ -85,6 +98,8 @@ const EditCuttingModal = ({ show, setShowmodal, cuttingData }) => {
                 color={errors[id] ? 'failure' : 'gray'}
                 className="form-rounded-md"
               />
+
+               }
               {errors[id] && <p className="text-red-500 text-xs">{errors[id]}</p>}
             </div>
           ))}

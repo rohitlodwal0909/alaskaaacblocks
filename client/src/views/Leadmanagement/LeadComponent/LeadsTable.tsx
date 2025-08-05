@@ -46,6 +46,7 @@ const leadStatuses = ["New", "Contacted", "Interested", "Converted", "Lost"];
 
 function LeadsTable({searchText ,toDate ,fromDate}) {
   const [isOpen, setIsOpen] = useState(false);
+
   const users = useSelector((state: any) => state.leadmanagement.leadsdata);
   const notesLeads = useSelector((state: any) => state.leadmanagement.getnotesData);
   const [data, setData] = useState<PaginationTableType[]>(users);
@@ -120,7 +121,7 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
     try {
       await dispatch(DeleteLeads(userToDelete?.id)).unwrap();
       setData(data.filter((user) => user.id !== userToDelete.id));
-      toast.success("Lead Deleted Successfully");
+toast.success("The lead  was successfully deleted. ");
     } catch (error: any) {
       console.error("Delete failed:", error);
       if (error?.response?.status === 404) toast.error("User not found.");

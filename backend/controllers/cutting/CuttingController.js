@@ -1,9 +1,11 @@
+const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const { Rising, Cutting } = db;
+const { Rising, Cutting,AuthModel } = db;
 
 exports.createCutting = async (req, res) => {
   try {
     const cutting = await Cutting.create({
+      user_id:req.body.user_id,
       mould_no: req.body.mould_no,
       operator_name: req.body.operator_name,
       size: req.body.size,
@@ -12,6 +14,17 @@ exports.createCutting = async (req, res) => {
       remark: req.body.remark,
     });
 
+     const user_id = req.body.user_id;
+           const now = new Date();
+          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+        const user = await AuthModel.findByPk(user_id);
+        const username = user ? user?.name : "Unknown User";
+        const logMessage = `Cutting  mould number ${req.body.mould_no}  was created by ${username} on ${entry_date} at ${entry_time}.`;
+        await createLogEntry({
+          user_id,
+          message:logMessage
+        });
     res.status(201).json({
       message: "Cutting entry created successfully",
       data: cutting,
@@ -57,6 +70,17 @@ exports.updateCutting = async (req, res) => {
       time: req.body.time,
       remark: req.body.remark,
     });
+      const user_id = cutting?.user_id;
+           const now = new Date();
+          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+        const user = await AuthModel.findByPk(user_id);
+        const username = user ? user?.name : "Unknown User";
+        const logMessage = `Cutting  mould number ${cutting?.mould_no}  was updated by ${username} on ${entry_date} at ${entry_time}.`;
+        await createLogEntry({
+          user_id,
+          message:logMessage
+        });
 
     res.json({
       message: "Cutting entry updated successfully",
@@ -75,6 +99,17 @@ exports.deleteCutting= async (req, res) => {
     if (!rising)
       return res.status(404).json({ message: "Rising entry not found" });
 
+     const user_id = rising?.user_id;
+           const now = new Date();
+          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+        const user = await AuthModel.findByPk(user_id);
+        const username = user ? user?.name : "Unknown User";
+        const logMessage = `Cutting  mould number ${rising?.mould_no}  was deleted by ${username} on ${entry_date} at ${entry_time}.`;
+        await createLogEntry({
+          user_id,
+          message:logMessage
+        });
     await rising.destroy();
     res.json({ message: "Rising entry deleted" });
   } catch (error) {

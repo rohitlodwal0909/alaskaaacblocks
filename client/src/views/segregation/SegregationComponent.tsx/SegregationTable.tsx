@@ -16,6 +16,7 @@ import { deleteSegregation, GetSegregation } from "src/features/Segregation/Segr
 const SegregationTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { segregationdata, loading } = useSelector((state: any) => state.segregation);
+    const logindata = useSelector((state: any) => state.authentication?.logindata);
 // const navigate = useNavigate()
   const [editmodal, setEditmodal] = useState(false);
   const [addmodal, setAddmodal] = useState(false);
@@ -23,13 +24,13 @@ const SegregationTable = () => {
   const [selectedrow, setSelectedRow] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(GetSegregation());
   }, [dispatch]);
 
-  const totalPages = Math.ceil((segregationdata?.length || 0) / pageSize);
-  const currentItems = segregationdata?.slice((currentPage - 1) * pageSize, currentPage * pageSize) || [];
+
 
   const handleEdit = async (entry) => {
     setEditmodal(true)
@@ -44,7 +45,7 @@ const SegregationTable = () => {
       console.log
       await dispatch(deleteSegregation(userToDelete?.segregation_entries[0]?.id)).unwrap();
       dispatch(GetSegregation());
-        toast.success("Segregation entry deleted successfully");
+        toast.success("The segregation  was successfully deleted. ");
     } catch (error: any) {
       console.error("Delete failed:", error);
       if (error?.response?.status === 404) toast.error("User not found.");
@@ -53,8 +54,44 @@ const SegregationTable = () => {
     }
   }
 
+
+  
+  const filteredItems = (segregationdata || []).filter((item: any) => {
+    const searchText = searchTerm.toLowerCase();
+    const operator = item?.segregation_entries?.[0]?.operator_name || "";
+    const mouldNo = item?.mould_no || "";
+    const okpeac = item?.segregation_entries?.[0]?.no_of_ok_pcs || "";
+    const brokenpeac = item?.segregation_entries?.[0]?.no_of_broken_pcs || "";
+    const size = item?.segregation_entries?.[0]?.size || "";
+    const date = item?.segregation_entries?.[0]?.date || "";
+    const remark = item?.segregation_entries?.[0]?.remark || "";
+
+    return (
+      mouldNo.toString().toLowerCase().includes(searchText) ||
+      operator.toString().toLowerCase().includes(searchText) ||
+      okpeac.toString().toLowerCase().includes(searchText) ||
+      brokenpeac.toString().toLowerCase().includes(searchText) ||
+      size.toString().toLowerCase().includes(searchText) ||
+      date.toString().toLowerCase().includes(searchText)||
+      remark.toString().toLowerCase().includes(searchText)
+    );
+  });
+
+  const totalPages = Math.ceil(filteredItems.length / pageSize);
+  const currentItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize) ||[];
+
   return (
     <div>
+      <div className="flex justify-end mb-3">
+        <input
+          placeholder="Search..."
+          value={searchTerm}
+            type="text"
+          onChange={(e) => setSearchTerm(e.target.value)}
+           className=" border rounded-md border-gray-300 "
+
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
@@ -80,7 +117,7 @@ const SegregationTable = () => {
               currentItems.map((item, index) => (
                 <tr key={item.id} className="bg-white dark:bg-gray-900">
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    <h6>#{index + 1} </h6>
+                    #{(currentPage - 1) * pageSize + index + 1} 
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.mould_no}
@@ -178,7 +215,7 @@ const SegregationTable = () => {
         selectedUser={selectedrow}
         title="Are you sure you want to Delete this Segregation ?"
       />
-      <AddSegregationModal setShowmodal={setAddmodal} show={addmodal} segregationdata={selectedrow} />
+      <AddSegregationModal setShowmodal={setAddmodal} show={addmodal} segregationdata={selectedrow} logindata={logindata}/>
       <EditSegregationModal show={editmodal} setShowmodal={setEditmodal} autoclave={selectedrow} />
 
     </div>

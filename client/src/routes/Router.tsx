@@ -16,6 +16,16 @@ import Cutting from 'src/views/cutting/Cutting';
 import AutoClave from 'src/views/autoclave/AutoClave';
 import AutoclaveView from 'src/views/autoclave/AutoclaveComponent.tsx/AutoclaveView';
 import Segregation from 'src/views/segregation/Segregation';
+import Logs from 'src/views/authentication/Logs';
+import ChangePassword from 'src/views/authentication/ChangePassword';
+import Dispatch from 'src/views/Dispatch/Dispatch';
+import Material from 'src/views/Material/Material';
+import Receiving from 'src/views/Receiving/Receiving';
+import Boiler from 'src/views/Boiler/Boiler';
+import Diesel from 'src/views/Diesel/Diesel';
+import ROwater from 'src/views/ro-water/ROwater';
+import Security from 'src/views/security/Security';
+import BoilerView from 'src/views/Boiler/BoilerComponent.tsx/BoilerView';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
 
@@ -50,6 +60,8 @@ const Router = [
         { path: '/', element: <WelcomeDashboard /> },
         { path: '/user-profile/user-managment', element: <Usermanagment /> },
         { path: '/user-profile', element: <Userprofile /> },
+         { path: '/change-password', element: <ChangePassword /> },
+          { path: '/log', element: <Logs /> },
         { path: '/Chats', element: <Chats/> },
         { path: '/notifications', element: <SeeAllNotifications/> },
         { path: '/lead-managment/leads', element: <Leads /> },
@@ -58,7 +70,16 @@ const Router = [
         { path: '/cutting', element: <Cutting /> },
         { path: '/autoclave', element: <AutoClave /> },
         { path: '/segregation', element: <Segregation/> },
+        { path: '/boiler', element: <Boiler/> },
+        { path: '/diesel-fuel', element: <Diesel/> },
+        { path: '/ro-water', element: <ROwater/> },
+        { path: '/security', element: <Security/> },
+        { path: '/dispatch', element: <Dispatch/> },
+        { path: '/material', element: <Material/> },
+        { path: '/receiving-stock', element: <Receiving/> },
         { path: '/autoclave-view/:id', element: <AutoclaveView /> },
+        { path: '/boiler-view/:id', element: <BoilerView/> },
+        
         { path: '/permission', element: <PermissionsTable /> },
         { path: '*', element: <Navigate to="/auth/404" /> },
       ],

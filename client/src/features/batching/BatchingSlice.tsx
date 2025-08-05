@@ -35,19 +35,32 @@ export const addBatching = createAsyncThunk(
     } catch (error) {
       // Return a rejected action containing the error message
       return rejectWithValue(
-        error.response?.data?.message || error.message || "Something went wrong"
+        error.response.data.error || error.message || "Something went wrong"
       );
     }
   }
 );
 
-  export const updateBatching = createAsyncThunk("updateBatching/update", async (updatedUser:any) => {
-  const response = await axios.put(
-     `${apiUrl}/update-batching/${updatedUser?.id}`,
-    updatedUser
-  );
-  return response.data;
-});
+ export const updateBatching = createAsyncThunk(
+  "updateBatching/update",
+  async (updatedUser: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/update-batching/${updatedUser?.id}`,
+        updatedUser
+      );
+      return response.data;
+    } catch (error: any) {
+      // Extract server error message
+     const message =
+        error?.response?.data?.message ||  // <-- your backend should send this
+        error?.response?.data?.error ||    // optional fallback
+        error?.message || 
+        "Something went wrong";
+      return rejectWithValue(message);
+    }
+  }
+);
 
 export const deleteBatching = createAsyncThunk(
   "deleteBatching/delete",

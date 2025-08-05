@@ -1,13 +1,12 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button,  Label, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { Authenticationmodule } from "src/features/authentication/AuthenticationSlice";
+import { Authenticationmodule, GetAuthenticationmodule } from "src/features/authentication/AuthenticationSlice";
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { AppDispatch } from 'src/store';
 interface FormDataType {
-
   email: string;
   password: string;
 }
@@ -43,8 +42,10 @@ const handleSubmit = async (e) => {
        toast.success(result?.message || "Login successful");
         localStorage.setItem("logincheck", JSON.stringify(result));
         const localdata = JSON.parse(localStorage.getItem('logincheck') || '{}');
+
         if(localdata){
-          navigate("/lead-managment/leads");
+           dispatch(GetAuthenticationmodule(localdata?.admin?.id));
+          navigate("/");
         }
     } catch (error) {
       // error = object from rejectWithValue
@@ -101,7 +102,7 @@ const handleSubmit = async (e) => {
         className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 cursor-pointer"
         onClick={() => setShowPassword(!showPassword)}
       >
-        {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+        {showPassword ? <IconEye size={20} /> : <IconEyeOff size={20} />}
       </div>
     </div>
      {errors.password && (
@@ -112,10 +113,10 @@ const handleSubmit = async (e) => {
   {/* Remember & Forgot */}
   <div className="flex justify-between my-5">
     <div className="flex items-center gap-2">
-      <Checkbox id="accept" className="checkbox" />
+      {/* <Checkbox id="accept" className="checkbox" />
       <Label htmlFor="accept" className="opacity-90 font-normal cursor-pointer">
         Remember this Device
-      </Label>
+      </Label> */}
     </div>
     <Link to="/admin/forgot-password" className="text-primary text-sm font-medium">
       Forgot Password?
@@ -123,7 +124,7 @@ const handleSubmit = async (e) => {
   </div>
 
   {/* Submit Button */}
-  <Button color="primary" type="submit" className="w-full">
+  <Button color="primary" type="submit"  className="w-full rounded-md">
     Sign in
   </Button>
 </form>

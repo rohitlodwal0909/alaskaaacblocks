@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true
       },
+       user_id: {
+              type: DataTypes.INTEGER,
+             
+            },
       batch_date: {
         type: DataTypes.DATE,
         allowNull: false

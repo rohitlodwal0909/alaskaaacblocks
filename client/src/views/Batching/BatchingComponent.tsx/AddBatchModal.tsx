@@ -9,10 +9,11 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-const AddBatchModal = ({ show, setShowmodal }) => {
+const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
+    user_id:logindata?.admin?.id,
     shift: '',
     operator_name: '',
     mould_no: '',
@@ -40,24 +41,37 @@ const AddBatchModal = ({ show, setShowmodal }) => {
   };
 
   const validateForm = () => {
-    const required =Object.keys(formData);
-    const newErrors: any = {};
-    required.forEach(field => {
-      if (!formData[field]) newErrors[field] = `${field} is required`;
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const excludedFields = ["remark", "hardener_qty", "density"];
+  const requiredFields = Object.keys(formData).filter(
+    (field) => !excludedFields.includes(field)
+  );
+
+  const newErrors: any = {};
+  requiredFields.forEach((field) => {
+    if (!formData[field]) {
+      newErrors[field] = `${field} is required`;
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
+const existing = batchingdata?.some((item: any) => item.mould_no == formData.mould_no);
+  if (existing) {
+    toast.error(`Mould No ${formData.mould_no} already exists.`);
+    return;
+  }
 
     try {
       const result = await dispatch(addBatching(formData)).unwrap();
       toast.success(result.message || 'Batch created successfully');
       dispatch(GetBatching())
       setFormData({
+       user_id:logindata?.admin?.id,
     shift: '',
     operator_name: '',
     mould_no: '',
@@ -77,9 +91,20 @@ const AddBatchModal = ({ show, setShowmodal }) => {
     mould_oil_qty: '',
   });
       setShowmodal(false)
-    } catch (err) {
-      toast.error('Failed to create batch');
-    }
+    } catch (err: any) {
+  if (typeof err === "string") {
+    // rejectWithValue was used, so we get a string
+    toast.error(err);
+  } else if (err?.error) {
+    toast.error(err.error);
+  } else if (err?.message) {
+    toast.error(err.message);
+  } else {
+    toast.error("Something went wrong");
+  }
+
+  console.error("Caught error:", err);
+}
   };
 
   const shiftOptions = ['Day', 'Night'];
@@ -88,7 +113,7 @@ const AddBatchModal = ({ show, setShowmodal }) => {
     <Modal show={show} onClose={() => setShowmodal(false)} size="4xl">
       <ModalHeader>Create New Batching Entry</ModalHeader>
       <ModalBody className="overflow-auto max-h-[85vh]">
-      <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
+      <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-4">
   {/* 1. Mould No */}
   <div className="col-span-4">
     <Label htmlFor="mould_no" value="Mould No" />
@@ -140,13 +165,13 @@ const AddBatchModal = ({ show, setShowmodal }) => {
   {/* Rest of the fields */}
   {[
     { id: 'entry_time', label: 'Entry Time', type: 'time', placeholder: 'Select entry time' },
-    { id: 'mould_oil_qty', label: 'Mould Oil Qty', type: 'number', placeholder: 'Enter mould oil qty' },
-    { id: 'slurry_waste', label: 'Slurry Waste (kg)', type: 'number', placeholder: 'Enter waste slurry (kg)' },
-    { id: 'slurry_fresh', label: 'Slurry Fresh (kg)', type: 'number', placeholder: 'Enter fresh slurry (kg)' },
-    { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number', placeholder: 'Enter cement quantity' },
-    { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number', placeholder: 'Enter lime quantity' },
-    { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number', placeholder: 'Enter gypsum quantity' },
-    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty (kg)', type: 'number', placeholder: 'Enter soluble oil quantity' },
+    { id: 'mould_oil_qty', label: 'Mould Oil Qty (ltr)', type: 'number', placeholder: 'Enter mould oil (ltr)' },
+    { id: 'slurry_waste', label: 'Slurry Waste (ltr)', type: 'number', placeholder: 'Enter waste slurry (ltr)' },
+    { id: 'slurry_fresh', label: 'Slurry Fresh (ltr)', type: 'number', placeholder: 'Enter fresh slurry (ltr)' },
+    { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number', placeholder: 'Enter cement (kg)' },
+    { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number', placeholder: 'Enter lime (kg)' },
+    { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number', placeholder: 'Enter gypsum (kg)' },
+    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty (ltr)', type: 'number', placeholder: 'Enter soluble oil (ltr)' },
     { id: 'aluminium_qty', label: 'Aluminium Powder (gm)', type: 'number', placeholder: 'Enter aluminium powder (gm)' },
     { id: 'density', label: 'Density (kg/m3)', type: 'number', placeholder: 'Enter final density (kg/m³)' },
     { id: 'flow_value', label: 'Flow Value', type: 'number', placeholder: 'Enter flow value' },
@@ -161,7 +186,7 @@ const AddBatchModal = ({ show, setShowmodal }) => {
   return (
     <div className={columnSpan} key={id}>
     <Label htmlFor={id} value={label} />
-   <span className="text-red-700 ps-1">*</span>
+   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' ? ""  :  "*"}</span>
   {/* Time Picker Field */}
   {id === 'entry_time' ? (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

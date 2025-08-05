@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const db = require('../../models');
-const {AuthModel}= db
+const {AuthModel, Log}= db
 
 
 exports.login = async (req, res) => {
@@ -52,14 +52,13 @@ exports.updateProfile = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
     const admin = await AuthModel.findByPk(userId);
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-
-    const { name, email, password ,phone ,address, gender,role_id } = req.body;
-
+    const { name, email, password ,phone ,address, gender, role_id } = req.body;
+    const profileImageFile = req.file;
+    const profileImagePath = profileImageFile ? `/uploads/${profileImageFile.filename}` : admin.profile_image;
     // Optional: check for duplicate email if updating
     if (email && email !== admin.email) {
       const existing = await AuthModel.findOne({ where: { email } });
@@ -73,8 +72,9 @@ exports.updateProfile = async (req, res) => {
       email: email ?? admin.email,
       phone : phone ?? admin?.phone ,
       address: address ?? admin?.address,
-       gender: gender ?? admin?.gender,
-       role_id:role_id??  admin?.role_id
+      gender: gender ?? admin?.gender,
+      role_id:role_id??  admin?.role_id,
+      profile_image:profileImagePath
     };
 
     if (password) {
@@ -82,7 +82,7 @@ exports.updateProfile = async (req, res) => {
       updateData.password = hashed;
     }
     await admin.update(updateData);
-    res.json({
+    res.status(200).json({
       message: "Profile updated successfully",
       admin: {
         id: admin.id,
@@ -90,8 +90,9 @@ exports.updateProfile = async (req, res) => {
         email: admin.email,
          phone : admin?.phone ,
         address:admin?.address,
-       gender:admin?.gender,
-          role_id:  admin?.role_id
+         gender:admin?.gender,
+        role_id:  admin?.role_id,
+        profile_image:admin?.profile_image
       }
     });
   } catch (error) {
@@ -100,23 +101,99 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+exports.changePassword = async (req, res) => {
+  try {
+    const userId = req.params.id; // या req.user.id अगर JWT middleware लगा है
+    const { new_password, confirm_password } = req.body;
+    if (!new_password) {
+      return res.status(400).json({ message: "New password is required" });
+    }
+    // Optional: Check confirm_password if frontend sends it
+    if (confirm_password && new_password !== confirm_password) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const admin = await AuthModel.findByPk(userId);
+    if (!admin) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    await admin.update({ password: hashedPassword });
+    return res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Change Password Error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await AuthModel.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "No user found with this email address" });
+    }
+
+    // Send back user data (excluding password)
+    res.json({
+      message: "User found",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        address: user.address,
+        role_id: user.role_id
+      }
+    });
+
+    // OPTIONAL: Send reset password link / OTP email here
+
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 exports.getProfileById = async (req, res) => {
   try {
     const userId = req.params.id;
-
-    const user = await AuthModel.findByPk(userId, {
+    const admin = await AuthModel.findByPk(userId, {
       attributes: { exclude: ["password"] }, // Hide password from response
     });
 
-    if (!user) {
+    if (!admin) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ user });
+    res.json({ admin });
   } catch (error) {
     console.error("Get Profile Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+exports.getAllLogs = async (req, res) => {
+  try {
+    const logs = await Log.findAll({
+      order: [['created_at', 'DESC']], // Sort by createdAt descending
+    });
+
+    res.status(200).json({
+      message: "Logs fetched successfully",
+      data: logs
+    });
+  } catch (error) {
+    console.error("Error fetching logs:", error);
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
 

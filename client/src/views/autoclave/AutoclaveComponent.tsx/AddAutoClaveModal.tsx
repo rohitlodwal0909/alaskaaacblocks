@@ -8,10 +8,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { addAutoclave, GetAutoclave } from 'src/features/Autoclave/AutoclaveSlice'; // Update path accordingly
 import { Icon } from "@iconify/react";
-const AddAutoClaveModal = ({ show, setShowmodal, batchingData }) => {
+const AddAutoClaveModal = ({ show, setShowmodal, batchingData ,logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
+     user_id:logindata?.admin?.id,
     mould_no: batchingData?.mould_no || '',
     operator_name: '',
     on_time: '',
@@ -66,6 +67,7 @@ const AddAutoClaveModal = ({ show, setShowmodal, batchingData }) => {
       toast.success(result.message || 'Autoclave entry created successfully');
       dispatch(GetAutoclave());
       setFormData({
+         user_id:logindata?.admin?.id,
         mould_no: '',
         operator_name: '',
         on_time: '',

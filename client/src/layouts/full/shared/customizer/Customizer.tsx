@@ -48,8 +48,8 @@ export const Customizer = () => {
     setIsCollapse,
     activeTheme,
     setActiveTheme,
-    activeLayout,
-    setActiveLayout,
+    // activeLayout,
+    // setActiveLayout,
     isLayout,
     isCardShadow,
     setIsCardShadow,
@@ -232,7 +232,7 @@ export const Customizer = () => {
               ))}
             </div>
 
-            {/* Theme layout */}
+            {/* Theme layout
             <h4 className="text-base mb-2">Layout Type</h4>
             <div className="flex flex-wrap  gap-4 mb-7">
               <Button
@@ -269,7 +269,7 @@ export const Customizer = () => {
                   Horizontal
                 </span>
               </Button>
-            </div>
+            </div> */}
 
             {/* Sidebar Type */}
             <h4 className="text-base mb-2">Container Option</h4>

@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
+       user_id: {
+        type: DataTypes.INTEGER,
+      },
       mould_no: {
         type: DataTypes.STRING,
       },
@@ -49,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: "mould_no",
       as: "autoclave",
     });
+  
   };
 
   return Segregation;

@@ -20,6 +20,9 @@ module.exports = (sequelize) => {
       tehsil: { type: DataTypes.STRING },
       address: { type: DataTypes.TEXT },
       datetime: { type: DataTypes.DATE },
+       user_id: {
+        type: DataTypes.INTEGER,
+      },
       status: {
         type: DataTypes.ENUM("New", "Contacted", "Interested", "Converted", "Lost"),
         defaultValue: "New"

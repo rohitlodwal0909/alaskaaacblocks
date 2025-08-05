@@ -7,10 +7,11 @@ import { addRising, GetRising } from 'src/features/Rising/RisingSlice';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-const AddRisingModal = ({ show, setShowmodal,batchingData }) => {
+const AddRisingModal = ({ show, setShowmodal,batchingData ,logindata}) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
+    user_id:logindata?.admin?.id,
     mould_no: batchingData?.mould_no,
     hardness: '',
     temperature: '',
@@ -22,7 +23,7 @@ const AddRisingModal = ({ show, setShowmodal,batchingData }) => {
 useEffect(()=>{
   setFormData(prev => ({ ...prev, mould_no: batchingData?.mould_no }));
 },[batchingData])
-console.log(formData)
+
   const [errors, setErrors] = useState<any>({});
 
   const handleChange = (field: string, value: string) => {
@@ -49,6 +50,7 @@ console.log(formData)
       toast.success(result.message || 'Rising entry created successfully');
       dispatch(GetRising());
       setFormData({
+        user_id:logindata?.admin?.id,
         mould_no: '',
         hardness: '',
         temperature: '',

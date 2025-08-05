@@ -4,30 +4,18 @@ import * as profileData from "./Data";
 import SimpleBar from "simplebar-react";
 import user1 from "/src/assets//images/profile/user-1.jpg"
 import { Link, useNavigate } from "react-router";
-import { CustomizerContext } from "src/context/CustomizerContext";
-import { useContext, useEffect, useState } from "react";
+// import { CustomizerContext } from "src/context/CustomizerContext";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import Logoutmodel from "./Logoutmodel";
-import { GetAuthenticationmodule } from "src/features/authentication/AuthenticationSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "src/store";
 
-const Profile = () => {
+const Profile = ({logindata}) => {
   const navigate = useNavigate()
-    const { setIsCollapse, isCollapse} = useContext(CustomizerContext);
-  const dispatch = useDispatch<AppDispatch>();
-const logindata = useSelector((state: any) => state.authentication.logindata) 
-
-  useEffect(() => {
-      const stored = JSON.parse(localStorage.getItem('logincheck') || '{}');
-      if (stored?.admin?.id) {
-        dispatch(GetAuthenticationmodule(stored?.admin?.id));
-      }
-    }, [dispatch]);
+    // const { setIsCollapse, isCollapse} = useContext(CustomizerContext);
     const  [isOpen,setIsOpen] = useState(false)
     const handlelogout =()=>{
 localStorage.removeItem("logincheck");
-toast.success("Logout ")
+toast.success("Logout")
 navigate("/admin/login");
     }
     const handleprofile=()=>{
@@ -42,11 +30,14 @@ navigate("/admin/login");
         renderTrigger={() => (
           <span className="h-10 w-10 hover:text-primary hover:bg-lightprimary rounded-full flex justify-center items-center cursor-pointer group-hover/menu:bg-lightprimary group-hover/menu:text-primary">
             <img
-              src={user1}
+              src={
+                logindata?.admin?.profile_image
+                  ? "http://localhost:5000" + logindata.admin.profile_image
+                  : user1
+              }
               alt="logo"
-              height="35"
-              width="35"
-              className="rounded-full"
+
+              className="rounded-full w-full"
             />
           </span>
         )}
@@ -55,21 +46,25 @@ navigate("/admin/login");
           <h3 className="text-lg font-semibold text-ld">User Profile</h3>
           <div className="flex items-center gap-6 pb-5 border-b dark:border-darkborder mt-5 mb-3">
             <img
-              src={user1}
+              src={
+                logindata?.admin?.profile_image
+                  ? "http://localhost:5000" + logindata.admin.profile_image
+                  : user1
+              }
               alt="logo"
               height="80"
               width="80"
               className="rounded-full"
             />
             <div>
-              <h5 className="card-title">{logindata?.user?.name}</h5>
+              <h5 className="card-title">{logindata?.admin?.name}</h5>
               {/* <span className="card-subtitle">Admin</span> */}
               <p className="card-subtitle mb-0 mt-1 flex items-center">
                 <Icon
                   icon="solar:mailbox-line-duotone"
                   className="text-base me-1"
                 />
-                {logindata?.user?.email}
+                {logindata?.admin?.email}
               </p>
             </div>
           </div>
@@ -78,17 +73,17 @@ navigate("/admin/login");
         {profileData.profileDD.map((items, index) => (
           <Dropdown.Item
             as={Link}
-            to="#"
+           to={items.url}
             // to={items.url}
             className="px-6 py-3 flex justify-between items-center bg-hover group/link w-full"
             key={index}
-             onClick={() => {
-                    if (isCollapse === "full-sidebar") {
-                      setIsCollapse("mini-sidebar");
-                    } else {
-                      setIsCollapse("full-sidebar");
-                    }
-                  }}
+            //  onClick={() => {
+            //         if (isCollapse === "full-sidebar") {
+            //           setIsCollapse("mini-sidebar");
+            //         } else {
+            //           setIsCollapse("full-sidebar");
+            //         }
+            //       }}
           >
             <div className="flex items-center w-full">
               <div
@@ -97,7 +92,7 @@ navigate("/admin/login");
                 <Icon icon={items.icon} height={20} className={items.color} />
               </div>
               <div className="ps-4 flex justify-between w-full">
-                <div className="w-3/4 ">
+                <div className="w-3/3">
                   <h5 className="mb-1 text-sm  group-hover/link:text-primary">
                     {items.title}
                   </h5>
