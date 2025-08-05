@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import Messages from "./Messages";
 import Notifications from "./Notifications";
-import Profile from "./Profile";
+// import Profile from "./Profile";
 import { Language } from "./Language";
 import { Navbar } from "flowbite-react";
 import AppLinks from "./AppLinks";
@@ -71,7 +71,7 @@ const MobileHeaderItems = () => {
 
 
         {/* Profile Dropdown */}
-        <Profile  />
+        {/* <Profile  /> */}
       </div>
     </div>
   </Navbar>
