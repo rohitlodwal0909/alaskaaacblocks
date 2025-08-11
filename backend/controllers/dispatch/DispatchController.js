@@ -15,19 +15,33 @@ exports.createDispatch = async (req, res) => {
       invoice_number,
       eway_bill_number,
       material_details,
-      quantity,
-      size,
-      loading_picture,
+      quantity_size_list, // ← JSON string from frontend
       quality_check,
       person_responsible,
       time,
       eway_bill_expiry,
     } = req.body;
-   
+
+    console.log("Raw Request Body:", req.body);
+
+    // Parse quantity_size_list JSON string
+    let quantityList = [];
+    let sizeList = [];
+
+    try {
+      const parsedList = JSON.parse(quantity_size_list); // parse JSON string to array of objects
+      quantityList = parsedList.map(item => item.quantity);
+      sizeList = parsedList.map(item => item.size);
+    } catch (jsonErr) {
+      return res.status(400).json({ error: "Invalid quantity_size_list format" });
+    }
+
     const profileImageFile = req.file;
-    const profileImagePath = profileImageFile ? `/uploads/${profileImageFile.filename}`:null 
+    const profileImagePath = profileImageFile ? `/uploads/${profileImageFile.filename}` : null;
+
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD
+
     const dispatchEntry = await Dispatch.create({
       user_id,
       vehicle_number,
@@ -38,21 +52,19 @@ exports.createDispatch = async (req, res) => {
       invoice_number,
       eway_bill_number,
       material_details,
-      quantity,
-      size,
-      loading_picture:profileImagePath,
+      quantity: JSON.stringify(quantityList), // store as JSON string
+      size: JSON.stringify(sizeList),         // store as JSON string
+      loading_picture: profileImagePath,
       quality_check,
       person_responsible,
       time,
       eway_bill_expiry,
-      date: formattedDate, // backend inserts current date
+      date: formattedDate,
     });
-
-    // Optional Logging
-    const entryTime = currentDate.toTimeString().split(" ")[0]; // HH:mm:ss
 
     const user = await AuthModel.findByPk(user_id);
     const username = user ? user.name : "Unknown User";
+    const entryTime = currentDate.toTimeString().split(" ")[0];
 
     const logMessage = `Dispatch for vehicle ${vehicle_number} was created by ${username} on ${formattedDate} at ${entryTime}.`;
 
@@ -70,6 +82,7 @@ exports.createDispatch = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 // GET all Cutting entries with related Dispatch
 exports.getAllDispatch = async (req, res) => {
   try {
@@ -104,16 +117,30 @@ exports.getDispatchById = async (req, res) => {
   }
 };
 
-// UPDATE
 exports.updateDispatch = async (req, res) => {
   try {
     const dispatchEntry = await Dispatch.findByPk(req.params.id);
     if (!dispatchEntry) {
       return res.status(404).json({ message: "Dispatch entry not found" });
     }
-       
+
+    // Parse quantity_size_list
+    let quantityList = [];
+    let sizeList = [];
+
+    try {
+      const parsedList = JSON.parse(req.body.quantity_size_list);
+      quantityList = parsedList.map(item => item.quantity);
+      sizeList = parsedList.map(item => item.size);
+    } catch (jsonErr) {
+      return res.status(400).json({ error: "Invalid quantity_size_list format" });
+    }
+
     const profileImageFile = req.file;
-    const profileImagePath = profileImageFile ? `/uploads/${profileImageFile.filename}`:null 
+    const profileImagePath = profileImageFile
+      ? `/uploads/${profileImageFile.filename}`
+      : dispatchEntry.loading_picture; // fallback to existing
+
     await dispatchEntry.update({
       vehicle_number: req.body.vehicle_number,
       transport_name: req.body.transport_name,
@@ -123,16 +150,16 @@ exports.updateDispatch = async (req, res) => {
       invoice_number: req.body.invoice_number,
       eway_bill_number: req.body.eway_bill_number,
       material_details: req.body.material_details,
-      quantity: req.body.quantity,
-      size: req.body.size,
-      loading_picture:  req.body.loading_picture || profileImagePath ,
+      quantity: JSON.stringify(quantityList),
+      size: JSON.stringify(sizeList),
+      loading_picture: profileImagePath,
       quality_check: req.body.quality_check,
       person_responsible: req.body.person_responsible,
       time: req.body.time,
       eway_bill_expiry: req.body.eway_bill_expiry,
     });
 
-    // 🔐 Logging
+    // Logging
     const user_id = req.body.user_id;
     const now = new Date();
     const entry_date = now.toISOString().split("T")[0];

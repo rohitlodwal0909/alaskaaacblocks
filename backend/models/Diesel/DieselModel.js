@@ -12,6 +12,14 @@
       type: DataTypes.STRING(100),
       allowNull: true,
     },
+     fuel_feel: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+     time: {
+      type: DataTypes.TIME,
+      allowNull: true,
+    },
     meter_reading: {
       type: DataTypes.STRING(100),
       allowNull: true,

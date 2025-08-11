@@ -50,12 +50,12 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       quantity: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
 
       size: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
 

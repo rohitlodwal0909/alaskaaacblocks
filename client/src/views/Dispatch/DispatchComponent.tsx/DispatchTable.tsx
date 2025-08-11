@@ -136,7 +136,17 @@ const DispatchTable = () => {
                       <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.driver_name || "-"}</td>
                       <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.delivery_area || "-"}</td>
                       <td className="px-4 py-2 text-gray-900 dark:text-gray-300" >{item?.material_details || "-"}</td>
-                      <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.quantity || "-"}</td>
+<td className="px-4 py-2 text-gray-900 dark:text-gray-300">
+  {(() => {
+    try {
+      const firstParse = JSON.parse(item.quantity); // parses to a string like '["46","90"]'
+      const secondParse = JSON.parse(firstParse);   // parses to actual array: ['46', '90']
+      return Array.isArray(secondParse) ? secondParse.join(', ') : "-";
+    } catch (err) {
+      return "-";
+    }
+  })()}
+</td>
                       <td className="px-4 py-2 text-gray-900 dark:text-gray-300">
                         {item?.loading_picture ? (
                           <img

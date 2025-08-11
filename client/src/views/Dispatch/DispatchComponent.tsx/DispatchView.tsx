@@ -34,8 +34,24 @@ const DispatchView = ({
     ["Eway Bill Number", selectedRow?.eway_bill_number],
     ["Eway Bill Expiry", selectedRow?.eway_bill_expiry ? format(new Date(selectedRow?.eway_bill_expiry), "dd-MM-yyyy") : "-"],
     ["Material Details", selectedRow?.material_details],
-    ["Quantity", selectedRow?.quantity],
-    ["Size", selectedRow?.size],
+["Quantity", (() => {
+    try {
+      const firstParse = JSON.parse(selectedRow.quantity); // parses to a string like '["46","90"]'
+      const secondParse = JSON.parse(firstParse);   // parses to actual array: ['46', '90']
+      return Array.isArray(secondParse) ? secondParse.join(', ') : "-";
+    } catch (err) {
+      return "-";
+    }
+  })()],
+["Size", (() => {
+    try {
+      const firstParse = JSON.parse(selectedRow.size); // parses to a string like '["46","90"]'
+      const secondParse = JSON.parse(firstParse);   // parses to actual array: ['46', '90']
+      return Array.isArray(secondParse) ? secondParse.join(', ') : "-";
+    } catch (err) {
+      return "-";
+    }
+  })()],
     ["Quality Check", selectedRow?.quality_check],
     ["Person Responsible", selectedRow?.person_responsible],
     ["Time", formatTime(selectedRow?.time)],

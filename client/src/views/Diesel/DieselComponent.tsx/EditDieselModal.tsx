@@ -13,7 +13,9 @@ import { AppDispatch } from 'src/store';
 import { toast } from 'react-toastify';
 import { updateDiesel, GetDiesel } from 'src/features/Diesel/DieselSlice';
 // import { Icon } from '@iconify/react';
-
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -23,7 +25,8 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
     user_id: logindata?.admin?.id || "",
     fuel_consume: "",
     meter_reading: "",
-   
+    time:"",
+    fuel_feel:""
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -34,7 +37,7 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
   };
 
   const validateForm = () => {
-    const required = [ "fuel_consume", "meter_reading"];
+    const required = [ "fuel_consume", "meter_reading" ];
     const newErrors: any = {};
     required.forEach((field) => {
       if (!formData[field]) newErrors[field] = `${field.replace("_", " ")} is required`;
@@ -51,7 +54,9 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
         id: Dieseldata?.id || '',
         fuel_consume: Dieseldata?.fuel_consume || '',
         meter_reading: Dieseldata?.meter_reading || '',
-       user_id:logindata?.admin?.id 
+         user_id:logindata?.admin?.id ,
+             time:Dieseldata?.time || '',
+         fuel_feel:Dieseldata?.fuel_feel || ''
       });
     }
   }, [Dieseldata]);
@@ -112,20 +117,57 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
             {errors.meter_reading && <p className="text-red-500 text-xs">{errors.meter_reading}</p>}
           </div>
 
-          {/* Date */}
-          {/* <div className="col-span-6">
-            <Label htmlFor="date" value="Date" />
-            <span className="text-red-700 ps-1">*</span>
-            <TextInput
-              id="date"
-              type="date"
-              value={formData.date}
-              onChange={(e) => handleChange("date", e.target.value)}
-              color={errors.date ? "failure" : "gray"}
-              className="form-rounded-md"
-            />
-            {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
-          </div> */}
+        <div className="col-span-6">
+                    <Label htmlFor="fuel_feel" value="Fuel (Ltr)" />
+                    <span className="text-red-700 ps-1">*</span>
+                    <TextInput
+                      id="fuel_feel"
+                      placeholder="Enter Fuel"
+                      value={formData.fuel_feel}
+                      onChange={(e) => handleChange("fuel_feel", e.target.value)}
+                      color={errors.fuel_feel ? "failure" : "gray"}
+                            className="form-rounded-md"
+                    />
+                    {errors.fuel_feel && <p className="text-red-500 text-xs">{errors.fuel_feel}</p>}
+                  </div>
+                  {/* Date */}
+                  <div className="col-span-6">
+                    <Label htmlFor="time" value="time" />
+                    <span className="text-red-700 ps-1">*</span>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <TimePicker
+                        value={formData.time ? dayjs(formData.time, "HH:mm") : null}
+                        onChange={(val) => handleChange("time", val ? dayjs(val).format("HH:mm") : "")}
+                         slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            sx: {
+                              '& .MuiInputBase-root': {
+                                fontSize: '14px',
+                                backgroundColor: '#f1f5f9',
+                                borderRadius: '6px',
+                              },
+                                 '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
+                                height: '42px',
+                                fontSize: '14px',
+                               
+                                backgroundColor: '#f1f5f9',
+                                borderRadius: '6px',
+                              },
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#cbd5e1',
+                              },
+                              '& input': {
+                                padding: '4px 10px',
+                              },
+                            },
+                          },
+                        }}
+                        className="form-roounded-md w-full"
+                      />
+                    </LocalizationProvider>
+                    {errors.time && <p className="text-red-500 text-xs">{errors.time}</p>}
+                  </div>
         </form>
       </ModalBody>
       <ModalFooter className="justify-end">

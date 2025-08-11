@@ -44,7 +44,8 @@ export const GetDispatchSingle= createAsyncThunk(
 export const addDispatch = createAsyncThunk(
   "Dispatch/add",
   async (formdata:any, { rejectWithValue }) => {
-    try {
+   console.log (formdata )
+       try {
       const response = await axios.post(`${apiUrl}/store-dispatch`,
         formdata , {
          headers: {
