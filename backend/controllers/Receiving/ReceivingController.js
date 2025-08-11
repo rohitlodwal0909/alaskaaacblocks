@@ -10,7 +10,7 @@ exports.createReceiving = async (req, res) => {
       supplier_name,
       invoice_no,
       received_by,
-      vehical_no,
+      material_details,
       user_id,
     } = req.body;
     // Create Receiving Stock Entry
@@ -19,7 +19,7 @@ exports.createReceiving = async (req, res) => {
       supplier_name,
       invoice_no,
       received_by,
-      vehical_no,
+      material_details,
       user_id,
     });
 
@@ -104,7 +104,7 @@ exports.updateReceiving = async (req, res) => {
       supplier_name: req.body.supplier_name,
       invoice_no: req.body.invoice_no,
       received_by: req.body.received_by,
-      vehical_no: req.body.vehical_no,
+      material_details: req.body.material_details,
     });
 
     // 🔐 Logging

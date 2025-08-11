@@ -34,7 +34,7 @@ const ReceivingView = ({
 const data = selectedRow?.materials?.length > 0 ? selectedRow.materials[0] : {};
   const fields = [
     ["Supplier Name", selectedRow?.supplier_name],
-    ["Vehicle No", selectedRow?.vehical_no],
+    ["Material Details", selectedRow?.material_details],
     ["Invoice No", selectedRow?.invoice_no],
     ["Received By", selectedRow?.received_by],
     ["Date", selectedRow?.date],
@@ -46,15 +46,15 @@ const data = selectedRow?.materials?.length > 0 ? selectedRow.materials[0] : {};
   const [editmodal , setEditmodal] = useState(false)
 const fields2 = [
    ["Mould Oil (ltr)", data?.mould_oil],
-    ["Slurry Waste (ltr)", data?.slurry_waste],
-    ["Slurry Fresh (ltr)", data?.slurry_fresh],
+    // ["Slurry Waste (ltr)", data?.slurry_waste],
+    // ["Slurry Fresh (ltr)", data?.slurry_fresh],
     ["Cement (kg)", data?.cement],
     ["Lime (kg)", data?.lime],
     ["Gypsum (kg)", data?.gypsum],
     ["Soluble Oil (ltr)", data?.soluble_oil],
     ["Aluminium Powder (gm)", data?.aluminium],
-    ["Density  (kg/m³)", data?.density],
-    ["Flow Value", data?.flow_value],
+    // ["Density  (kg/m³)", data?.density],
+    // ["Flow Value", data?.flow_value],
 ]
 
 const dispatch  = useDispatch<AppDispatch>()

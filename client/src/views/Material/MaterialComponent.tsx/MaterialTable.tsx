@@ -84,15 +84,15 @@ const MaterialTable = () => {
   const currentItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize) || [];
   currentItems.forEach((item) => {
     total.mould_oil += parseFloat(item.mould_oil) || 0;
-    total.slurry_waste += parseFloat(item.slurry_waste) || 0;
-    total.slurry_fresh += parseFloat(item.slurry_fresh) || 0;
+    // total.slurry_waste += parseFloat(item.slurry_waste) || 0;
+    // total.slurry_fresh += parseFloat(item.slurry_fresh) || 0;
     total.cement += parseFloat(item.cement) || 0;
     total.lime += parseFloat(item.lime) || 0;
     total.gypsum += parseFloat(item.gypsum) || 0;
     total.soluble_oil += parseFloat(item.soluble_oil) || 0;
     total.aluminium += parseFloat(item.aluminium) || 0;
-    total.density += parseFloat(item.density) || 0;
-    total.flow_value += parseFloat(item.flow_value) || 0;
+    // total.density += parseFloat(item.density) || 0;
+    // total.flow_value += parseFloat(item.flow_value) || 0;
   });
   return (
     <div>
@@ -121,15 +121,15 @@ const MaterialTable = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
   {[
     { label: "Mould Oil (ltr)", value: total.mould_oil },
-    { label: "Slurry Waste (ltr)", value: total.slurry_waste },
-    { label: "Slurry Fresh (ltr)" , value: total.slurry_fresh },
+    // { label: "Slurry Waste (ltr)", value: total.slurry_waste },
+    // { label: "Slurry Fresh (ltr)" , value: total.slurry_fresh },
     { label: "Cement (kg)", value: total.cement },
     { label: "Lime (kg)", value: total.lime },
     { label: "Gypsum (kg)", value: total.gypsum },
     { label: "Soluble Oil (ltr)", value: total.soluble_oil },
     { label: "Aluminium (gm)", value: total.aluminium },
-    { label: "Density (kg/m³)", value: total.density || "-" },
-    { label: "Flow Value", value: total.flow_value || "-" },
+    // { label: "Density (kg/m³)", value: total.density || "-" },
+    // { label: "Flow Value", value: total.flow_value || "-" },
   ].map((item, index) => (
     <div key={index} className="bg-light dark:bg-gray-800 rounded-lg shadow p-4">
       <h3 className=" font-medium  text-md  text-gray-600 dark:text-gray-300">{item.label}</h3>

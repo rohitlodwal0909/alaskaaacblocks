@@ -21,15 +21,15 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
     user_id: logindata?.admin?.id || "",
     receiving_id:Receiving?.id ||"",
     mould_oil: "",
-    slurry_waste: "",
-    slurry_fresh: "",
+    // slurry_waste: "",
+    // slurry_fresh: "",
     cement: "",
     lime: "",
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    density: "",
-    flow_value: "",
+    // density: "",
+    // flow_value: "",
   });
 
     useEffect(()=>{
@@ -79,15 +79,15 @@ if(Receiving?.id){
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {[
             { label: "Mould Oil (ltr)", field: "mould_oil" },
-            { label: "Slurry Waste (ltr)", field: "slurry_waste" },
-            { label: "Slurry Fresh (ltr)", field: "slurry_fresh" },
+            // { label: "Slurry Waste (ltr)", field: "slurry_waste" },
+            // { label: "Slurry Fresh (ltr)", field: "slurry_fresh" },
             { label: "Cement (kg)", field: "cement" },
             { label: "Lime (kg)", field: "lime" },
             { label: "Gypsum (kg)", field: "gypsum" },
             { label: "Soluble Oil (ltr)", field: "soluble_oil" },
             { label: "Aluminium Powder(gm)", field: "aluminium" },
-            { label: "Density (kg/m³)", field: "density" },
-            { label: "Flow Value", field: "flow_value" },
+            // { label: "Density (kg/m³)", field: "density" },
+            // { label: "Flow Value", field: "flow_value" },
           ].map(({ label, field }) => (
             <div className="col-span-4" key={field}>
               <Label value={label} />

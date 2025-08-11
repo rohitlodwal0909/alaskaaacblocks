@@ -71,8 +71,8 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
   const validateForm = () => {
     const requiredFields = [
       "vehicle_number", "transport_name", "driver_name", "driver_number", "delivery_area",
-      "invoice_number", "eway_bill_number", "material_details",
-      "quality_check", "person_responsible", "time", "eway_bill_expiry"
+      "invoice_number", "material_details",
+      "quality_check", "person_responsible", "time", 
     ];
 
     const newErrors: any = {};
@@ -137,7 +137,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
           ].map(({ label, field }) => (
             <div className="col-span-4" key={field}>
               <Label value={label} />
-              <span className="text-red-700 ps-1">*</span>
+              <span className="text-red-700 ps-1"> {field === "eway_bill_number"?"":"*" }</span>
               {field === "quality_check" ? (
                 <select
                   value={formData[field]}
@@ -208,7 +208,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
           {/* Eway Bill Expiry */}
           <div className="col-span-4">
             <Label value="E-Way Bill Expiry" />
-            <span className="text-red-700 ps-1">*</span>
+          
             <TextInput
               type="date"
               value={formData.eway_bill_expiry}

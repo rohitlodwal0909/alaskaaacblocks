@@ -78,9 +78,9 @@ exports.createBatching = async (req, res) => {
       soluble_oil: parseFloat(soluble_oil_qty || 0),
       aluminium: parseFloat(aluminium_qty || 0),
       mould_oil: parseFloat(mould_oil_qty || 0),
-      slurry_waste: parseFloat(slurry_waste || 0),
-      slurry_fresh: parseFloat(slurry_fresh || 0),
-      flow_value:parseFloat(flow_value || 0)
+      // slurry_waste: parseFloat(slurry_waste || 0),
+      // slurry_fresh: parseFloat(slurry_fresh || 0),
+      // flow_value:parseFloat(flow_value || 0)
     };
 
     const allMaterials = await Material.findAll();

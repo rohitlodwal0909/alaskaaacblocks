@@ -41,7 +41,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   };
 
   const validateForm = () => {
-  const excludedFields = ["remark", "hardener_qty", "density"];
+  const excludedFields = ["remark", "hardener_qty"];
   const requiredFields = Object.keys(formData).filter(
     (field) => !excludedFields.includes(field)
   );
@@ -59,12 +59,13 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+   
     if (!validateForm()) return;
-const existing = batchingdata?.some((item: any) => item.mould_no == formData.mould_no);
-  if (existing) {
-    toast.error(`Mould No ${formData.mould_no} already exists.`);
-    return;
-  }
+    const existing = batchingdata?.some((item: any) => item.mould_no == formData.mould_no);
+    if (existing) {
+      toast.error(`Mould No ${formData.mould_no} already exists.`);
+      return;
+    }
 
     try {
       const result = await dispatch(addBatching(formData)).unwrap();
@@ -186,7 +187,7 @@ const existing = batchingdata?.some((item: any) => item.mould_no == formData.mou
   return (
     <div className={columnSpan} key={id}>
     <Label htmlFor={id} value={label} />
-   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' ? ""  :  "*"}</span>
+   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density'   ? ""  :  "*"}</span>
   {/* Time Picker Field */}
   {id === 'entry_time' ? (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

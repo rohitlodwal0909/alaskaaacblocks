@@ -6,6 +6,7 @@ import {
   ModalHeader,
   Label,
   TextInput,
+  Textarea,
 } from "flowbite-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -25,7 +26,7 @@ const AddReceivingModal = ({ show, setShowmodal, logindata }) => {
     supplier_name: "",
     invoice_no: "",
     received_by: "",
-    vehical_no: "",
+    material_details: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -70,14 +71,24 @@ const AddReceivingModal = ({ show, setShowmodal, logindata }) => {
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {[
             { label: "Supplier Name", field: "supplier_name" },
-            { label: "Vehicle Number", field: "vehical_no" },
             { label: "Invoice Number", field: "invoice_no" },
             { label: "Received By", field: "received_by" },
             { label: "Date", field: "date", type: "date" },
+            { label: "Material Details", field: "material_details" },
           ].map(({ label, field, type = "text" }) => (
             <div className="col-span-6" key={field}>
               <Label value={label} />
-              <span className="text-red-700 ps-1">*</span>
+              <span className="text-red-700 ps-1">*</span>{
+              field === "material_details"? (
+
+                <Textarea
+                             value={formData.material_details}
+                             onChange={(e) => handleChange("material_details", e.target.value)}
+                             className="border rounded-md"
+                             placeholder="Enter material details"
+                             color={errors.material_details ? "failure" : "gray"}
+                           />
+              ):
               <TextInput
                 type={type}
                 value={formData[field]}
@@ -86,6 +97,7 @@ const AddReceivingModal = ({ show, setShowmodal, logindata }) => {
                 className="form-rounded-md"
                 color={errors[field] ? "failure" : "gray"}
               />
+              }
               {errors[field] && (
                 <p className="text-red-500 text-xs">{errors[field]}</p>
               )}

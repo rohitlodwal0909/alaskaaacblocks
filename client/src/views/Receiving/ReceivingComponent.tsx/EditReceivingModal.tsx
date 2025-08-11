@@ -6,6 +6,7 @@ import {
   ModalHeader,
   Label,
   TextInput,
+  Textarea,
 } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -23,7 +24,7 @@ const EditReceivingModal = ({ show, setShowmodal, Receiving, logindata }) => {
     supplier_name: "",
     invoice_no: "",
     received_by: "",
-    vehical_no: "",
+    material_details: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -37,7 +38,7 @@ const EditReceivingModal = ({ show, setShowmodal, Receiving, logindata }) => {
         supplier_name: Receiving?.supplier_name || "",
         invoice_no: Receiving?.invoice_no || "",
         received_by: Receiving?.received_by || "",
-        vehical_no: Receiving?.vehical_no || "",
+        material_details: Receiving?.material_details || "",
       });
     }
   }, [Receiving]);
@@ -48,7 +49,7 @@ const EditReceivingModal = ({ show, setShowmodal, Receiving, logindata }) => {
   };
 
   const validateForm = () => {
-    const requiredFields = ["date", "supplier_name", "invoice_no", "received_by", "vehical_no"];
+    const requiredFields = ["date", "supplier_name", "invoice_no", "received_by", "material_details"];
     const newErrors: any = {};
     requiredFields.forEach((field) => {
       if (!formData[field]) {
@@ -77,31 +78,42 @@ const EditReceivingModal = ({ show, setShowmodal, Receiving, logindata }) => {
     <Modal show={show} onClose={() => setShowmodal(false)} size="4xl">
       <ModalHeader>Edit Receiving Entry</ModalHeader>
       <ModalBody className="overflow-auto max-h-[85vh]">
-        <form className="grid grid-cols-12 gap-3">
-          {[
-            { field: "supplier_name", type: "text" },
-            { field: "vehical_no", type: "text" },
-            { field: "invoice_no", type: "text" },
-            { field: "received_by", type: "text" },
-            { field: "date", type: "date" },
-          ].map(({ field, type }) => (
-            <div className="col-span-6" key={field}>
-              <Label
-                value={field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-              />
-              <span className="text-red-700 ps-1">*</span>
-              <TextInput
-                value={formData[field]}
-                onChange={(e) => handleChange(field, e.target.value)}
-                placeholder={`Enter ${field.replace(/_/g, " ")}`}
-                type={type}
-                className="form-rounded-md"
-                color={errors[field] ? "failure" : "gray"}
-              />
-              {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
-            </div>
-          ))}
-        </form>
+        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
+                {[
+                  { label: "Supplier Name", field: "supplier_name" },
+                  { label: "Invoice Number", field: "invoice_no" },
+                  { label: "Received By", field: "received_by" },
+                  { label: "Date", field: "date", type: "date" },
+                  { label: "Material Details", field: "material_details" },
+                ].map(({ label, field, type = "text" }) => (
+                  <div className="col-span-6" key={field}>
+                    <Label value={label} />
+                    <span className="text-red-700 ps-1">*</span>{
+                    field === "material_details"? (
+      
+                      <Textarea
+                                   value={formData.material_details}
+                                   onChange={(e) => handleChange("material_details", e.target.value)}
+                                   className="border rounded-md"
+                                   placeholder="Enter material details"
+                                   color={errors.material_details ? "failure" : "gray"}
+                                 />
+                    ):
+                    <TextInput
+                      type={type}
+                      value={formData[field]}
+                      onChange={(e) => handleChange(field, e.target.value)}
+                      placeholder={`Enter ${label.toLowerCase()}`}
+                      className="form-rounded-md"
+                      color={errors[field] ? "failure" : "gray"}
+                    />
+                    }
+                    {errors[field] && (
+                      <p className="text-red-500 text-xs">{errors[field]}</p>
+                    )}
+                  </div>
+                ))}
+              </form>
       </ModalBody>
       <ModalFooter className="justify-end">
         <Button color="gray" onClick={() => setShowmodal(false)}>

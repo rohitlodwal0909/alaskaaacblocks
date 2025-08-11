@@ -20,15 +20,15 @@ const AddMaterialModal = ({ show, setShowmodal, logindata }) => {
     user_id: logindata?.admin?.id || "",
     receiving_id:"",
     mould_oil: "",
-    slurry_waste: "",
-    slurry_fresh: "",
+    // slurry_waste: "",
+    // slurry_fresh: "",
     cement: "",
     lime: "",
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    density: "",
-    flow_value: "",
+    // density: "",
+    // flow_value: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -71,15 +71,15 @@ const AddMaterialModal = ({ show, setShowmodal, logindata }) => {
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {[
             { label: "Mould Oil", field: "mould_oil" },
-            { label: "Slurry Waste", field: "slurry_waste" },
-            { label: "Slurry Fresh", field: "slurry_fresh" },
+            // { label: "Slurry Waste", field: "slurry_waste" },
+            // { label: "Slurry Fresh", field: "slurry_fresh" },
             { label: "Cement", field: "cement" },
             { label: "Lime", field: "lime" },
             { label: "Gypsum", field: "gypsum" },
             { label: "Soluble Oil", field: "soluble_oil" },
             { label: "Aluminium", field: "aluminium" },
-            { label: "Density", field: "density" },
-            { label: "Flow Value", field: "flow_value" },
+            // { label: "Density", field: "density" },
+            // { label: "Flow Value", field: "flow_value" },
           ].map(({ label, field }) => (
             <div className="col-span-4" key={field}>
               <Label value={label} />

@@ -98,10 +98,10 @@ console.log(receivingdata?.data)
            <tr>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Sr.No</th>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Supplier Name</th>
-    <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Vehicle No</th>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Invoice No</th>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Received By</th>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Date</th>
+    <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Material Details</th>
     <th className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">Actions</th>
   </tr>
           </thead>
@@ -115,22 +115,18 @@ console.log(receivingdata?.data)
             ) :
               currentItems.length > 0 ? (
                 currentItems.map((item, index) => {
-                  
                   return (
                     <tr key={item.id} className="bg-white dark:bg-gray-900">
                  <td className="px-4 py-2 text-gray-900 dark:text-gray-300"> #{(currentPage - 1) * pageSize + index + 1}</td>
         <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.supplier_name || "-"}</td>
-        <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.vehical_no || "-"}</td>
         <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.invoice_no || "-"}</td>
         <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.received_by || "-"}</td>
         <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.date || "-"}</td>
+        <td className="px-4 py-2 text-gray-900 dark:text-gray-300">{item?.material_details || "-"}</td>
         {/* <td className="px-4 py-2">{item?.density || "-"}</td>
         <td className="px-4 py-2">{item?.flow_value || "-"}</td> */}
                       <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                         <div className="flex gap-2">
-
-                        
-                           
                           <>
                           {
                             item?.materials?.length > 0 ? 

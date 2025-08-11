@@ -32,7 +32,7 @@ const DispatchView = ({
     ["Driver Number", selectedRow?.driver_number],
     ["Invoice Number", selectedRow?.invoice_number],
     ["Eway Bill Number", selectedRow?.eway_bill_number],
-    ["Eway Bill Expiry", selectedRow?.eway_bill_expiry ? format(new Date(selectedRow?.eway_bill_expiry), "dd-MM-yyyy") : "-"],
+    ["Eway Bill Expiry", selectedRow?.eway_bill_expiry ||"-"],
     ["Material Details", selectedRow?.material_details],
 ["Quantity", (() => {
     try {

@@ -21,15 +21,15 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
     id: Material?.id || "",
     user_id: logindata?.admin?.id || "",
     mould_oil: "",
-    slurry_waste: "",
-    slurry_fresh: "",
+    // slurry_waste: "",
+    // slurry_fresh: "",
     cement: "",
     lime: "",
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    density: "",
-    flow_value: "",
+    // density: "",
+    // flow_value: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -40,16 +40,17 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
         id: Material?.id,
         user_id: logindata?.admin?.id || "",
         mould_oil: Material?.mould_oil || "",
-        slurry_waste: Material?.slurry_waste || "",
-        slurry_fresh: Material?.slurry_fresh || "",
+        // slurry_waste: Material?.slurry_waste || "",
+        // slurry_fresh: Material?.slurry_fresh || "",
         cement: Material?.cement || "",
         lime: Material?.lime || "",
         gypsum: Material?.gypsum || "",
         soluble_oil: Material?.soluble_oil || "",
         aluminium: Material?.aluminium || "",
-        density: Material?.density || "",
-        flow_value: Material?.flow_value || "",
+        // density: Material?.density || "",
+        // flow_value: Material?.flow_value || "",
       });
+
     }
   }, [Material]);
 
@@ -60,8 +61,16 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
 
   const validateForm = () => {
     const requiredFields = [
-      "mould_oil", "slurry_waste", "slurry_fresh", "cement", "lime",
-      "gypsum", "soluble_oil", "aluminium", "density", "flow_value"
+      "mould_oil", 
+      // "slurry_waste",
+      //  "slurry_fresh", 
+       "cement", 
+       "lime",
+      "gypsum",
+       "soluble_oil",
+        "aluminium", 
+        // "density", 
+        // "flow_value"
     ];
     const newErrors: any = {};
     requiredFields.forEach((field) => {
@@ -94,11 +103,24 @@ setPlaceModal(false)
       <ModalBody className="overflow-auto max-h-[85vh]">
         <form className="grid grid-cols-12 gap-3">
           {[
-            "mould_oil (ltr)", "slurry_waste (ltr)", "slurry_fresh (ltr)", "cement (kg)", "lime (kg)",
-            "gypsum (kg)", "soluble_oil (ltr)", "aluminium (gm)", "density (kg/m³)", "flow_value"
+            "mould_oil",
+            //  "slurry_waste (ltr)",
+            //   "slurry_fresh (ltr)",
+               "cement", "lime",
+            "gypsum", "soluble_oil", "aluminium",
+            //  "density (kg/m³)", 
+            //  "flow_value"
           ].map((field) => (
             <div className="col-span-4" key={field}>
-              <Label value={field.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())} />
+            <Label
+  value={`${field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} ${
+    field === "mould_oil" || field === "soluble_oil"
+      ? "(ltr)"
+      : field === "aluminium"
+      ? "(gm)"
+      : "(kg)"
+  }`}
+/>
               <span className="text-red-700 ps-1">*</span>
               <TextInput
                 value={formData[field]}
