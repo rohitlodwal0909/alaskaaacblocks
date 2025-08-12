@@ -8,7 +8,7 @@ import {
 import { TabItem, Tabs } from "flowbite-react";
 import { Icon } from "@iconify/react";
 import { formatTime } from "src/utils/Datetimeformate";
-import { format } from "date-fns";
+
 import { imageurl } from "src/constants/contant";
 
 type Props = {
@@ -55,8 +55,8 @@ const DispatchView = ({
     ["Quality Check", selectedRow?.quality_check],
     ["Person Responsible", selectedRow?.person_responsible],
     ["Time", formatTime(selectedRow?.time)],
-    ["Date", selectedRow?.date ? format(new Date(selectedRow?.date), "dd-MM-yyyy") : "-"],
-  ];
+    ["Date", selectedRow?.date ? selectedRow?.date : "-"],
+  ]; 
 
   return (
     <Modal
