@@ -19,6 +19,7 @@ import type { AppDispatch } from "src/store";
 import Select from 'react-select';
 import ViewLeadmodal from "./ViewLeadmodal";
 import FollowUpmodal from "./FollowUpmodal";
+import { useLocation } from "react-router";
 
 export interface PaginationTableType {
   id?: string;
@@ -56,7 +57,9 @@ function LeadsTable({searchText ,toDate ,fromDate}) {
   const dispatch = useDispatch<AppDispatch>()
   const [editModal, setEditModal] = useState(false);
   const modalPlacement = "center";
-
+  const location = useLocation();
+  const leadId = location.state?.lead_id;
+  console.log(leadId)
   const [viewModal, setViewModal] = useState(false);
   const [followUpModal, setFollowupModal] = useState(false);
  const uniqueDistricts = Array.from(
@@ -203,6 +206,10 @@ return true;
 }, [data, filters, searchText,fromDate,toDate]);
 
   const columns = [
+    columnHelper.accessor("id", {
+  cell: (info) => <span className="hidden">{info.getValue()}</span>,
+  header: () => null,
+}),
     columnHelper.accessor("name", {
       cell: (info) => (
         <div className="flex gap-3 items-center">
@@ -320,6 +327,19 @@ return true;
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+  useEffect(() => {
+    if (!leadId) return;
+
+    const allRows = table.getPrePaginationRowModel().rows;
+
+    const rowIndex = allRows.findIndex((row) => row.getValue("id") == leadId);
+
+    if (rowIndex !== -1) {
+      const pageSize = table.getState().pagination.pageSize;
+      const targetPage = Math.floor(rowIndex / pageSize);
+      table.setPageIndex(targetPage);
+    }
+  }, [leadId, table]);
 
   return (
     <>
@@ -363,10 +383,10 @@ return true;
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="min-w-full divide-y divide-gray-200 border-collapse dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
               {table.getHeaderGroups().map((group) => (
-                <tr key={group.id}>
+                <tr key={group.id} >
                   {group.headers.map((header) => (
                     <th key={header.id} className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200">
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -375,37 +395,49 @@ return true;
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="bg-white dark:bg-gray-900">
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        key={cell.id}
-                        className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={columns.length} className="text-center py-8 px-4">
-                    <div className="flex flex-col items-center">
-                      <img
-                        src={noData}
-                        alt="No data"
-                        height={100}
-                        width={100}
-                        className="mb-4"
-                      />
-                      <p className="text-gray-500 dark:text-gray-400">No data available</p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+  {table.getRowModel().rows.length > 0 ? (
+    table.getRowModel().rows.map((row) => {
+      const isSelected =  row.getValue("id") == leadId  
+
+      return (
+        <tr
+          key={row.id}
+          className={`dark:bg-gray-900 ${
+            isSelected ? "bg-gray-200" : "bg-white"
+          }`}
+        >
+          {row.getVisibleCells().map((cell) => (
+            <td
+              key={cell.id}
+              className={`whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300 `}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          ))}
+        </tr>
+      );
+    })
+  ) : (
+    <tr>
+      <td colSpan={columns.length} className="text-center py-8 px-4">
+        <div className="flex flex-col items-center">
+          <img
+            src={noData}
+            alt="No data"
+            height={100}
+            width={100}
+            className="mb-4"
+          />
+          <p className="text-gray-500 dark:text-gray-400">
+            No data available
+          </p>
+        </div>
+      </td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
         <PaginationComponent table={table} />

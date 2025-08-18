@@ -57,6 +57,9 @@ exports.createBatching = async (req, res) => {
       flow_value,
       temperature,
       entry_time,
+      mixing_time,
+      water_consume,
+      disromate,
       hardener_qty,
       remark,
     } = req.body;
@@ -149,6 +152,9 @@ exports.createBatching = async (req, res) => {
       temperature,
       entry_time,
       hardener_qty,
+      mixing_time,
+      water_consume,
+      disromate,
       remark,
     });
 
@@ -232,6 +238,9 @@ exports.updateBatching = async (req, res) => {
       temperature,
       entry_time,
       hardener_qty,
+       mixing_time,
+      water_consume,
+      disromate,
       remark,
     } = req.body;
 
@@ -248,9 +257,9 @@ exports.updateBatching = async (req, res) => {
       soluble_oil: parseFloat(soluble_oil_qty || 0),
       aluminium: parseFloat(aluminium_qty || 0),
       mould_oil: parseFloat(mould_oil_qty || 0),
-      slurry_waste: parseFloat(slurry_waste || 0),
-      slurry_fresh: parseFloat(slurry_fresh || 0),
-      flow_value: parseFloat(flow_value || 0),
+      // slurry_waste: parseFloat(slurry_waste || 0),
+      // slurry_fresh: parseFloat(slurry_fresh || 0),
+      // flow_value: parseFloat(flow_value || 0),
     };
 
     // ✅ Step 2: Fetch total available stock
@@ -314,6 +323,9 @@ exports.updateBatching = async (req, res) => {
       temperature,
       entry_time,
       hardener_qty,
+       mixing_time,
+      water_consume,
+      disromate,
       remark,
     });
 

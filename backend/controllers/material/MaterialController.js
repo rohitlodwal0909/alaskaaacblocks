@@ -8,15 +8,15 @@ exports.createMaterial = async (req, res) => {
     const {
       mould_oil,
       receiving_id,
-      slurry_waste,
-      slurry_fresh,
+      hardner,
+      ph_booster,
       cement,
       lime,
       gypsum,
       soluble_oil,
       aluminium,
-      density,
-      flow_value,
+      nts_clate,
+      dicromate,
       user_id,
     } = req.body;
     // Create material entry
@@ -24,15 +24,15 @@ exports.createMaterial = async (req, res) => {
       mould_oil,
       receiving_id,
       user_id,
-      slurry_waste,
-      slurry_fresh,
+      hardner,
+      ph_booster,
       cement,
       lime,
       gypsum,
       soluble_oil,
       aluminium,
-      density,
-      flow_value,
+      nts_clate,
+      dicromate,
     });
 
     // Log entry (optional)
@@ -102,15 +102,15 @@ exports.updateMaterial = async (req, res) => {
 
     await MaterialEntry.update({
       mould_oil: req.body.mould_oil,
-      slurry_waste: req.body.slurry_waste,
-      slurry_fresh: req.body.slurry_fresh,
+      hardner: req.body.hardner,
+      ph_booster: req.body.ph_booster,
       cement: req.body.cement,
       lime: req.body.lime,
       gypsum: req.body.gypsum,
       soluble_oil: req.body.soluble_oil,
       aluminium: req.body.aluminium,
-      density: req.body.density,
-      flow_value: req.body.flow_value,
+      nts_clate: req.body.nts_clate,
+      dicromate: req.body.dicromate,
     });
 
     // 🔐 Logging

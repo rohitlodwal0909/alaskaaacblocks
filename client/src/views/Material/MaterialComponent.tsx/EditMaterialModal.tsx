@@ -21,15 +21,15 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
     id: Material?.id || "",
     user_id: logindata?.admin?.id || "",
     mould_oil: "",
-    // slurry_waste: "",
-    // slurry_fresh: "",
+    hardner: "",
+    ph_booster: "",
     cement: "",
     lime: "",
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    // density: "",
-    // flow_value: "",
+    nts_clate: "",
+    dicromate: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -40,15 +40,15 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
         id: Material?.id,
         user_id: logindata?.admin?.id || "",
         mould_oil: Material?.mould_oil || "",
-        // slurry_waste: Material?.slurry_waste || "",
-        // slurry_fresh: Material?.slurry_fresh || "",
+        hardner: Material?.hardner || "",
+        ph_booster: Material?.ph_booster || "",
         cement: Material?.cement || "",
         lime: Material?.lime || "",
         gypsum: Material?.gypsum || "",
         soluble_oil: Material?.soluble_oil || "",
         aluminium: Material?.aluminium || "",
-        // density: Material?.density || "",
-        // flow_value: Material?.flow_value || "",
+        nts_clate: Material?.nts_clate || "",
+       dicromate: Material?.dicromate || "",
       });
 
     }
@@ -62,15 +62,15 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
   const validateForm = () => {
     const requiredFields = [
       "mould_oil", 
-      // "slurry_waste",
-      //  "slurry_fresh", 
+      "hardner",
+       "ph_booster", 
        "cement", 
        "lime",
       "gypsum",
        "soluble_oil",
         "aluminium", 
-        // "density", 
-        // "flow_value"
+        "nts_clate", 
+       "dicromate"
     ];
     const newErrors: any = {};
     requiredFields.forEach((field) => {
@@ -104,21 +104,21 @@ setPlaceModal(false)
         <form className="grid grid-cols-12 gap-3">
           {[
             "mould_oil",
-            //  "slurry_waste (ltr)",
-            //   "slurry_fresh (ltr)",
                "cement", "lime",
             "gypsum", "soluble_oil", "aluminium",
-            //  "density (kg/m³)", 
-            //  "flow_value"
+               "hardner",
+             "ph_booster",
+             "nts_clate", 
+          "dicromate"
           ].map((field) => (
             <div className="col-span-4" key={field}>
             <Label
   value={`${field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} ${
-    field === "mould_oil" || field === "soluble_oil"
+    field === "mould_oil" || field === "soluble_oil" || field === "hardner"
       ? "(ltr)"
       : field === "aluminium"
       ? "(gm)"
-      : "(kg)"
+      : field === "ph_booster"|| field === "nts_clate" || field === "dicromate" ? "": "(kg)"
   }`}
 />
               <span className="text-red-700 ps-1">*</span>

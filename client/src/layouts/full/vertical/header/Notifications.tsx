@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { Badge, Button, Dropdown } from "flowbite-react";
 
 import SimpleBar from "simplebar-react";
-import {  useNavigate } from "react-router";
+import {  Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Avatar } from 'flowbite-react';
 import notificationicon from '../../../../assets/images/logos/notification2.png'
@@ -89,11 +89,9 @@ const Notifications = () => {
         <SimpleBar className="max-h-80 mt-3">
           {notificationList?.filter((n) => n.is_read == 0)?.map((links, index) => (
             <Dropdown.Item
-              // as={Link}
-//           to={{
-//   pathname: "/notifications",
-//   state: { id: links?.id } 
-// }}
+              as={Link}
+               to={"/lead-managment/leads"}
+              state={{ lead_id: links?.lead_id }}
               className="px-6 py-3 flex justify-between items-center bg-hover group/link w-full"
               key={index}
               onClick={() => handleRead(links?.id)}
@@ -141,8 +139,7 @@ const Notifications = () => {
       {new Date(links.date_time).toLocaleDateString()}
     </div>
   </div>
-)}
-                 
+)}     
                 </div>
               </div>
             </Dropdown.Item>

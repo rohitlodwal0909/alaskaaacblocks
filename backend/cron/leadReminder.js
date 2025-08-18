@@ -6,8 +6,6 @@ const {  Lead, LeadNote , Notification }= db
 
 function startFollowUpReminder() {
   cron.schedule("0 9 * * *", async () => {
-
-    
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const end = new Date(start);
@@ -64,6 +62,7 @@ function startFollowUpReminder() {
       const message = `You need to follow up with ${leadName} today (based on note).`;
 
       await Notification.create({
+        lead_id :note?.lead?.id,
         title,
         message,
         date_time:now,

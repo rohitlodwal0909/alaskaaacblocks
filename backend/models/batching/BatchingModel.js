@@ -73,6 +73,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false
       },
+       water_consume: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+      },
+      disromate: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false
+      },
+      mixing_time: {
+        type: DataTypes.TIME,
+        allowNull: false
+      },
       hardener_qty: {
         type: DataTypes.STRING,
         allowNull: false

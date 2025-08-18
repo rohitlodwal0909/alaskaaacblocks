@@ -71,6 +71,10 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
     { id: 'density', label: 'Density (kg/m3)', type: 'number' },
     { id: 'flow_value', label: 'Flow Value', type: 'number' },
     { id: 'temperature', label: 'Temperature (°C)', type: 'number' },
+    { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
+    { id: 'disromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
+
     { id: 'hardener_qty', label: 'Hardener Qty', placeholder: 'NIL or qty' },
     { id: 'remark', label: 'Remark', placeholder: 'Remarks or notes' },
     
@@ -83,7 +87,7 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
            {fields.map(({ id, label, type = 'text', options = [], placeholder }) => {
   const isTextarea = id === 'remark';
   const isHalfWidth = id === 'remark' || id === 'hardener_qty';
-  const isTime = id === 'entry_time';
+  const isTime = id === 'entry_time' ||  id === 'mixing_time';
   const colSpan = isHalfWidth ? 'col-span-6' : 'col-span-4';
 
   return (

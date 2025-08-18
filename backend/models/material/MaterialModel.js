@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
-      slurry_waste: {
+      hardner: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
-      slurry_fresh: {
+      ph_booster: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
@@ -46,11 +46,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
-      density: {
+      nts_clate: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
-      flow_value: {
+      dicromate: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },

@@ -1,7 +1,8 @@
 // controllers/LeadController.js
 const { createLogEntry } = require('../../helper/createLogEntry');
 const db = require('../../models');
-const { Lead,LeadNote,AuthModel}= db
+const { Op } = require("sequelize");
+const { Lead,LeadNote,AuthModel,Notification}= db
 
 exports.createLead = async (req, res) => {
   try {
@@ -56,14 +57,15 @@ await createLogEntry({
 };
 
 // Get all leads
+
 exports.getAllLeads = async (req, res) => {
- 
   try {
  
     const leads = await Lead.findAll();
-
     res.status(200).json(leads);
+
   } catch (error) {
+    console.error("❌ Error in getAllLeads:", error);
     res.status(500).json({ error: error.message });
   }
 };
