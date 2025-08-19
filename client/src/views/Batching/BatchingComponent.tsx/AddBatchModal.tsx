@@ -30,8 +30,10 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     entry_time: '',
     hardener_qty: '',
      water_consume:'',
-    disromate:'',
-    mixing_time:'',
+     mixing_time:'',
+     dicromate:'',
+    //  ph_booster: "",
+    // nts_clate: "",
     remark: '',
     mould_oil_qty: '',
   });
@@ -44,7 +46,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   };
 
   const validateForm = () => {
-  const excludedFields = ["remark", "hardener_qty","flow_value"];
+  const excludedFields = ["remark", "flow_value"];
   const requiredFields = Object.keys(formData).filter(
     (field) => !excludedFields.includes(field)
   );
@@ -94,7 +96,9 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     remark: '',
     mould_oil_qty: '',
     water_consume:'',
-    disromate:'',
+    dicromate:'',
+    // ph_booster: "",
+    // nts_clate: "",
     mixing_time:'',
   });
       setShowmodal(false)
@@ -184,14 +188,16 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     { id: 'flow_value', label: 'Flow Value', type: 'number', placeholder: 'Enter flow value' },
     { id: 'temperature', label: 'Temperature (°C)', type: 'number', placeholder: 'Enter temperature (°C)' },
     { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
-    { id: 'disromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    { id: 'dicromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    // { id: 'ph_booster', label: 'Ph Booster ', type: 'number', placeholder: 'Enter Ph Booster  ' },
+    // { id: 'nts_clate', label: 'NTS Clate ', type: 'number', placeholder: 'Enter NTS Clate' },
+    { id: 'hardener_qty', label: 'Hardner Qty', type: 'text', placeholder: 'Enter hardner qty ' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
-    { id: 'hardener_qty', label: 'Hardener Qty', type: 'text', placeholder: 'Enter hardener qty or NIL' },
     { id: 'remark', label: 'Remark', type: 'text', placeholder: 'Enter remarks or QC notes' },
   ].map(({ id, label, type = 'text', placeholder }) => {
   const isTextarea = id === 'remark';
-  const isHalfWidth = id === 'remark' || id === 'hardener_qty';
-  const columnSpan = isHalfWidth ? 'col-span-6' : 'col-span-4';
+  const isHalfWidth = id === 'remark' ;
+  const columnSpan = isHalfWidth ? 'col-span-12' : 'col-span-4';
  
   return (
     <div className={columnSpan} key={id}>
@@ -203,6 +209,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       <TimePicker
         value={formData[id] ? dayjs(formData[id]) : null}
         onChange={(value:any) => handleChange(id, value)}
+           views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']} // 👈 key line
+      format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
         slotProps={{
           textField: {
             id,

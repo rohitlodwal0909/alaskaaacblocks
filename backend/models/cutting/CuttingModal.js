@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       size: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       broken_pcs: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       time: {

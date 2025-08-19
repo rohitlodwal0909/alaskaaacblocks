@@ -50,11 +50,15 @@ const fields2 = [
    ["Lime (kg)", data?.lime],
    ["Gypsum (kg)", data?.gypsum],
    ["Soluble Oil (ltr)", data?.soluble_oil],
-   ["Aluminium Powder (gm)", data?.aluminium],
+   ["Aluminium Powder (grm)", data?.aluminium],
    ["Hardner (ltr)", data?.hardner],
-   ["Ph Booster ", data?.ph_booster],
-    ["NTS Clate", data?.nts_clate],
-    ["Dicromate", data?.dicromate],
+   ["Ph Booster (ltr)", data?.ph_booster],
+    ["Antiscalant Chemical (ltr)", data?.antiscalnt_chemical],
+    ["Dicromate (grm)", data?.wood],
+       ["Wood (tonne)", data?.diesel],
+   ["Diesel (ltr)", data?.ph_booster],
+    ["Adhesive Bag", data?.adhesive_bag],
+    ["Fly Ash (kg)", data?.fly_ash],
 ]
 
 const dispatch  = useDispatch<AppDispatch>()

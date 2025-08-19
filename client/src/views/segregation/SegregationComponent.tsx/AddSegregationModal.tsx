@@ -11,26 +11,69 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
-import { addSegregation, GetSegregation } from "src/features/Segregation/SegregationSlice"; // Adjust path if needed
+import {
+  addSegregation,
+  GetSegregation,
+} from "src/features/Segregation/SegregationSlice";
 
-const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) => {
+const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
-     user_id:logindata?.admin?.id,
+    user_id: logindata?.admin?.id,
     mould_no: segregationdata?.mould_no || "",
-    operator_name: "",
-    size: "",
-    no_of_broken_pcs: "",
-    no_of_ok_pcs: "",
+    operator_name:'',
+    entries: [
+      {
+        size: "",
+        no_of_broken_pcs: "",
+        no_of_ok_pcs: "",
+      },
+    ],
     remark: "",
   });
 
+  const [errors, setErrors] = useState<any>({});
+
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, mould_no: segregationdata?.mould_no || "" }));
+    setFormData((prev) => ({
+      ...prev,
+      mould_no: segregationdata?.mould_no || "",
+    }));
   }, [segregationdata]);
 
-  const [errors, setErrors] = useState<any>({});
+  const sizeOptions = [
+    "600x200x225",
+    "600x200x200",
+    "600x200x150",
+    "600x200x100",
+    "600x200x75",
+  ];
+
+  const handleEntryChange = (index, field, value) => {
+    const newEntries = [...formData.entries];
+    newEntries[index][field] = value;
+    setFormData((prev) => ({
+      ...prev,
+      entries: newEntries,
+    }));
+  };
+
+  const addEntryRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      entries: [...prev.entries, { size: "", no_of_broken_pcs: "", no_of_ok_pcs: "" }],
+    }));
+  };
+
+  const removeEntryRow = (index) => {
+    const newEntries = [...formData.entries];
+    newEntries.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      entries: newEntries,
+    }));
+  };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -38,17 +81,15 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) 
   };
 
   const validateForm = () => {
-    const required = [
-      "mould_no",
-      "operator_name",
-      "size",
-      "no_of_broken_pcs",
-      "no_of_ok_pcs",
-    ];
     const newErrors: any = {};
-    required.forEach((field) => {
-      if (!formData[field]) newErrors[field] = `${field.replace("_", " ")} is required`;
+    formData.entries.forEach((entry, index) => {
+      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs) {
+        newErrors[`entry_${index}`] = "All fields in this row are required";
+      }
     });
+    if (!formData.mould_no) newErrors.mould_no = "Mould No is required";
+    if (!formData.entries.length) newErrors.entries = "At least one entry is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -58,17 +99,23 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) 
     if (!validateForm()) return;
 
     try {
-      const result = await dispatch(addSegregation(formData)).unwrap();
+      const payload = {
+        ...formData,
+        user_id: logindata?.admin?.id,
+         size: formData.entries.map((row) => row.size),
+  no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
+  no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
+      };
+
+      const result = await dispatch(addSegregation(payload)).unwrap();
       toast.success(result.message || "Segregation entry created successfully");
       dispatch(GetSegregation());
 
       setFormData({
-         user_id:logindata?.admin?.id,
-        mould_no: segregationdata?.mould_no || "",
-        operator_name: "",
-        size: "",
-        no_of_broken_pcs: "",
-        no_of_ok_pcs: "",
+        operator_name:"",
+        user_id: logindata?.admin?.id,
+        mould_no:  "",
+        entries: [{ size: "", no_of_broken_pcs: "", no_of_ok_pcs: "" }],
         remark: "",
       });
 
@@ -84,11 +131,10 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) 
       <ModalBody className="overflow-auto max-h-[85vh]">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {/* Operator Name */}
-          <div className="col-span-6">
+          <div className="col-span-12">
             <Label value="Operator Name" />
-                <span className="text-red-700 ps-1">*</span>
+            <span className="text-red-700 ps-1">*</span>
             <TextInput
-              id="operator_name"
               value={formData.operator_name}
               onChange={(e) => handleChange("operator_name", e.target.value)}
               placeholder="Enter operator name"
@@ -100,64 +146,88 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata ,logindata}) 
             )}
           </div>
 
-          {/* Size */}
-          <div className="col-span-6">
-            <Label value="Size" />
-                <span className="text-red-700 ps-1">*</span>
+          {/* Mould No */}
+         
+          {/* Dynamic Entries */}
+          <div className="col-span-12 ">
+            {formData.entries.map((entry, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-12 gap-3 items-end  p-2 "
+              >
+                <div className="col-span-4">
+                  <Label value={`Size `} />
+                  <select
+                    value={entry.size}
+                    onChange={(e) => handleEntryChange(index, "size", e.target.value)}
+                    className="w-full p-2 border rounded-sm border-gray-300 text-sm"
+                  >
+                    <option value="">Select Size</option>
+                    {sizeOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s.replace(/x/g, " × ")}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <TextInput
-              id="size"
-              value={formData.size}
-              onChange={(e) => handleChange("size", e.target.value)}
-              placeholder="Enter size"
+                <div className="col-span-3">
+                  <Label value={`OK Pcs`} />
+                  <TextInput
+                    type="number"
+                    value={entry.no_of_ok_pcs}
+               
               className="form-rounded-md"
-              color={errors.size ? "failure" : "gray"}
-            />
-            {errors.size && <p className="text-red-500 text-xs">{errors.size}</p>}
-          </div>
 
-          {/* No of OK Pcs */}
-          <div className="col-span-6">
-            <Label value="No of OK Pcs" />
-                <span className="text-red-700 ps-1">*</span>
+                    onChange={(e) =>
+                      handleEntryChange(index, "no_of_ok_pcs", e.target.value)
+                    }
+                    placeholder="Enter OK Pcs"
+                  />
+                </div>
 
-            <TextInput
-              type="number"
-              id="no_of_ok_pcs"
-              value={formData.no_of_ok_pcs}
-              onChange={(e) => handleChange("no_of_ok_pcs", e.target.value)}
-              placeholder="Enter no of OK pcs"
+                <div className="col-span-3">
+                  <Label value={`Broken Pcs`} />
+                  <TextInput
+                    type="number"
+                    value={entry.no_of_broken_pcs}
               className="form-rounded-md"
-              color={errors.no_of_ok_pcs ? "failure" : "gray"}
-            />
-            {errors.no_of_ok_pcs && (
-              <p className="text-red-500 text-xs">{errors.no_of_ok_pcs}</p>
-            )}
-          </div>
 
-          {/* No of Broken Pcs */}
-          <div className="col-span-6">
-            <Label value="No of Broken Pcs" />
-                <span className="text-red-700 ps-1">*</span>
+                    onChange={(e) =>
+                      handleEntryChange(index, "no_of_broken_pcs", e.target.value)
+                    }
+                    placeholder="Enter Broken Pcs"
+                  />
+                </div>
 
-            <TextInput
-              type="number"
-              id="no_of_broken_pcs"
-              value={formData.no_of_broken_pcs}
-              onChange={(e) => handleChange("no_of_broken_pcs", e.target.value)}
-              placeholder="Enter no of broken pcs"
-              className="form-rounded-md"
-              color={errors.no_of_broken_pcs ? "failure" : "gray"}
-            />
-            {errors.no_of_broken_pcs && (
-              <p className="text-red-500 text-xs">{errors.no_of_broken_pcs}</p>
-            )}
+                <div className="col-span-2 flex gap-1">
+                  {index === 0 ? (
+                    <Button color="success" onClick={addEntryRow} type="button">
+                      +
+                    </Button>
+                  ) : (
+                    <Button
+                      color="failure"
+                      onClick={() => removeEntryRow(index)}
+                      type="button"
+                    >
+                      -
+                    </Button>
+                  )}
+                </div>
+
+                {errors[`entry_${index}`] && (
+                  <p className="text-red-500 text-xs col-span-12">
+                    {errors[`entry_${index}`]}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
 
           {/* Remark */}
           <div className="col-span-12">
             <Label value="Remark" />
-            
             <textarea
               value={formData.remark}
               onChange={(e) => handleChange("remark", e.target.value)}

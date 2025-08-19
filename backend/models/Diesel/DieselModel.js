@@ -16,6 +16,10 @@
       type: DataTypes.STRING(100),
       allowNull: true,
     },
+    description:{
+       type: DataTypes.STRING(255),
+      allowNull: true,
+    },
      time: {
       type: DataTypes.TIME,
       allowNull: true,

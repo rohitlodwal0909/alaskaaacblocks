@@ -4,7 +4,7 @@ const { Diesel ,AuthModel} = db;
 
 exports.createDiesel = async (req, res) => {
   try {
-    const { fuel_consume, meter_reading,user_id ,fuel_feel ,time} = req.body;
+    const { fuel_consume, meter_reading,user_id ,fuel_feel ,time,description} = req.body;
 
     const now = new Date();
     const newEntry = await Diesel.create({
@@ -13,7 +13,8 @@ exports.createDiesel = async (req, res) => {
       meter_reading,
       date:now,
       fuel_feel ,
-      time
+      time,
+       description
     });
 
     const entry_date = now.toISOString().split("T")[0];
@@ -70,7 +71,7 @@ exports.getDieselById = async (req, res) => {
 exports.updateDiesel = async (req, res) => {
   try {
     const DieselId = req.params.id;
-  const { fuel_consume, meter_reading ,user_id, fuel_feel ,time} = req.body;
+  const { fuel_consume, meter_reading ,user_id, fuel_feel ,time ,description} = req.body;
     // 1. Find existing record
     const existingDiesel = await Diesel.findByPk(DieselId);
     if (!existingDiesel) {
@@ -78,7 +79,7 @@ exports.updateDiesel = async (req, res) => {
     }
     // 2. Destructure metadata + readings from body
       // 4. Update all fields
-    await existingDiesel.update({ fuel_consume, meter_reading ,fuel_feel , time});
+    await existingDiesel.update({ fuel_consume, meter_reading ,fuel_feel , time,description});
 
     // 5. Logging
     const now = new Date();

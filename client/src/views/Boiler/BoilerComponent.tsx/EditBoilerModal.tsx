@@ -30,8 +30,8 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     { id: "stack_temp", label: "Stack Temp", type: "number" },
     { id: "inlet_temp", label: "Inlet Temp", type: "number" },
     { id: "fd_fan_reading", label: "FD Fan Reading", type: "number" },
-    { id: "wood_consumption", label: "Wood/Coal  Consumption", type: "number" },
-    { id: "chemical_consumption", label: "Chemical Consumption", type: "number" },
+   { id: "ph_booster", label: "PH Booster chemical (ltr)", type: "number" },
+    { id: "antiscalnt_chemical", label: "Antiscalant Chemical (ltr)", type: "number" },
     { id: "energy_meter_reading", label: "Energy Meter Reading", type: "number" },
   ];
 
@@ -42,6 +42,8 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     location: "",
     shift: "",
     done_by: "",
+      blow_tds:"",
+      blow_ph:"",
     total_wood_consumption: "",
    readings: [
     Object.fromEntries(fieldSetFields.map(({ id }) => [id, ""])), // default one entry
@@ -91,6 +93,8 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
       shift: BoilerData.shift || "",
       done_by: BoilerData.done_by || "",
       total_wood_consumption: BoilerData.total_wood_consumption || "",
+        blow_tds:BoilerData.blow_tds || "",
+      blow_ph:BoilerData.blow_ph || "",
       readings: readingsArray.length
         ? readingsArray
         : [
@@ -259,6 +263,32 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
                {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
           </div>
 
+           <div className="col-span-6">
+            <Label htmlFor="blow_tds" value="Blow down TDS" />
+            <span className="text-red-700 ps-1">*</span>
+            <TextInput
+              id="blow_tds"
+              value={formData.blow_tds}
+              onChange={(e) => handleChange("blow_tds", e.target.value)}
+              placeholder="Enter Blow down TDS"
+              className="form-rounded-md"
+            />
+               {errors.blow_tds && <p className="text-red-500 text-xs">{errors.blow_tds}</p>}
+
+          </div>
+          <div className="col-span-6">
+            <Label htmlFor="blow_ph" value="Blow down ph" />
+            <span className="text-red-700 ps-1">*</span>
+            <TextInput
+              id="blow_ph"
+              value={formData.blow_ph}
+              onChange={(e) => handleChange("blow_ph", e.target.value)}
+              placeholder="Enter Blow down ph"
+              className="form-rounded-md"
+            />
+               {errors.blow_ph && <p className="text-red-500 text-xs">{errors.blow_ph}</p>}
+
+          </div>
           {/* Render Dynamic Reading Sets */}
        {formData.readings.map((reading, index) => (
      <div key={index} className="col-span-12 border p-4 rounded-md  relative">
@@ -346,7 +376,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
           Cancel
         </Button>
         <Button color="primary" onClick={handleSubmit}>
-          Submit
+          Update
         </Button>
       </ModalFooter>
     </Modal>

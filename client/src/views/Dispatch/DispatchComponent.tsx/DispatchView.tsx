@@ -25,6 +25,7 @@ const DispatchView = ({
   selectedRow,
 }: Props) => {
   const fields = [
+    ["Party Name", selectedRow?.party_name],
     ["Driver Name", selectedRow?.driver_name],
     ["Vehicle Number", selectedRow?.vehicle_number],
     ["Delivery Area", selectedRow?.delivery_area],
@@ -33,6 +34,8 @@ const DispatchView = ({
     ["Invoice Number", selectedRow?.invoice_number],
     ["Eway Bill Number", selectedRow?.eway_bill_number],
     ["Eway Bill Expiry", selectedRow?.eway_bill_expiry ||"-"],
+      ["Transport Rate", selectedRow?.transport_rate],
+    ["Chemical Bag", selectedRow?.chemical_bag ||"-"],
     ["Material Details", selectedRow?.material_details],
 ["Quantity", (() => {
     try {

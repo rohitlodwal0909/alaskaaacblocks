@@ -12,6 +12,8 @@ exports.createBoiler = async (req, res) => {
       shift,
       done_by,
       total_wood_consumption,
+      blow_tds,
+      blow_ph,
       readings = [],
     } = req.body;
 
@@ -25,8 +27,8 @@ exports.createBoiler = async (req, res) => {
       stack_temp: [],
       inlet_temp: [],
       fd_fan_reading: [],
-      wood_consumption: [],
-      chemical_consumption: [],
+      ph_booster: [],
+      antiscalnt_chemical: [],
       energy_meter_reading: [],
     };
 
@@ -39,8 +41,8 @@ exports.createBoiler = async (req, res) => {
       combinedReadings.stack_temp.push(reading.stack_temp || null);
       combinedReadings.inlet_temp.push(reading.inlet_temp || null);
       combinedReadings.fd_fan_reading.push(reading.fd_fan_reading || null);
-      combinedReadings.wood_consumption.push(reading.wood_consumption || null);
-      combinedReadings.chemical_consumption.push(reading.chemical_consumption || null);
+      combinedReadings.ph_booster.push(reading.ph_booster || null);
+      combinedReadings.antiscalnt_chemical.push(reading.antiscalnt_chemical || null);
       combinedReadings.energy_meter_reading.push(reading.energy_meter_reading || null);
     });
 
@@ -51,7 +53,8 @@ exports.createBoiler = async (req, res) => {
       shift,
       done_by,
       total_wood_consumption,
-
+      blow_tds,
+      blow_ph,
       // readings column-wise as JSON
       time: combinedReadings.time,
       feed_water_temp: combinedReadings.feed_water_temp,
@@ -61,8 +64,8 @@ exports.createBoiler = async (req, res) => {
       stack_temp: combinedReadings.stack_temp,
       inlet_temp: combinedReadings.inlet_temp,
       fd_fan_reading: combinedReadings.fd_fan_reading,
-      wood_consumption: combinedReadings.wood_consumption,
-      chemical_consumption: combinedReadings.chemical_consumption,
+      ph_booster: combinedReadings.ph_booster,
+      antiscalnt_chemical: combinedReadings.antiscalnt_chemical,
       energy_meter_reading: combinedReadings.energy_meter_reading,
     });
 
@@ -130,7 +133,8 @@ exports.updateBoiler = async (req, res) => {
       return res.status(404).json({ message: "Boiler entry not found" });
     }
     // 2. Destructure metadata + readings from body
-    const { readings = [], user_id, done_by, shift, date , total_wood_consumption} = req.body;
+    const { readings = [], user_id, done_by, shift, date , total_wood_consumption ,  blow_tds,
+      blow_ph,} = req.body;
     
  
     // 3. Map each reading field (as arrays)
@@ -144,9 +148,9 @@ exports.updateBoiler = async (req, res) => {
     const inlet_temp = readings.map((r) => r.inlet_temp);
  
     const fd_fan_reading = readings.map((r) => r.fd_fan_reading);
-    const wood_consumption = readings.map((r) => r.wood_consumption);
+    const ph_booster = readings.map((r) => r.ph_booster);
  
-    const chemical_consumption = readings.map((r) => r.chemical_consumption);
+    const antiscalnt_chemical = readings.map((r) => r.antiscalnt_chemical);
     const energy_meter_reading = readings.map((r) => r.energy_meter_reading);
 
     // 4. Update all fields
@@ -160,13 +164,15 @@ exports.updateBoiler = async (req, res) => {
       stack_temp,
       inlet_temp,
       fd_fan_reading,
-      wood_consumption,
-      chemical_consumption,
+      ph_booster,
+      antiscalnt_chemical,
       energy_meter_reading,
       done_by,
       shift,
       total_wood_consumption,
       date,
+        blow_tds,
+      blow_ph,
     });
 
     // 5. Logging

@@ -130,8 +130,8 @@ const BoilerView = () => {
        
         <th className="border border-black px-2 py-1">Back inlet Temp.</th>
         <th className="border border-black px-2 py-1">FD Reading (HRS.)</th>
-        <th className="border border-black px-2 py-1">Wood/Coal  Consu. (Kg)</th>
-        <th className="border border-black px-2 py-1">Chemical Consu. </th>
+        <th className="border border-black px-2 py-1">Ph Booster Chemical</th>
+        <th className="border border-black px-2 py-1">Antiscalant Chemical </th>
         <th className="border border-black px-2 py-1">Energy Meter Reading</th>
         <th className="border border-black px-2 py-1">Done By</th>
       </tr>
@@ -165,9 +165,9 @@ const BoilerView = () => {
           <td className="border border-black px-2 py-1">  {JSON.parse(signleAutoClave?.fd_fan_reading || "[]")[i] || "-"} </td>
         
           <td className="border border-black px-2 py-1">
-            {JSON.parse(signleAutoClave?.wood_consumption || "[]")[i] || "-"}
+            {JSON.parse(signleAutoClave?.ph_booster || "[]")[i] || "-"}
           </td>
-          <td className="border border-black px-2 py-1">     {JSON.parse(signleAutoClave?.chemical_consumption || "[]")[i] || "-"}</td>
+          <td className="border border-black px-2 py-1">     {JSON.parse(signleAutoClave?.antiscalnt_chemical || "[]")[i] || "-"}</td>
           <td className="border border-black px-2 py-1">
             {JSON.parse(signleAutoClave?.energy_meter_reading || "[]")[i] || "-"}
           </td>
@@ -179,7 +179,7 @@ const BoilerView = () => {
       {/* Total Row */}
       <tr>
         <td colSpan={8} className="border border-black px-2 py-1 font-semibold text-right">
-          Total:
+       Wood consumption Total:
         </td>
         <td className="border border-black px-2 py-1">
           {signleAutoClave?.total_wood_consumption}

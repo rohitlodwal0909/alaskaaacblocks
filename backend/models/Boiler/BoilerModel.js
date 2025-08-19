@@ -39,11 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSON,
       allowNull: true,
     },
-    wood_consumption: {
+    ph_booster: {
       type: DataTypes.JSON,
       allowNull: true,
     },
-    chemical_consumption: {
+    antiscalnt_chemical: {
       type: DataTypes.JSON,
       allowNull: true,
     },
@@ -60,6 +60,14 @@ module.exports = (sequelize, DataTypes) => {
   allowNull: true,
 },
 shift: {
+  type: DataTypes.STRING, // ✅ correct
+  allowNull: true,
+},
+ blow_tds: {
+  type: DataTypes.STRING, // ✅ correct
+  allowNull: true,
+},
+blow_ph: {
   type: DataTypes.STRING, // ✅ correct
   allowNull: true,
 },

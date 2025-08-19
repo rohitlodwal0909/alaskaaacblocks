@@ -111,8 +111,18 @@ const filteredItems = (cuttingdata || []).filter((item: any) => {
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                     {(item?.cutting_info?.operator_name || "-").replace(/^\w/, c => c.toUpperCase())}
                   </td>
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.cutting_info?.broken_pcs || "-"}</td>
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.cutting_info?.size || "-"}</td>
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+              {Array.isArray(item?.cutting_info?.broken_pcs)
+  ? item?.cutting_info?.broken_pcs.map((val, idx) => <div key={idx}>{val}</div>)
+  : typeof item?.cutting_info?.broken_pcs === "string" && item?.cutting_info?.broken_pcs.startsWith("[")
+  ? JSON.parse(item?.cutting_info?.broken_pcs).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+  : <div>{item?.cutting_info?.broken_pcs}</div>}
+                  </td>
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300"> {Array.isArray(item?.cutting_info?.size)
+    ? item?.cutting_info?.size.join(", ")
+    : typeof item?.cutting_info?.size === "string" && item?.cutting_info?.size.startsWith("[")
+    ? JSON.parse(item?.cutting_info?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+  : <div>{item?.cutting_info?.size}</div>}</td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.cutting_info?.time
                       ? new Date(`1970-01-01T${item.cutting_info.time}`).toLocaleTimeString("en-IN", {

@@ -160,8 +160,17 @@ exports.updateStatus = async (req, res) => {
 
 // Update lead status only
 exports.addNotes = async (req, res) => {
+  const { followup_details, ...noteData } = req.body;
   try {
-    const Leadnotes = await LeadNote.create(req.body);
+     const give_range = followup_details.map((item) => item.give_range);
+    const quantity = followup_details.map((item) => item.quantity);
+    const size = followup_details.map((item) => item.size);
+    const Leadnotes = await LeadNote.create({
+      ...noteData,
+      give_range,
+      quantity,
+      size
+    });
     res.status(200).json(Leadnotes);
   } catch (error) {
     res.status(500).json({ error: error.message });

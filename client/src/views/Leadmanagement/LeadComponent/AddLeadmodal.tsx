@@ -10,7 +10,6 @@ import { AppDispatch } from 'src/store';
 import { Icon } from "@iconify/react";
 const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal ,logindata}) => {
    const dispatch = useDispatch<AppDispatch>();
-
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);
   const [formData, setFormData] = useState<any>({

@@ -28,8 +28,12 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    nts_clate: "",
+    antiscalnt_chemical: "",
     dicromate: "",
+   wood: '',
+     diesel:'',
+       adhesive_bag:'',
+       fly_ash:''
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -47,8 +51,12 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
         gypsum: Material?.gypsum || "",
         soluble_oil: Material?.soluble_oil || "",
         aluminium: Material?.aluminium || "",
-        nts_clate: Material?.nts_clate || "",
-       dicromate: Material?.dicromate || "",
+         antiscalnt_chemical: Material?.antiscalnt_chemical || "",
+         dicromate: Material?.dicromate || "",
+          wood:  Material?.wood ||'',
+     diesel: Material?.diesel ||'',
+       adhesive_bag: Material?.adhesive_bag ||'',
+       fly_ash: Material?.fly_ash ||''
       });
 
     }
@@ -69,8 +77,12 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
       "gypsum",
        "soluble_oil",
         "aluminium", 
-        "nts_clate", 
-       "dicromate"
+        "antiscalnt_chemical", 
+       "dicromate",
+       'wood',
+           'diesel',
+           'adhesive_bag',
+           'fly_ash'
     ];
     const newErrors: any = {};
     requiredFields.forEach((field) => {
@@ -108,17 +120,23 @@ setPlaceModal(false)
             "gypsum", "soluble_oil", "aluminium",
                "hardner",
              "ph_booster",
-             "nts_clate", 
-          "dicromate"
+          "dicromate",
+           "antiscalnt_chemical",
+          
+           'wood',
+           'diesel',
+           'adhesive_bag',
+           'fly_ash'
+           
           ].map((field) => (
             <div className="col-span-4" key={field}>
             <Label
   value={`${field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} ${
-    field === "mould_oil" || field === "soluble_oil" || field === "hardner"
+    field === "mould_oil" || field === "soluble_oil" || field === "hardner"  || field === "antiscalnt_chemical"  || field === "ph_booster" || field === "diesel" 
       ? "(ltr)"
-      : field === "aluminium"
-      ? "(gm)"
-      : field === "ph_booster"|| field === "nts_clate" || field === "dicromate" ? "": "(kg)"
+      : field === "aluminium"|| field === "dicromate"
+      ? "(grm)"
+      : field === "adhesive_bag" ? "": field === "wood" ?"(tonne)" : "(kg)"
   }`}
 />
               <span className="text-red-700 ps-1">*</span>

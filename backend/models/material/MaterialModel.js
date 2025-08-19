@@ -46,11 +46,27 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
-      nts_clate: {
+      antiscalnt_chemical: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
       dicromate: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+       wood: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      diesel: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      adhesive_bag: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      fly_ash: {
         type: DataTypes.FLOAT,
         allowNull: true,
       },

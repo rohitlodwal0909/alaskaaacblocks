@@ -33,6 +33,9 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
     quantity_size_list: [{ quantity: "", size: "" }], // dynamic
     loading_picture: null,
     quality_check: "",
+    chemical_bag:"",
+    party_name:"",
+    transport_rate:"",
     person_responsible: "",
     time: "",
     eway_bill_expiry: "",
@@ -113,6 +116,26 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
       const result = await dispatch(addDispatch(data)).unwrap();
       toast.success(result.message || "Dispatch entry created successfully");
       dispatch(GetDispatch());
+   setFormData({
+    user_id: logindata?.admin?.id || "",
+    vehicle_number: "",
+    transport_name: "",
+    driver_name: "",
+    driver_number: "",
+    delivery_area: "",
+    invoice_number: "",
+    eway_bill_number: "",
+    material_details: "",
+    quantity_size_list: [{ quantity: "", size: "" }], // dynamic
+    loading_picture: null,
+    quality_check: "",
+    chemical_bag:"",
+    party_name:"",
+    transport_rate:"",
+    person_responsible: "",
+    time: "",
+    eway_bill_expiry: "",
+  })
       setShowmodal(false);
     } catch (err) {
       toast.error("Failed to create Dispatch entry");
@@ -125,6 +148,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
       <ModalBody className="overflow-auto">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {[
+            { label: "Party Name", field: "party_name" },
             { label: "Vehicle Number", field: "vehicle_number" },
             { label: "Transport Name", field: "transport_name" },
             { label: "Driver Name", field: "driver_name" },
@@ -219,7 +243,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
             {errors.eway_bill_expiry && <p className="text-red-500 text-xs">{errors.eway_bill_expiry}</p>}
           </div>
  {/* File Upload */}
-          <div className="col-span-4">
+           <div className="col-span-4">
             <Label value="Loading Picture Upload" />
             <input
               type="file"
@@ -229,7 +253,36 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
             />
             {errors.loading_picture && <p className="text-red-500 text-xs">{errors.loading_picture}</p>}
           </div>
+           <div className="col-span-4">
+            <Label value="Transport Rate" />
+          
+            <TextInput
+              type="text"
+              value={formData.transport_rate}
+              onChange={(e) => handleChange("transport_rate", e.target.value)}
+              className="form-rounded-md"
+              placeholder="Enter Transport Rate"
+              color={errors.transport_rate ? "failure" : "gray"}
+            />
+            {errors.transport_rate && <p className="text-red-500 text-xs">{errors.transport_rate}</p>}
+          </div>
+          
+           <div className="col-span-4">
+            <Label value="Chemical Bag" />
+          
+            <TextInput
+              type="text"
+              value={formData.chemical_bag}
+              onChange={(e) => handleChange("chemical_bag", e.target.value)}
+              className="form-rounded-md"
+              placeholder="Enter Chemical Bag"
+              
+              color={errors.chemical_bag ? "failure" : "gray"}
+            />
+            {errors.chemical_bag && <p className="text-red-500 text-xs">{errors.chemical_bag}</p>}
+          </div>
           {/* Dynamic Quantity & Size */}
+
           <div className="col-span-12">
             <Label value="Quantity & Size" />
             <span className="text-red-700 ps-1">*</span>

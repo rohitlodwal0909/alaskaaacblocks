@@ -6,6 +6,7 @@ import {
   ModalHeader,
   Label,
   TextInput,
+  Textarea,
 } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -26,7 +27,8 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
     fuel_consume: "",
     meter_reading: "",
     time:"",
-    fuel_feel:""
+    fuel_feel:"",
+    description:""
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -56,7 +58,8 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
         meter_reading: Dieseldata?.meter_reading || '',
          user_id:logindata?.admin?.id ,
              time:Dieseldata?.time || '',
-         fuel_feel:Dieseldata?.fuel_feel || ''
+         fuel_feel:Dieseldata?.fuel_feel || '',
+         description:Dieseldata?.description || '',
       });
     }
   }, [Dieseldata]);
@@ -168,6 +171,18 @@ const EditDieselModal = ({ show, setShowmodal, Dieseldata,logindata }) => {
                     </LocalizationProvider>
                     {errors.time && <p className="text-red-500 text-xs">{errors.time}</p>}
                   </div>
+                   <div className="col-span-12">
+                                        <Label value="Description" />
+                                        {/* <span className="text-red-700 ps-1">*</span> */}
+                                        <Textarea
+                                          value={formData.description}
+                                          onChange={(e) => handleChange("description", e.target.value)}
+                                          className="border rounded-md"
+                                          placeholder="Enter description"
+                                          color={errors.description ? "failure" : "gray"}
+                                        />
+                                        {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+                                      </div>
         </form>
       </ModalBody>
       <ModalFooter className="justify-end">

@@ -134,28 +134,79 @@ useEffect(() => {
   <p className="text-gray-500">No follow-up data available.</p>
 ) : (
     <div className="overflow-x-auto my-2">
-    <table className="min-w-full text-sm text-left text-gray-800 border border-gray-300">
-      <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-        <tr>
-          <th className="px-4 py-3 border">#</th>
-          <th className="px-4 py-3 border">Notes</th>
-          <th className="px-4 py-3 border">Follow-up Date</th>
-          <th className="px-4 py-3 border">Call Type</th>
-          <th className="px-4 py-3 border">Range </th>
-        </tr>
-      </thead>
-      <tbody>
-        {showFollowup.map((item, index) => (
-          <tr key={index} className="hover:bg-gray-50">
-            <td className="px-4 py-2 border">{index + 1}</td>
-            <td className="px-4 py-2 border break-words">{item.notes}</td>
-            <td className="px-4 py-2 border">{item.followUpDate || "-"}</td>
-            <td className="px-4 py-2 border capitalize">{item.callType}</td>
-            <td className="px-4 py-2 border capitalize">{item.give_range}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+   <table className="min-w-full text-sm text-left text-gray-800 border border-gray-300">
+  <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+    <tr>
+      <th className="px-4 py-3 border">#</th>
+      <th className="px-4 py-3 border">Notes</th>
+      <th className="px-4 py-3 border">Follow-up Date</th>
+      <th className="px-4 py-3 border">Call Type</th>
+      <th className="px-4 py-3 border">Quantity</th>
+      <th className="px-4 py-3 border">Size</th>
+      <th className="px-4 py-3 border">Give Range</th>
+    </tr>
+  </thead>
+  <tbody>
+ {showFollowup.map((item, index) => (
+  <tr key={index} className="hover:bg-gray-50">
+    <td className="px-4 py-2 border">{index + 1}</td>
+    <td className="px-4 py-2 border break-words">{item.notes}</td>
+    <td className="px-4 py-2 border">{item.followUpDate || "-"}</td>
+    <td className="px-4 py-2 border capitalize">{item.callType}</td>
+
+    {/* Quantity */}
+    <td className="px-4 py-2 border">
+      {(() => {
+        let data = item.quantity;
+        if (typeof data === "string" && data.startsWith("[")) {
+          try {
+            data = JSON.parse(data);
+          } catch {
+            data = [data];
+          }
+        }
+        if (!Array.isArray(data)) data = [data];
+        return data.map((val, i) => <div key={i}>{i + 1}. {val}</div>);
+      })()}
+    </td>
+
+    {/* Size */}
+    <td className="px-4 py-2 border">
+      {(() => {
+        let data = item.size;
+        if (typeof data === "string" && data.startsWith("[")) {
+          try {
+            data = JSON.parse(data);
+          } catch {
+            data = [data];
+          }
+        }
+        if (!Array.isArray(data)) data = [data];
+        return data.map((val, i) => <div key={i}>{i + 1}. {val}</div>);
+      })()}
+    </td>
+
+    {/* Give Range */}
+    <td className="px-4 py-2 border">
+      {(() => {
+        let data = item.give_range;
+        if (typeof data === "string" && data.startsWith("[")) {
+          try {
+            data = JSON.parse(data);
+          } catch {
+            data = [data];
+          }
+        }
+        if (!Array.isArray(data)) data = [data];
+        return data.map((val, i) => <div key={i}>{i + 1}. {val}</div>);
+      })()}
+    </td>
+  </tr>
+))}
+
+  </tbody>
+</table>
+
   </div>
 )}
 

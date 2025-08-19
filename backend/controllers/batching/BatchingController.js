@@ -59,7 +59,9 @@ exports.createBatching = async (req, res) => {
       entry_time,
       mixing_time,
       water_consume,
-      disromate,
+      dicromate,
+      // ph_booster,
+      // nts_clate,
       hardener_qty,
       remark,
     } = req.body;
@@ -81,9 +83,10 @@ exports.createBatching = async (req, res) => {
       soluble_oil: parseFloat(soluble_oil_qty || 0),
       aluminium: parseFloat(aluminium_qty || 0),
       mould_oil: parseFloat(mould_oil_qty || 0),
-      // slurry_waste: parseFloat(slurry_waste || 0),
-      // slurry_fresh: parseFloat(slurry_fresh || 0),
-      // flow_value:parseFloat(flow_value || 0)
+      dicromate : parseFloat(dicromate || 0),
+      // ph_booster: parseFloat(ph_booster || 0),
+      // nts_clate:parseFloat(nts_clate || 0),
+      hardner: parseFloat(hardener_qty || 0),
     };
 
     const allMaterials = await Material.findAll();
@@ -154,7 +157,7 @@ exports.createBatching = async (req, res) => {
       hardener_qty,
       mixing_time,
       water_consume,
-      disromate,
+      dicromate,
       remark,
     });
 
@@ -240,7 +243,9 @@ exports.updateBatching = async (req, res) => {
       hardener_qty,
        mixing_time,
       water_consume,
-      disromate,
+      dicromate,
+      // ph_booster,
+      // nts_clate,
       remark,
     } = req.body;
 
@@ -257,9 +262,10 @@ exports.updateBatching = async (req, res) => {
       soluble_oil: parseFloat(soluble_oil_qty || 0),
       aluminium: parseFloat(aluminium_qty || 0),
       mould_oil: parseFloat(mould_oil_qty || 0),
-      // slurry_waste: parseFloat(slurry_waste || 0),
-      // slurry_fresh: parseFloat(slurry_fresh || 0),
-      // flow_value: parseFloat(flow_value || 0),
+      dicromate : parseFloat(dicromate || 0),
+      // ph_booster: parseFloat(ph_booster || 0),
+      // nts_clate:parseFloat(nts_clate || 0),
+      hardner: parseFloat(hardener_qty || 0),
     };
 
     // ✅ Step 2: Fetch total available stock
@@ -325,7 +331,9 @@ exports.updateBatching = async (req, res) => {
       hardener_qty,
        mixing_time,
       water_consume,
-      disromate,
+      dicromate,
+      //  ph_booster,
+      // nts_clate,
       remark,
     });
 

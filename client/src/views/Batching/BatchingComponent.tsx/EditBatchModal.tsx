@@ -72,7 +72,7 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
     { id: 'flow_value', label: 'Flow Value', type: 'number' },
     { id: 'temperature', label: 'Temperature (°C)', type: 'number' },
     { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
-    { id: 'disromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    { id: 'dicromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
 
     { id: 'hardener_qty', label: 'Hardener Qty', placeholder: 'NIL or qty' },
@@ -110,6 +110,8 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             value={formData[id] ? dayjs(formData[id], 'HH:mm:ss') : null}
+               views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']} // 👈 key line
+      format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
             onChange={(value) => {
               const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
               handleChange(id, formatted);

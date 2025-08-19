@@ -91,7 +91,8 @@ exports.updateSegregation = async (req, res) => {
       remark: req.body.remark,
       operator_name: req.body.operator_name,
     });
- const user_id = segregation?.user_id;
+    
+     const user_id = segregation?.user_id;
            const now = new Date();
           const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
           const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss

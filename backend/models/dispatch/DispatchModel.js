@@ -43,7 +43,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-
+ party_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      transport_rate: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+       chemical_bag: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       material_details: {
         type: DataTypes.TEXT,
         allowNull: false,

@@ -38,6 +38,9 @@ const EditDispatchModal = ({ show, setShowmodal, Dispatch, logindata }) => {
     loading_picture: null,
     quality_check: "",
     person_responsible: "",
+     chemical_bag:"",
+    party_name:"",
+    transport_rate:"",
     time: "",
     eway_bill_expiry: "",
   });
@@ -105,6 +108,9 @@ try {
         loading_picture: Dispatch?.loading_picture || "",
         quality_check: Dispatch?.quality_check || "",
         person_responsible: Dispatch?.person_responsible || "",
+         chemical_bag: Dispatch?.chemical_bag ||"",
+    party_name: Dispatch?.party_name ||"",
+    transport_rate: Dispatch?.transport_rate ||"",
         time: Dispatch?.time || "",
         date: Dispatch?.date || "",
       });
@@ -200,6 +206,7 @@ try {
         <form className="grid grid-cols-12 gap-3">
           {/* Form Fields */}
           {[
+            { label: "Party Name", field: "party_name" },
             { label: "Vehicle Number", field: "vehicle_number" },
             { label: "Transport Name", field: "transport_name" },
             { label: "Driver Name", field: "driver_name" },
@@ -295,7 +302,36 @@ try {
             {errors.eway_bill_expiry && <p className="text-red-500 text-xs">{errors.eway_bill_expiry}</p>}
           </div>
    {/* File Upload */}
-          <div className="col-span-4">
+         
+           <div className="col-span-4">
+                      <Label value="Transport Rate" />
+                    
+                      <TextInput
+                        type="text"
+                        value={formData.transport_rate}
+                        onChange={(e) => handleChange("transport_rate", e.target.value)}
+                        className="form-rounded-md"
+                        placeholder="Enter Transport Rate"
+                        color={errors.transport_rate ? "failure" : "gray"}
+                      />
+                      {errors.transport_rate && <p className="text-red-500 text-xs">{errors.transport_rate}</p>}
+                    </div>
+                    
+                     <div className="col-span-4">
+                      <Label value="Chemical Bag" />
+                    
+                      <TextInput
+                        type="text"
+                        value={formData.chemical_bag}
+                        onChange={(e) => handleChange("chemical_bag", e.target.value)}
+                        className="form-rounded-md"
+                        placeholder="Enter Chemical Bag"
+                        
+                        color={errors.chemical_bag ? "failure" : "gray"}
+                      />
+                      {errors.chemical_bag && <p className="text-red-500 text-xs">{errors.chemical_bag}</p>}
+                    </div>
+                     <div className="col-span-4">
             <Label value="Loading Picture Upload" />
             <input
               type="file"

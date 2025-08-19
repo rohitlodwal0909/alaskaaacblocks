@@ -17,6 +17,9 @@ exports.createDispatch = async (req, res) => {
       material_details,
       quantity_size_list, // ← JSON string from frontend
       quality_check,
+      party_name,
+      transport_rate,
+      chemical_bag,
       person_responsible,
       time,
       eway_bill_expiry,
@@ -58,6 +61,9 @@ exports.createDispatch = async (req, res) => {
       quality_check,
       person_responsible,
       time,
+        party_name,
+      transport_rate,
+      chemical_bag,
       eway_bill_expiry,
       date: formattedDate,
     });
@@ -156,6 +162,9 @@ exports.updateDispatch = async (req, res) => {
       quality_check: req.body.quality_check,
       person_responsible: req.body.person_responsible,
       time: req.body.time,
+        party_name :req.body.party_name,
+      transport_rate:req.body.transport_rate,
+      chemical_bag:req.body.chemical_bag,
       eway_bill_expiry: req.body.eway_bill_expiry,
     });
 

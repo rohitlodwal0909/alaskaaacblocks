@@ -47,12 +47,14 @@ const ViewBatchModal = ({
   ["Flow Value", selectedRow?.flow_value],
   ["Temperature (°C)", selectedRow?.temperature],
   ["Water Consume", selectedRow?.density],
-  ["Dicromate", selectedRow?.disromate],
-  ["Mixing Time", selectedRow?.mixing_time? new Date(`1970-01-01T${selectedRow?.mixing_time}`).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
+  ["Dicromate", selectedRow?.dicromate],
+["Mixing Time", selectedRow?.mixing_time
+  ? new Date(`1970-01-01T${selectedRow?.mixing_time}`).toLocaleTimeString("en-IN", {
       minute: "2-digit",
-      hour12: true,
-    }) : '-'],
+      second: "2-digit",
+      hour12: false,
+    })+" min/s"
+  : '-'],
 
   ["Hardener Qty", selectedRow?.hardener_qty],
   ["Mould Oil Qty", selectedRow?.mould_oil_qty],

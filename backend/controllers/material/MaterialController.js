@@ -15,8 +15,12 @@ exports.createMaterial = async (req, res) => {
       gypsum,
       soluble_oil,
       aluminium,
-      nts_clate,
+      antiscalnt_chemical,
       dicromate,
+      wood,
+      diesel	,
+      adhesive_bag,
+      fly_ash,
       user_id,
     } = req.body;
     // Create material entry
@@ -31,8 +35,12 @@ exports.createMaterial = async (req, res) => {
       gypsum,
       soluble_oil,
       aluminium,
-      nts_clate,
+      antiscalnt_chemical,
       dicromate,
+       wood,
+      diesel	,
+      adhesive_bag,
+      fly_ash,
     });
 
     // Log entry (optional)
@@ -109,8 +117,12 @@ exports.updateMaterial = async (req, res) => {
       gypsum: req.body.gypsum,
       soluble_oil: req.body.soluble_oil,
       aluminium: req.body.aluminium,
-      nts_clate: req.body.nts_clate,
+      antiscalnt_chemical: req.body.antiscalnt_chemical,
       dicromate: req.body.dicromate,
+       wood: req.body.wood,
+      diesel: req.body.diesel	,
+      adhesive_bag: req.body.adhesive_bag,
+      fly_ash: req.body.fly_ash,
     });
 
     // 🔐 Logging

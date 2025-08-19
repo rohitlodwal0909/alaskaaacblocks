@@ -77,10 +77,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
       },
-      disromate: {
-        type: DataTypes.DECIMAL(5, 2),
+      //  ph_booster: {
+      //    type: DataTypes.DECIMAL(10, 2),
+      //   allowNull: false
+      //       },
+      dicromate: {
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false
-      },
+      }, 
+      // nts_clate: {
+      //   type: DataTypes.DECIMAL(10, 2),
+      //   allowNull: false
+      // },
       mixing_time: {
         type: DataTypes.TIME,
         allowNull: false

@@ -21,15 +21,19 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
     user_id: logindata?.admin?.id || "",
     receiving_id:Receiving?.id ||"",
     mould_oil: "",
-    ph_booster: "",
     hardner: "",
     cement: "",
     lime: "",
     gypsum: "",
     soluble_oil: "",
     aluminium: "",
-    nts_clate: "",
+    ph_booster: "",
+    antiscalnt_chemical: "",
    dicromate: "",
+    wood: "",
+      diesel: ""	,
+      adhesive_bag: "",
+      fly_ash: "",
   });
 
     useEffect(()=>{
@@ -46,17 +50,25 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const validateForm = () => {
-    const requiredFields = Object.keys(formData).filter((key) => key !== "user_id" && key === "receiving_id");
-    const newErrors: any = {};
-    requiredFields.forEach((field) => {
-      if (!formData[field]) {
-        newErrors[field] = `${field.replace(/_/g, " ")} is required`;
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+const validateForm = () => {
+  const requiredFields = Object.keys(formData).filter((key) => key !== "user_id");
+  const newErrors: any = {};
+
+  requiredFields.forEach((field) => {
+    if (
+      formData[field] === undefined ||
+      formData[field] === null ||
+      formData[field] === "" ||
+      (Array.isArray(formData[field]) && formData[field].length === 0)
+    ) {
+      newErrors[field] = `${field.replace(/_/g, " ")} is required`;
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +79,24 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
       toast.success(result.message || "Material entry created successfully");
       dispatch(GetReceiving())
       setShowmodal(false);
+       setFormData({
+    user_id: logindata?.admin?.id || "",
+    receiving_id:Receiving?.id ||"",
+    mould_oil: "",
+    hardner: "",
+    cement: "",
+    lime: "",
+    gypsum: "",
+    soluble_oil: "",
+    aluminium: "",
+    ph_booster: "",
+    antiscalnt_chemical: "",
+   dicromate: "",
+    wood: "",
+      diesel: ""	,
+      adhesive_bag: "",
+      fly_ash: "",
+  });
     } catch (err) {
       toast.error("Failed to create material entry");
     }
@@ -83,11 +113,15 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
             { label: "Lime (kg)", field: "lime" },
             { label: "Gypsum (kg)", field: "gypsum" },
             { label: "Soluble Oil (ltr)", field: "soluble_oil" },
-            { label: "Aluminium Powder(gm)", field: "aluminium" },
+            { label: "Aluminium Powder(grm)", field: "aluminium" },
             { label: "Hardner (ltr)", field: "hardner" },
-            { label: "Ph Booster", field: "ph_booster" },
-            { label: "NTS Clate", field: "nts_clate" },
-             {label: 'Dicromate', field:'dicromate'},
+             { label: "Ph Booster (ltr)", field: "ph_booster" },
+             {label: 'Dicromate (grm)', field:'dicromate'},
+             { label: "Antiscalant Chemical (ltr) ", field: "antiscalnt_chemical" },
+            { label: "Wood (tonne)", field: "wood" },
+              {label: 'Diesel (ltr)', field:'diesel'},
+             {label: 'Adhesive bag', field:'adhesive_bag'},
+             {label: 'fly Ash (kg)', field:'fly_ash'},
           ].map(({ label, field }) => (
             <div className="col-span-4" key={field}>
               <Label value={label} />

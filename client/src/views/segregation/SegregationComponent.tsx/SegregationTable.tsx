@@ -128,16 +128,39 @@ const SegregationTable = () => {
                 
                 
                      <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.no_of_ok_pcs || '-'}
+                 
+                 {item?.segregation_entries?.[0]?.no_of_ok_pcs ? (
+  Array.isArray(item.segregation_entries[0].no_of_ok_pcs) ? (
+    item.segregation_entries[0].no_of_ok_pcs.map((val, idx) => <div key={idx}>{val}</div>)
+  ) : typeof item.segregation_entries[0].no_of_ok_pcs === "string" &&
+    item.segregation_entries[0].no_of_ok_pcs.startsWith("[") ? (
+    JSON.parse(item.segregation_entries[0].no_of_ok_pcs).map((val, idx) => <div key={idx}>{idx + 1}. {val}</div>)
+  ) : (
+    <div>{item.segregation_entries[0].no_of_ok_pcs}</div>
+  )
+) : (
+  <div>-</div> // fallback if no data
+)}
                   </td>
                     <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.no_of_broken_pcs  || '-'}
+                   
+                    {Array.isArray(item?.segregation_entries[0]?.no_of_broken_pcs)
+    ? item?.segregation_entries[0]?.no_of_broken_pcs.join(", ")
+    : typeof item?.segregation_entries[0]?.no_of_broken_pcs === "string" && item?.segregation_entries[0].no_of_broken_pcs.startsWith("[")
+    ? JSON.parse(item?.segregation_entries[0]?.no_of_broken_pcs).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+    : <div>{item?.segregation_entries[0]?.no_of_broken_pcs }</div>}
                   </td>
                     <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.size || '-'}
+
+                    {Array.isArray(item?.segregation_entries[0]?.size)
+    ? item?.segregation_entries[0]?.size.join(", ")
+    : typeof item?.segregation_entries[0]?.size === "string" && item?.segregation_entries[0]?.size.startsWith("[")
+    ? JSON.parse(item?.segregation_entries[0]?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+    : <div>{item?.segregation_entries[0]?.size} </div>}
                   </td>
                     <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.segregation_entries[0]?.date|| '-'}
+                    
                   </td>
                     <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.segregation_entries[0]?.remark || '-'}

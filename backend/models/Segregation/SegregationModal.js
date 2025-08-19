@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       size: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
       },
       no_of_broken_pcs: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.JSON,
       },
       no_of_ok_pcs: {
-        type: DataTypes.INTEGER,
+         type: DataTypes.JSON,
       },
       remark: {
         type: DataTypes.TEXT,
