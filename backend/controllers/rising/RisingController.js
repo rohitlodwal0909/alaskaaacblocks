@@ -42,6 +42,9 @@ exports.createRising = async (req, res) => {
 exports.getAllRising = async (req, res) => {
   try {
     const batchings = await Batching.findAll({
+      where: {
+        deleted_at: null, // Only non-deleted Rising entries
+      },
   include: [
     {
       model: Rising,

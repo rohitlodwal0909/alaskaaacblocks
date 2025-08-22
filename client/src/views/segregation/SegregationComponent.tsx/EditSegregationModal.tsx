@@ -53,18 +53,23 @@ useEffect(() => {
     : typeof entry.no_of_broken_pcs === "string" && entry.no_of_broken_pcs.startsWith("[")
     ? JSON.parse(entry.no_of_broken_pcs)
     : [];
-
+  const plateno = Array.isArray(entry.plate_no)
+    ? entry.plate_no
+    : typeof entry.plate_no === "string" && entry.plate_no.startsWith("[")
+    ? JSON.parse(entry.plate_no)
+    : [];
   const entries = sizes.map((size, index) => ({
     size: size || '',
     no_of_ok_pcs: okPcs[index] || '',
     no_of_broken_pcs: brokenPcs[index] || '',
+    plate_no:plateno[index] || '',
   }));
 
   setFormData({
     id: entry?.id || '',
     mould_no: entry?.mould_no || '',
     operator_name: entry?.operator_name || '',
-    entries: entries.length ? entries : [{ size: '', no_of_ok_pcs: '', no_of_broken_pcs: '' }],
+    entries: entries.length ? entries : [{ size: '', no_of_ok_pcs: '', no_of_broken_pcs: '',plate_no:'' }],
     remark: entry?.remark || '',
   });
 }, [autoclave]);
@@ -78,7 +83,7 @@ useEffect(() => {
   const addEntryRow = () => {
     setFormData((prev) => ({
       ...prev,
-      entries: [...prev.entries, { size: '', no_of_ok_pcs: '', no_of_broken_pcs: '' }],
+      entries: [...prev.entries, { size: '', no_of_ok_pcs: '', no_of_broken_pcs: '',plate_no:'' }],
     }));
   };
 
@@ -96,7 +101,7 @@ useEffect(() => {
   const validateForm = () => {
     const newErrors: any = {};
     formData.entries.forEach((entry, index) => {
-      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs) {
+      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs|| !entry.plate_no) {
         newErrors[`entry_${index}`] = 'All fields in this row are required';
       }
     });
@@ -116,6 +121,7 @@ useEffect(() => {
           size: formData.entries.map((row) => row.size),
        no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
       no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
+      plate_no: formData.entries.map((row) => row.plate_no),
       };
 
       const result = await dispatch(updateSegregation(payload)).unwrap();
@@ -148,65 +154,93 @@ useEffect(() => {
           </div>
 
           {/* Entries Loop */}
-          <div className="col-span-12">
-            {formData.entries.map((entry, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-12 gap-3 items-end p-2 "
-              >
-                  <div className="col-span-4">
-                                  <Label value={`Size `} />
-                                  <select
-                                    value={entry.size}
-                                    onChange={(e) => handleEntryChange(index, "size", e.target.value)}
-                                    className="w-full p-2 border rounded-sm border-gray-300 text-sm"
-                                  >
-                                    <option value="">Select Size</option>
-                                    {sizeOptions.map((s) => (
-                                      <option key={s} value={s}>
-                                        {s.replace(/x/g, " × ")}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
-            
-                <div className="col-span-3">
-                  <Label value="OK Pcs" />
-                  <TextInput
-                    type="number"
-                    value={entry.no_of_ok_pcs}
-                    onChange={(e) => handleEntryChange(index, 'no_of_ok_pcs', e.target.value)}
-                    placeholder="OK"
-                  />
+       <div className="col-span-12 ">
+                  {formData.entries.map((entry, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-10 gap-3 items-end  p-2 "
+                    >
+                      <div className="col-span-3">
+                        <Label value={`Size `} />
+                        <select
+                          value={entry.size}
+                          onChange={(e) => handleEntryChange(index, "size", e.target.value)}
+                          className="w-full p-2 border rounded-sm border-gray-300 text-sm"
+                        >
+                          <option value="">Select Size</option>
+                          {sizeOptions.map((s) => (
+                            <option key={s} value={s}>
+                              {s.replace(/x/g, " × ")}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+      
+                      <div className="col-span-2">
+                        <Label value={`OK Pcs`} />
+                        <TextInput
+                          type="number"
+                          value={entry.no_of_ok_pcs}
+                     
+                    className="form-rounded-md"
+      
+                          onChange={(e) =>
+                            handleEntryChange(index, "no_of_ok_pcs", e.target.value)
+                          }
+                          placeholder="Enter OK Pcs"
+                        />
+                      </div>
+      
+                      <div className="col-span-2">
+                        <Label value={`Broken Pcs`} />
+                        <TextInput
+                          type="number"
+                          value={entry.no_of_broken_pcs}
+                    className="form-rounded-md"
+      
+                          onChange={(e) =>
+                            handleEntryChange(index, "no_of_broken_pcs", e.target.value)
+                          }
+                          placeholder="Enter Broken Pcs"
+                        />
+                      </div>
+        <div className="col-span-2">
+                        <Label value={`Plate No.`} />
+                        <TextInput
+                          type="number"
+                          value={entry.plate_no}
+                         className="form-rounded-md"
+      
+                          onChange={(e) =>
+                            handleEntryChange(index, "plate_no", e.target.value)
+                          }
+                          placeholder="Enter Plate Number"
+                        />
+                      </div>
+                      <div className="col-span-1 flex gap-1">
+                        {index === 0 ? (
+                          <Button color="success" onClick={addEntryRow} type="button">
+                            +
+                          </Button>
+                        ) : (
+                          <Button
+                            color="failure"
+                            onClick={() => removeEntryRow(index)}
+                            type="button"
+                          >
+                            -
+                          </Button>
+                        )}
+                      </div>
+      
+                      {errors[`entry_${index}`] && (
+                        <p className="text-red-500 text-xs col-span-12">
+                          {errors[`entry_${index}`]}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <div className="col-span-3">
-                  <Label value="Broken Pcs" />
-                  <TextInput
-                    type="number"
-                    value={entry.no_of_broken_pcs}
-                    onChange={(e) => handleEntryChange(index, 'no_of_broken_pcs', e.target.value)}
-                    placeholder="Broken"
-                  />
-                </div>
-                <div className="col-span-2 flex gap-1">
-                  {index === 0 ? (
-                    <Button color="success" type="button" onClick={addEntryRow}>
-                      +
-                    </Button>
-                  ) : (
-                    <Button color="failure" type="button" onClick={() => removeEntryRow(index)}>
-                      -
-                    </Button>
-                  )}
-                </div>
-                {errors[`entry_${index}`] && (
-                  <p className="text-red-500 text-xs col-span-12">
-                    {errors[`entry_${index}`]}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
 
           {/* Remark */}
           <div className="col-span-12">

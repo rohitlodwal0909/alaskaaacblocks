@@ -1,4 +1,5 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
+const {   validateAndUpdateFinishGood } = require("../../helper/validateAndUpdateFinishGood");
 const db = require("../../models");
 const { Segregation, Dispatch ,AuthModel} = db;
 
@@ -25,9 +26,6 @@ exports.createDispatch = async (req, res) => {
       eway_bill_expiry,
     } = req.body;
 
-    console.log("Raw Request Body:", req.body);
-
-    // Parse quantity_size_list JSON string
     let quantityList = [];
     let sizeList = [];
 
@@ -39,6 +37,12 @@ exports.createDispatch = async (req, res) => {
       return res.status(400).json({ error: "Invalid quantity_size_list format" });
     }
 
+    
+    // 🔁 VALIDATE and UPDATE Segregation table
+    const validationResult = await validateAndUpdateFinishGood(sizeList, quantityList);
+    if (!validationResult.success) {
+      return res.status(400).json({ error: validationResult.message });
+    }
     const profileImageFile = req.file;
     const profileImagePath = profileImageFile ? `/uploads/${profileImageFile.filename}` : null;
 
@@ -130,7 +134,6 @@ exports.updateDispatch = async (req, res) => {
       return res.status(404).json({ message: "Dispatch entry not found" });
     }
 
-    // Parse quantity_size_list
     let quantityList = [];
     let sizeList = [];
 
@@ -141,6 +144,16 @@ exports.updateDispatch = async (req, res) => {
     } catch (jsonErr) {
       return res.status(400).json({ error: "Invalid quantity_size_list format" });
     }
+
+
+    // ✅ Validate Segregation table availability and deduct
+    const segregationResult = await validateAndUpdateFinishGood(sizeList, quantityList);
+    if (!segregationResult.success) {
+      return res.status(400).json( segregationResult.message);
+    }
+
+
+
 
     const profileImageFile = req.file;
     const profileImagePath = profileImageFile

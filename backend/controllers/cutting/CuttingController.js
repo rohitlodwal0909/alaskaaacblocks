@@ -37,6 +37,9 @@ exports.createCutting = async (req, res) => {
 exports.getAllCutting = async (req, res) => {
   try {
     const data = await Rising.findAll({
+      where: {
+        deleted_at: null, // Only non-deleted Rising entries
+      },
       include: [
         {
           model: Cutting,

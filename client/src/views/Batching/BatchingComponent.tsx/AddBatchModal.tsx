@@ -46,7 +46,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   };
 
   const validateForm = () => {
-  const excludedFields = ["remark", "flow_value"];
+  const excludedFields = ["remark", "flow_value","hardener_qty"];
   const requiredFields = Object.keys(formData).filter(
     (field) => !excludedFields.includes(field)
   );
@@ -175,8 +175,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
 
   {/* Rest of the fields */}
   {[
-    { id: 'entry_time', label: 'Entry Time', type: 'time', placeholder: 'Select entry time' },
-    { id: 'mould_oil_qty', label: 'Mould Oil Qty (ltr)', type: 'number', placeholder: 'Enter mould oil (ltr)' },
+    { id: 'entry_time', label: 'Discharge Time', type: 'time', placeholder: 'Select Discharge Time' },
+    { id: 'mould_oil_qty', label: 'Mould Oil Qty (ml)', type: 'number', placeholder: 'Enter mould oil (ml)' },
     { id: 'slurry_waste', label: 'Slurry Waste (ltr)', type: 'number', placeholder: 'Enter waste slurry (ltr)' },
     { id: 'slurry_fresh', label: 'Slurry Fresh (ltr)', type: 'number', placeholder: 'Enter fresh slurry (ltr)' },
     { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number', placeholder: 'Enter cement (kg)' },
@@ -188,10 +188,10 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     { id: 'flow_value', label: 'Flow Value', type: 'number', placeholder: 'Enter flow value' },
     { id: 'temperature', label: 'Temperature (°C)', type: 'number', placeholder: 'Enter temperature (°C)' },
     { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
-    { id: 'dicromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    { id: 'dicromate', label: 'Dicromate (gm)', type: 'number', placeholder: 'Enter Dicromate (gm)' },
     // { id: 'ph_booster', label: 'Ph Booster ', type: 'number', placeholder: 'Enter Ph Booster  ' },
     // { id: 'nts_clate', label: 'NTS Clate ', type: 'number', placeholder: 'Enter NTS Clate' },
-    { id: 'hardener_qty', label: 'Hardner Qty', type: 'text', placeholder: 'Enter hardner qty ' },
+    { id: 'hardener_qty', label: 'Hardner Qty (ltr)', type: 'number', placeholder: 'Enter hardner qty (ltr)' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
     { id: 'remark', label: 'Remark', type: 'text', placeholder: 'Enter remarks or QC notes' },
   ].map(({ id, label, type = 'text', placeholder }) => {
@@ -202,7 +202,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   return (
     <div className={columnSpan} key={id}>
     <Label htmlFor={id} value={label} />
-   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' || id === 'flow_value'  ? ""  :  "*"}</span>
+   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' || id === 'flow_value' || id === 'hardener_qty' ? ""  :  "*"}</span>
   {/* Time Picker Field */}
   {id === 'entry_time'  ||  id === 'mixing_time' ? (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -263,6 +263,14 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       placeholder={placeholder}
       onChange={(e) => handleChange(id, e.target.value)}
       color={errors[id] ? 'failure' : 'gray'}
+      onKeyDown={(e) => {
+    if (
+      type === "number" && 
+      ["e", "E", "+", "-", "."].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
+  }}
       className={` ${!isHalfWidth && id ==="entry_time"  && 'form-rounded-md'}`}
       style={{
         height: isHalfWidth ? '67px' : undefined,

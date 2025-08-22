@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       no_of_ok_pcs: {
          type: DataTypes.JSON,
       },
+       plate_no: {
+         type: DataTypes.JSON,
+      },
       remark: {
         type: DataTypes.TEXT,
       },

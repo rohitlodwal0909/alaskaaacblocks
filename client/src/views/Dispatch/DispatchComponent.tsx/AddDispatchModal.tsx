@@ -19,7 +19,13 @@ import dayjs from "dayjs";
 
 const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const sizeOptions = [
+    "600x200x225",
+    "600x200x200",
+    "600x200x150",
+    "600x200x100",
+    "600x200x75",
+  ];
   const [formData, setFormData] = useState<any>({
     user_id: logindata?.admin?.id || "",
     vehicle_number: "",
@@ -74,7 +80,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
   const validateForm = () => {
     const requiredFields = [
       "vehicle_number", "transport_name", "driver_name", "driver_number", "delivery_area",
-      "invoice_number", "material_details",
+      "invoice_number",
       "quality_check", "person_responsible", "time", 
     ];
 
@@ -102,7 +108,6 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
@@ -112,7 +117,6 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
           data.append(key, formData[key]);
         }
       });
-
       const result = await dispatch(addDispatch(data)).unwrap();
       toast.success(result.message || "Dispatch entry created successfully");
       dispatch(GetDispatch());
@@ -137,8 +141,9 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
     eway_bill_expiry: "",
   })
       setShowmodal(false);
-    } catch (err) {
-      toast.error("Failed to create Dispatch entry");
+    } catch (error) {
+      console.log(error.response?.data)
+      toast.error(  error.response?.data?.error || error?.message|| "Failed to create Dispatch entry");
     }
   };
 
@@ -186,10 +191,6 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
               {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
             </div>
           ))}
-
-
-         
-
           {/* Time Picker */}
           <div className="col-span-4">
             <Label value="Dispatch Time" />
@@ -284,11 +285,26 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
           {/* Dynamic Quantity & Size */}
 
           <div className="col-span-12">
-            <Label value="Quantity & Size" />
+            <Label value=" Size & Quantity " />
             <span className="text-red-700 ps-1">*</span>
 
             {formData.quantity_size_list.map((row, index) => (
               <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2">
+                 <div className="col-span-5">
+                   <select
+                      value={row.size}
+                            onChange={(e) => handleQuantitySizeChange(index, "size", e.target.value)}
+                    className="w-full p-2 border rounded-sm border-gray-300 text-sm"
+                  >
+                    <option value="">Select Size</option>
+                    {sizeOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s.replace(/x/g, " × ")}
+                      </option>
+                    ))}
+                  </select>
+                 
+                </div>
                 <div className="col-span-5">
                   <TextInput
                     placeholder="Enter quantity"
@@ -297,14 +313,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
                     onChange={(e) => handleQuantitySizeChange(index, "quantity", e.target.value)}
                   />
                 </div>
-                <div className="col-span-5">
-                  <TextInput
-                    placeholder="Enter size"
-                    value={row.size}
-                    className="form-rounded-md"
-                    onChange={(e) => handleQuantitySizeChange(index, "size", e.target.value)}
-                  />
-                </div>
+               
                 <div className="col-span-2 flex gap-2">
                   {index > 0  && (
                     <Button color="failure" size="sm" onClick={() => removeQuantitySizeRow(index)}>
@@ -327,7 +336,7 @@ const AddDispatchModal = ({ show, setShowmodal, logindata }) => {
           {/* Material Details */}
           <div className="col-span-12">
             <Label value="Material Details" />
-            <span className="text-red-700 ps-1">*</span>
+          
             <Textarea
               value={formData.material_details}
               onChange={(e) => handleChange("material_details", e.target.value)}

@@ -29,25 +29,23 @@ const ViewBatchModal = ({
   ["Operator Name", selectedRow?.operator_name],
   ["Shift", selectedRow?.shift],
   ["Batch Date",selectedRow?.batch_date ], // format if needed
-  ["Entry Time", selectedRow?.entry_time ?  new Date(`1970-01-01T${selectedRow?.entry_time}`).toLocaleTimeString("en-IN", {
+  ["Discharge Time", selectedRow?.entry_time ?  new Date(`1970-01-01T${selectedRow?.entry_time}`).toLocaleTimeString("en-IN", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     }) : '-'], // format if needed
-
   ["Slurry Waste (kg)", selectedRow?.slurry_waste],
   ["Slurry Fresh (kg)", selectedRow?.slurry_fresh],
   ["Cement Qty (kg)", selectedRow?.cement_qty],
   ["Lime Qty (kg)", selectedRow?.lime_qty],
   ["Gypsum Qty (kg)", selectedRow?.gypsum_qty],
-
   ["Soluble Oil Qty (kg)", selectedRow?.soluble_oil_qty],
   ["Aluminium Powder (gm)", selectedRow?.aluminium_qty],
   ["Density (kg/m³)", selectedRow?.density],
   ["Flow Value", selectedRow?.flow_value],
   ["Temperature (°C)", selectedRow?.temperature],
   ["Water Consume", selectedRow?.density],
-  ["Dicromate", selectedRow?.dicromate],
+  ["Dicromate (gm)", selectedRow?.dicromate],
 ["Mixing Time", selectedRow?.mixing_time
   ? new Date(`1970-01-01T${selectedRow?.mixing_time}`).toLocaleTimeString("en-IN", {
       minute: "2-digit",
@@ -56,7 +54,7 @@ const ViewBatchModal = ({
     })+" min/s"
   : '-'],
 
-  ["Hardener Qty", selectedRow?.hardener_qty],
+  ["Hardener Qty (ltr)", selectedRow?.hardener_qty],
   ["Mould Oil Qty", selectedRow?.mould_oil_qty],
   ["Remark", selectedRow?.remark],
 ];

@@ -17,7 +17,7 @@ const AddCuttingModal = ({ show, setShowmodal, batchingData,logindata }) => {
     mould_no: batchingData?.mould_no || '',
     operator_name: '',
     sizes: [''],
-  broken_pcs: [''],
+      broken_pcs: [''],
     time: '',
     remark: '',
   });

@@ -41,6 +41,9 @@ exports.createAutoclave = async (req, res) => {
 exports.getAllAutoclave = async (req, res) => {
   try {
     const data = await Cutting.findAll({
+      where: {
+        deleted_at: null, // Only non-deleted Rising entries
+      },
       include: [
         {
           model: Autoclave,

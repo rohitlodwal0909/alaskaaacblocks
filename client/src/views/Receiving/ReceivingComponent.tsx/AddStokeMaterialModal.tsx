@@ -43,36 +43,36 @@ const AddStokeMaterialModal = ({ show, setShowmodal, logindata ,Receiving}) => {
 
     },[Receiving?.id])
 
-  const [errors, setErrors] = useState<any>({});
+  // const [errors, setErrors] = useState<any>({});
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    // setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-const validateForm = () => {
-  const requiredFields = Object.keys(formData).filter((key) => key !== "user_id");
-  const newErrors: any = {};
+// const validateForm = () => {
+//   const requiredFields = Object.keys(formData).filter((key) => key !== "user_id");
+//   const newErrors: any = {};
 
-  requiredFields.forEach((field) => {
-    if (
-      formData[field] === undefined ||
-      formData[field] === null ||
-      formData[field] === "" ||
-      (Array.isArray(formData[field]) && formData[field].length === 0)
-    ) {
-      newErrors[field] = `${field.replace(/_/g, " ")} is required`;
-    }
-  });
+//   requiredFields.forEach((field) => {
+//     if (
+//       formData[field] === undefined ||
+//       formData[field] === null ||
+//       formData[field] === "" ||
+//       (Array.isArray(formData[field]) && formData[field].length === 0)
+//     ) {
+//       newErrors[field] = `${field.replace(/_/g, " ")} is required`;
+//     }
+//   });
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+//   setErrors(newErrors);
+//   return Object.keys(newErrors).length === 0;
+// };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    // if (!validateForm()) return;
 
     try {
       const result = await dispatch(addMaterial(formData)).unwrap();
@@ -113,10 +113,10 @@ const validateForm = () => {
             { label: "Lime (kg)", field: "lime" },
             { label: "Gypsum (kg)", field: "gypsum" },
             { label: "Soluble Oil (ltr)", field: "soluble_oil" },
-            { label: "Aluminium Powder(grm)", field: "aluminium" },
+            { label: "Aluminium Powder(kg)", field: "aluminium" },
             { label: "Hardner (ltr)", field: "hardner" },
              { label: "Ph Booster (ltr)", field: "ph_booster" },
-             {label: 'Dicromate (grm)', field:'dicromate'},
+             {label: 'Dicromate (kg)', field:'dicromate'},
              { label: "Antiscalant Chemical (ltr) ", field: "antiscalnt_chemical" },
             { label: "Wood (tonne)", field: "wood" },
               {label: 'Diesel (ltr)', field:'diesel'},
@@ -125,15 +125,21 @@ const validateForm = () => {
           ].map(({ label, field }) => (
             <div className="col-span-4" key={field}>
               <Label value={label} />
-              <span className="text-red-700 ps-1">*</span>
+              {/* <span className="text-red-700 ps-1">*</span> */}
               <TextInput
                 value={formData[field]}
+                type="number"
                 onChange={(e) => handleChange(field, e.target.value)}
                 placeholder={`Enter ${label.toLowerCase()}`}
                 className="form-rounded-md"
-                color={errors[field] ? "failure" : "gray"}
+                 onKeyDown={(e) => {
+    if (["e", "E", "+", "-", "."].includes(e.key)) {
+      e.preventDefault();
+    }
+  }}
+                // color={errors[field] ? "failure" : "gray"}
               />
-              {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+              {/* {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>} */}
             </div>
           ))}
         </form>

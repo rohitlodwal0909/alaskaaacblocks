@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   segregationdata: [],
   signlesegregation:[],
+  finishgood:[],
   addResult: null,  
   updateResult: null,
   deleteResult: null 
@@ -25,6 +26,21 @@ export const GetSegregation= createAsyncThunk(
     }
   }
 );
+
+export const GetFinishGood= createAsyncThunk(
+  "GetFinishGood/fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-finishgood`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const GetSegregationSingle= createAsyncThunk(
   "GetSegregationSingle/getSingle",
   async (id:string, thunkAPI) => {
@@ -46,6 +62,21 @@ export const addSegregation = createAsyncThunk(
   async (formdata:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${apiUrl}/store-segregation`,
+        formdata);
+      return response.data;
+    } catch (error) {
+      // Return a rejected action containing the error message
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+export const addfinishgood = createAsyncThunk(
+  "finishgood/add",
+  async (formdata:any, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${apiUrl}/store-finishgood`,
         formdata);
       return response.data;
     } catch (error) {
@@ -99,6 +130,18 @@ const SegregationSlice = createSlice({
         state.segregationdata = action.payload;
       })
       .addCase(GetSegregation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+       .addCase(GetFinishGood.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetFinishGood.fulfilled, (state, action) => {
+        state.loading = false;
+        state.finishgood = action.payload;
+      })
+      .addCase(GetFinishGood.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

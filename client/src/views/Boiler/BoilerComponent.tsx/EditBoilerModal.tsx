@@ -39,7 +39,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     id:"",
     user_id: logindata?.admin?.id,
     date: "",
-    location: "",
+    // location: "",
     shift: "",
     done_by: "",
       blow_tds:"",
@@ -89,7 +89,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
       id: BoilerData.id || "",
       user_id: logindata?.admin?.id,
       date: BoilerData.date || "",
-      location: BoilerData.location || "",
+      // location: BoilerData.location || "",
       shift: BoilerData.shift || "",
       done_by: BoilerData.done_by || "",
       total_wood_consumption: BoilerData.total_wood_consumption || "",
@@ -130,7 +130,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     setFormData((prev) => ({ ...prev, readings: updated }));
   };
 
-  const requiredFields = ["date", "location", "shift", "done_by", "total_wood_consumption"];
+  const requiredFields = ["date", "shift", "done_by", "total_wood_consumption"];
 
  const validateForm = () => {
   const newErrors: any = {};
@@ -237,7 +237,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
                {errors.total_wood_consumption && <p className="text-red-500 text-xs">{errors.total_wood_consumption}</p>}
 
           </div>
-          <div className="col-span-6">
+          {/* <div className="col-span-6">
             <Label htmlFor="location" value="Location" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -249,8 +249,8 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
             />
                {errors.location && <p className="text-red-500 text-xs">{errors.location}</p>}
 
-          </div>
-          <div className="col-span-6">
+          </div> */}
+          <div className="col-span-4">
             <Label htmlFor="date" value="Date" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -263,7 +263,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
                {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
           </div>
 
-           <div className="col-span-6">
+           <div className="col-span-4">
             <Label htmlFor="blow_tds" value="Blow down TDS" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -276,7 +276,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
                {errors.blow_tds && <p className="text-red-500 text-xs">{errors.blow_tds}</p>}
 
           </div>
-          <div className="col-span-6">
+          <div className="col-span-4">
             <Label htmlFor="blow_ph" value="Blow down ph" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput

@@ -36,7 +36,7 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
        fly_ash:''
   });
 
-  const [errors, setErrors] = useState<any>({});
+  // const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     if (Material) {
@@ -54,7 +54,7 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
          antiscalnt_chemical: Material?.antiscalnt_chemical || "",
          dicromate: Material?.dicromate || "",
           wood:  Material?.wood ||'',
-     diesel: Material?.diesel ||'',
+        diesel: Material?.diesel ||'',
        adhesive_bag: Material?.adhesive_bag ||'',
        fly_ash: Material?.fly_ash ||''
       });
@@ -64,39 +64,39 @@ const EditMaterialModal = ({ show, setShowmodal, Material, logindata,setPlaceMod
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    // setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const validateForm = () => {
-    const requiredFields = [
-      "mould_oil", 
-      "hardner",
-       "ph_booster", 
-       "cement", 
-       "lime",
-      "gypsum",
-       "soluble_oil",
-        "aluminium", 
-        "antiscalnt_chemical", 
-       "dicromate",
-       'wood',
-           'diesel',
-           'adhesive_bag',
-           'fly_ash'
-    ];
-    const newErrors: any = {};
-    requiredFields.forEach((field) => {
-      if (!formData[field]) {
-        newErrors[field] = `${field.replace(/_/g, " ")} is required`;
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // const validateForm = () => {
+  //   const requiredFields = [
+  //     "mould_oil", 
+  //     "hardner",
+  //      "ph_booster", 
+  //      "cement", 
+  //      "lime",
+  //     "gypsum",
+  //      "soluble_oil",
+  //       "aluminium", 
+  //       "antiscalnt_chemical", 
+  //      "dicromate",
+  //      'wood',
+  //          'diesel',
+  //          'adhesive_bag',
+  //          'fly_ash'
+  //   ];
+  //   const newErrors: any = {};
+  //   requiredFields.forEach((field) => {
+  //     if (!formData[field]) {
+  //       newErrors[field] = `${field.replace(/_/g, " ")} is required`;
+  //     }
+  //   });
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    // if (!validateForm()) return;
 
     try {
       const result = await dispatch(updateMaterial(formData)).unwrap();
@@ -122,7 +122,6 @@ setPlaceModal(false)
              "ph_booster",
           "dicromate",
            "antiscalnt_chemical",
-          
            'wood',
            'diesel',
            'adhesive_bag',
@@ -135,20 +134,25 @@ setPlaceModal(false)
     field === "mould_oil" || field === "soluble_oil" || field === "hardner"  || field === "antiscalnt_chemical"  || field === "ph_booster" || field === "diesel" 
       ? "(ltr)"
       : field === "aluminium"|| field === "dicromate"
-      ? "(grm)"
+      ? "(kg)"
       : field === "adhesive_bag" ? "": field === "wood" ?"(tonne)" : "(kg)"
   }`}
 />
-              <span className="text-red-700 ps-1">*</span>
+              {/* <span className="text-red-700 ps-1">*</span> */}
               <TextInput
                 value={formData[field]}
                 onChange={(e) => handleChange(field, e.target.value)}
                 placeholder={`Enter ${field.replace(/_/g, " ")}`}
                 type="number"
                 className="form-rounded-md"
-                color={errors[field] ? "failure" : "gray"}
+                onKeyDown={(e) => {
+    if (["e", "E", "+", "-", "."].includes(e.key)) {
+      e.preventDefault();
+    }
+  }}
+                // color={errors[field] ? "failure" : "gray"}
               />
-              {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+              {/* {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>} */}
             </div>
           ))}
         </form>

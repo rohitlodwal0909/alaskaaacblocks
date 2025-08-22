@@ -23,6 +23,13 @@ import { imageurl } from "src/constants/contant";
 
 const EditDispatchModal = ({ show, setShowmodal, Dispatch, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const sizeOptions = [
+    "600x200x225",
+    "600x200x200",
+    "600x200x150",
+    "600x200x100",
+    "600x200x75",
+  ];
   const [formData, setFormData] = useState<any>({
     id: Dispatch?.id,
     user_id: logindata?.admin?.id || "",
@@ -155,7 +162,7 @@ try {
       "delivery_area",
       "invoice_number",
       "eway_bill_number",
-      "material_details",
+    
       "quality_check",
       "person_responsible",
       "time",
@@ -351,28 +358,36 @@ try {
             {errors.loading_picture && <p className="text-red-500 text-xs">{errors.loading_picture}</p>}
           </div>
           {/* Dynamic Quantity & Size */}
-          <div className="col-span-12">
-            <Label value="Quantity & Size" />
+           <div className="col-span-12">
+            <Label value=" Size & Quantity " />
             <span className="text-red-700 ps-1">*</span>
 
             {formData.quantity_size_list.map((row, index) => (
               <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2">
+                 <div className="col-span-5">
+                   <select
+                      value={row.size}
+                            onChange={(e) => handleQuantitySizeChange(index, "size", e.target.value)}
+                    className="w-full p-2 border rounded-sm border-gray-300 text-sm"
+                  >
+                    <option value="">Select Size</option>
+                    {sizeOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s.replace(/x/g, " × ")}
+                      </option>
+                    ))}
+                  </select>
+                 
+                </div>
                 <div className="col-span-5">
                   <TextInput
                     placeholder="Enter quantity"
-                value={row.quantity}
+                    value={row.quantity}
                       className="form-rounded-md"
                     onChange={(e) => handleQuantitySizeChange(index, "quantity", e.target.value)}
                   />
                 </div>
-                <div className="col-span-5">
-                  <TextInput
-                    placeholder="Enter size"
-                    value={row.size}
-                    className="form-rounded-md"
-                    onChange={(e) => handleQuantitySizeChange(index, "size", e.target.value)}
-                  />
-                </div>
+               
                 <div className="col-span-2 flex gap-2">
                   {index > 0  && (
                     <Button color="failure" size="sm" onClick={() => removeQuantitySizeRow(index)}>
@@ -395,7 +410,7 @@ try {
           {/* Material Details */}
           <div className="col-span-12">
             <Label value="Material Details" />
-            <span className="text-red-700 ps-1">*</span>
+            {/* <span className="text-red-700 ps-1">*</span> */}
             <Textarea
               value={formData.material_details}
               onChange={(e) =>

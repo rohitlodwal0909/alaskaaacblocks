@@ -56,7 +56,7 @@ export const addDispatch = createAsyncThunk(
     } catch (error) {
       // Return a rejected action containing the error message
       return rejectWithValue(
-        error.response?.data?.message || error.message || "Something went wrong"
+         error || error.response?.data?.message ||"Something went wrong"
       );
     }
   }

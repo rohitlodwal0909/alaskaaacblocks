@@ -74,7 +74,7 @@ const EditRisingModal = ({ show, setShowmodal, risingData }) => {
           {[
             { id: 'hardness', label: 'Hardness', type: 'number', placeholder: 'Enter hardness' },
             { id: 'temperature', label: 'Temperature (°C)', type: 'number', placeholder: 'Enter temperature' },
-            { id: 'rising_time', label: 'Rising Time', type: 'time', placeholder: 'Enter rising time (e.g. 08:15)' },
+            { id: 'rising_time', label: 'Cutting time', type: 'time', placeholder: 'Enter Cutting time (e.g. 08:15)' },
             { id: 'operator_name', label: 'Operator Name', type: 'text', placeholder: 'Enter operator name' },
             { id: 'remark', label: 'Remark', type: 'textarea', placeholder: 'Any notes or comments' }
           ].map(({ id, label, type, placeholder }) => {

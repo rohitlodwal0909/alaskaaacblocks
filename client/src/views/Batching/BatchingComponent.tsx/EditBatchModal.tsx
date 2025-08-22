@@ -12,9 +12,28 @@ import dayjs from 'dayjs';
 const EditBatchModal = ({ open, setOpen, batchingData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({});
-
-  const required = ['shift', 'operator_name', 'mould_no', 'cement_qty'];
-  const [errors, setErrors] = useState({});
+const requiredFields = [
+  "mould_no",
+  "operator_name",
+  "shift",
+  "entry_time",
+  "mould_oil_qty",
+  "slurry_waste",
+  "slurry_fresh",
+  "cement_qty",
+  "lime_qty",
+  "gypsum_qty",
+  "soluble_oil_qty",
+  "aluminium_qty",
+  "density",
+  "temperature",
+  "water_consume",
+  "dicromate",
+  "mixing_time"
+  // ✅ "flow_value", "remark", "hardener_qty" are NOT included here (optional)
+];
+  // const required = ['shift', 'operator_name', 'mould_no', 'cement_qty' ,'mould_no'];
+  const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     if (batchingData) {
@@ -27,18 +46,28 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    required.forEach((field) => {
-      if (!formData[field]) newErrors[field] = `${field} is required`;
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+const validateForm = () => {
+  const newErrors: any = {};
+  requiredFields.forEach((field) => {
+    const value = formData[field];
 
-  const handleSubmit = async (e) => {
+    if (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    ) {
+      newErrors[field] = `${field.replace(/_/g, " ")} is required`;
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+
+  const handleSubmit = async (e :any) => {
     e.preventDefault();
-    if (!validateForm()) return;
+ if (!validateForm()) return;
     try {
      await dispatch(updateBatching(formData)).unwrap();
       toast.success("Batch updated successfully");
@@ -59,23 +88,22 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
     { id: 'mould_no', label: 'Mould No', type: 'number', placeholder: 'Enter mould no' },
     { id: 'operator_name', label: 'Operator Name', placeholder: 'Enter operator name' },
     { id: 'shift', label: 'Shift', type: 'select', options: ['Day', 'Night'] },
-    { id: 'entry_time', label: 'Entry Time', type: 'time', placeholder: 'Enter time' },
-    { id: 'mould_oil_qty', label: 'Mould Oil Qty  (ltr)', type: 'number' },
+    { id: 'entry_time', label: 'Discharge Time', type: 'time', placeholder: 'Enter Discharge Time' },
+    { id: 'mould_oil_qty', label: 'Mould Oil Qty  (ml)', type: 'number' },
     { id: 'slurry_waste', label: 'Slurry Waste  (ltr)', type: 'number' },
     { id: 'slurry_fresh', label: 'Slurry Fresh  (ltr)', type: 'number' },
     { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number' },
     { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number' },
     { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number' },
     { id: 'soluble_oil_qty', label: 'Soluble Oil Qty  (ltr)', type: 'number' },
-    { id: 'aluminium_qty', label: 'Aluminium Powder (gm)', type: 'number' },
+    { id: 'aluminium_qty', label: 'Aluminium Powder (grm)', type: 'number' },
     { id: 'density', label: 'Density (kg/m3)', type: 'number' },
     { id: 'flow_value', label: 'Flow Value', type: 'number' },
     { id: 'temperature', label: 'Temperature (°C)', type: 'number' },
     { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
-    { id: 'dicromate', label: 'Dicromate ', type: 'number', placeholder: 'Enter Dicromate ' },
+    { id: 'dicromate', label: 'Dicromate (gm)', type: 'number', placeholder: 'Enter Dicromate (gm) ' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
-
-    { id: 'hardener_qty', label: 'Hardener Qty', placeholder: 'NIL or qty' },
+    { id: 'hardener_qty', label: 'Hardener Qty (ltr)',   type: 'number' ,placeholder: 'NIL or qty' },
     { id: 'remark', label: 'Remark', placeholder: 'Remarks or notes' },
     
 ];
@@ -93,6 +121,7 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
   return (
     <div className={colSpan} key={id}>
       <Label htmlFor={id} value={label} />
+   <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' || id === 'flow_value' || id === 'hardener_qty' ? ""  :  "*"}</span>
 
       {type === 'select' ? (
         <select
@@ -168,6 +197,14 @@ const EditBatchModal = ({ open, setOpen, batchingData }) => {
           onChange={(e) => handleChange(id, e.target.value)}
           placeholder={placeholder || `Enter ${label.toLowerCase()}`}
           className={` ${!isHalfWidth && 'form-rounded-md'}`}
+          onKeyDown={(e) => {
+    if (
+      type === "number" && 
+      ["e", "E", "+", "-", "."].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
+  }}
           style={{ height: isHalfWidth ? '67px' : undefined, borderRadius: '8px' }}
           color={errors[id] ? 'failure' : 'gray'}
         />

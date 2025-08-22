@@ -124,13 +124,13 @@ const SidebarContent: MenuItem[] = [
             icon: "bi:fuel-pump-diesel",
             color: "text-primary",
           },
-          //  {
-          //   id: uniqueId(),
-          //   url: "/security",
-          //   name: "Security ",
-          //   icon: "hugeicons:security-lock",
-          //   color: "text-primary",
-          // },
+           {
+            id: uniqueId(),
+            url: "/finish-good",
+            name: "Finish Good  ",
+            icon: "hugeicons:security-lock",
+            color: "text-primary",
+          },
            {
             id: uniqueId(),
             url: "/dispatch",

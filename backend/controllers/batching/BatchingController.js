@@ -81,9 +81,9 @@ exports.createBatching = async (req, res) => {
       lime: parseFloat(lime_qty || 0),
       gypsum: parseFloat(gypsum_qty || 0),
       soluble_oil: parseFloat(soluble_oil_qty || 0),
-      aluminium: parseFloat(aluminium_qty || 0),
-      mould_oil: parseFloat(mould_oil_qty || 0),
-      dicromate : parseFloat(dicromate || 0),
+      aluminium: parseFloat(aluminium_qty || 0) / 1000, 
+      mould_oil: parseFloat(mould_oil_qty || 0) / 1000, 
+      dicromate : parseFloat(dicromate || 0) / 1000,
       // ph_booster: parseFloat(ph_booster || 0),
       // nts_clate:parseFloat(nts_clate || 0),
       hardner: parseFloat(hardener_qty || 0),
@@ -184,7 +184,9 @@ exports.getAllBatching = async (req, res) => {
  
   try {
  
-   const batchings = await Batching.findAll();
+   const batchings = await Batching.findAll({where: {
+        deleted_at: null, // Only non-deleted Rising entries
+      },});
  
     res.status(200).json(batchings);
   } catch (error) {
@@ -192,38 +194,10 @@ exports.getAllBatching = async (req, res) => {
   }
 };
 
-
-// exports.updateBatching = async (req, res) => {
-//   try {
-//     const batching = await Batching.findByPk(req.params.id);
-//     if (!batching) {
-//       return res.status(404).json({ message: "Batch entry not found" });
-//     }
-
-//     await batching.update({ ...req.body });
-//      const user_id = batching?.user_id;
-//        const now = new Date();
-//       const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-//       const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
-//     const user = await AuthModel.findByPk(user_id);
-//     const username = user ? user?.name : "Unknown User";
-//     const logMessage = `Batching  mould number ${batching?.mould_no}  was updated by ${username} on ${entry_date} at ${entry_time}.`;
-//     await createLogEntry({
-//       user_id,
-//       message:logMessage
-//     });
-//     res.status(200).json(batching);
-//   } catch (error) {
-//     console.error("Update Batching Error:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-
 exports.updateBatching = async (req, res) => {
   try {
     const {
-      id, // ID of the batching entry to update
+      id,
       user_id,
       shift,
       operator_name,
@@ -241,11 +215,9 @@ exports.updateBatching = async (req, res) => {
       temperature,
       entry_time,
       hardener_qty,
-       mixing_time,
+      mixing_time,
       water_consume,
       dicromate,
-      // ph_booster,
-      // nts_clate,
       remark,
     } = req.body;
 
@@ -254,63 +226,83 @@ exports.updateBatching = async (req, res) => {
       return res.status(404).json({ error: "Batching entry not found." });
     }
 
-    // ✅ Step 1: Calculate required materials for update
-    const requiredMaterials = {
+    // Step 1: Unit-adjusted new values (convert to same units as Material table)
+    const newMaterials = {
       cement: parseFloat(cement_qty || 0),
       lime: parseFloat(lime_qty || 0),
       gypsum: parseFloat(gypsum_qty || 0),
       soluble_oil: parseFloat(soluble_oil_qty || 0),
-      aluminium: parseFloat(aluminium_qty || 0),
-      mould_oil: parseFloat(mould_oil_qty || 0),
-      dicromate : parseFloat(dicromate || 0),
-      // ph_booster: parseFloat(ph_booster || 0),
-      // nts_clate:parseFloat(nts_clate || 0),
+      aluminium: parseFloat(aluminium_qty || 0) / 1000, // gm → kg
+      mould_oil: parseFloat(mould_oil_qty || 0) / 1000, // ml → liter
+      dicromate: parseFloat(dicromate || 0) / 1000,     // gm → kg
       hardner: parseFloat(hardener_qty || 0),
     };
 
-    // ✅ Step 2: Fetch total available stock
+    // Step 2: Old values (unit-adjusted)
+    const oldMaterials = {
+      cement: parseFloat(batching.cement_qty || 0),
+      lime: parseFloat(batching.lime_qty || 0),
+      gypsum: parseFloat(batching.gypsum_qty || 0),
+      soluble_oil: parseFloat(batching.soluble_oil_qty || 0),
+      aluminium: parseFloat(batching.aluminium_qty || 0) / 1000,
+      mould_oil: parseFloat(batching.mould_oil_qty || 0) / 1000,
+      dicromate: parseFloat(batching.dicromate || 0) / 1000,
+      hardner: parseFloat(batching.hardener_qty || 0),
+    };
+
+    // Step 3: Calculate difference (new - old)
+    const diffMaterials = {};
+    for (const key in newMaterials) {
+      const diff = newMaterials[key] - oldMaterials[key];
+      if (diff !== 0) {
+        diffMaterials[key] = diff;
+      }
+    }
+
     const allMaterials = await Material.findAll();
-    const materialTotals = {};
-    for (const mat of Object.keys(requiredMaterials)) {
-      materialTotals[mat] = allMaterials.reduce((sum, row) => {
-        return sum + parseFloat(row[mat] || 0);
-      }, 0);
-    }
 
-    // ✅ Step 3: Check material availability
-    for (const [mat, requiredQty] of Object.entries(requiredMaterials)) {
-      const availableQty = materialTotals[mat] || 0;
-      if (requiredQty > 0 && availableQty < requiredQty) {
-        return res.status(400).json({
-          error: `Material ${mat} is insufficient — required: ${requiredQty}, available: ${availableQty}.`,
-        });
+    // Step 4: Check and apply material updates
+    for (const [mat, diffQty] of Object.entries(diffMaterials)) {
+      if (diffQty > 0) {
+        // Need to deduct extra
+        const totalAvailable = allMaterials.reduce((sum, row) => sum + parseFloat(row[mat] || 0), 0);
+        if (totalAvailable < diffQty) {
+          return res.status(400).json({
+            error: `Material ${mat} is insufficient — required: ${diffQty}, available: ${totalAvailable}.`,
+          });
+        }
+
+        let remaining = diffQty;
+        const rows = allMaterials
+          .filter(row => parseFloat(row[mat] || 0) > 0)
+          .sort((a, b) => a.id - b.id); // FIFO
+
+        for (const row of rows) {
+          if (remaining <= 0) break;
+
+          const available = parseFloat(row[mat] || 0);
+          const deduct = Math.min(available, remaining);
+
+          row[mat] = available - deduct;
+          remaining -= deduct;
+
+          await row.save();
+        }
+      } else if (diffQty < 0) {
+        // Need to add back the unused material
+        let remaining = Math.abs(diffQty);
+        const rows = allMaterials
+          .sort((a, b) => a.id - b.id); // FIFO
+
+        for (const row of rows) {
+          row[mat] = parseFloat(row[mat] || 0) + remaining;
+          await row.save();
+          break; // Add to first row only
+        }
       }
     }
 
-    // ✅ Step 4: Deduct from Material table (FIFO)
-    for (const [mat, requiredQty] of Object.entries(requiredMaterials)) {
-      if (requiredQty <= 0) continue;
-
-      let remaining = requiredQty;
-
-      const rows = allMaterials
-        .filter((row) => parseFloat(row[mat] || 0) > 0)
-        .sort((a, b) => a.id - b.id); // FIFO
-
-      for (const row of rows) {
-        if (remaining <= 0) break;
-
-        const available = parseFloat(row[mat] || 0);
-        const deduct = Math.min(available, remaining);
-
-        row[mat] = available - deduct;
-        remaining -= deduct;
-
-        await row.save();
-      }
-    }
-
-    // ✅ Step 5: Update Batching entry
+    // Step 5: Update batching
     await batching.update({
       user_id,
       shift,
@@ -329,22 +321,20 @@ exports.updateBatching = async (req, res) => {
       temperature,
       entry_time,
       hardener_qty,
-       mixing_time,
+      mixing_time,
       water_consume,
       dicromate,
-      //  ph_booster,
-      // nts_clate,
       remark,
     });
 
-    // ✅ Step 6: Log entry
+    // Step 6: Logging
     const now = new Date();
     const entry_date = now.toISOString().split("T")[0];
     const entry_times = now.toTimeString().split(" ")[0];
     const user = await AuthModel.findByPk(user_id);
     const username = user ? user.name : "Unknown User";
 
-    const logMessage = `Batching entry mould no: ${batching.mould_no}) was updated by ${username} on ${entry_date} at ${entry_times}.`;
+    const logMessage = `Batching entry (mould no: ${batching.mould_no}) was updated by ${username} on ${entry_date} at ${entry_times}.`;
 
     await createLogEntry({
       user_id,
@@ -355,11 +345,153 @@ exports.updateBatching = async (req, res) => {
       message: "Batching updated successfully.",
       data: batching,
     });
+
   } catch (error) {
     console.error("Update Batching Error:", error);
     return res.status(500).json({ error: error.message });
   }
 };
+
+// exports.updateBatching = async (req, res) => {
+//   try {
+//     const {
+//       id, // ID of the batching entry to update
+//       user_id,
+//       shift,
+//       operator_name,
+//       mould_no,
+//       slurry_waste,
+//       slurry_fresh,
+//       cement_qty,
+//       lime_qty,
+//       gypsum_qty,
+//       soluble_oil_qty,
+//       aluminium_qty,
+//       mould_oil_qty,
+//       density,
+//       flow_value,
+//       temperature,
+//       entry_time,
+//       hardener_qty,
+//        mixing_time,
+//       water_consume,
+//       dicromate,
+//       // ph_booster,
+//       // nts_clate,
+//       remark,
+//     } = req.body;
+
+//     const batching = await Batching.findByPk(id);
+//     if (!batching) {
+//       return res.status(404).json({ error: "Batching entry not found." });
+//     }
+
+//     // ✅ Step 1: Calculate required materials for update
+//     const requiredMaterials = {
+//       cement: parseFloat(cement_qty || 0),
+//       lime: parseFloat(lime_qty || 0),
+//       gypsum: parseFloat(gypsum_qty || 0),
+//       soluble_oil: parseFloat(soluble_oil_qty || 0),
+//       aluminium: parseFloat(aluminium_qty || 0) / 1000,
+//       mould_oil: parseFloat(mould_oil_qty || 0) / 1000,
+//       dicromate : parseFloat(dicromate || 0) / 1000,
+//       // ph_booster: parseFloat(ph_booster || 0),
+//       // nts_clate:parseFloat(nts_clate || 0),
+//       // hardner: parseFloat(hardener_qty || 0),
+//     };
+
+//     // ✅ Step 2: Fetch total available stock
+//     const allMaterials = await Material.findAll();
+//     const materialTotals = {};
+//     for (const mat of Object.keys(requiredMaterials)) {
+//       materialTotals[mat] = allMaterials.reduce((sum, row) => {
+//         return sum + parseFloat(row[mat] || 0);
+//       }, 0);
+//     }
+
+//     // ✅ Step 3: Check material availability
+//     for (const [mat, requiredQty] of Object.entries(requiredMaterials)) {
+//       const availableQty = materialTotals[mat] || 0;
+//       if (requiredQty > 0 && availableQty < requiredQty) {
+//         return res.status(400).json({
+//           error: `Material ${mat} is insufficient — required: ${requiredQty}, available: ${availableQty}.`,
+//         });
+//       }
+//     }
+
+//     // ✅ Step 4: Deduct from Material table (FIFO)
+//     for (const [mat, requiredQty] of Object.entries(requiredMaterials)) {
+//       if (requiredQty <= 0) continue;
+
+//       let remaining = requiredQty;
+
+//       const rows = allMaterials
+//         .filter((row) => parseFloat(row[mat] || 0) > 0)
+//         .sort((a, b) => a.id - b.id); // FIFO
+
+//       for (const row of rows) {
+//         if (remaining <= 0) break;
+
+//         const available = parseFloat(row[mat] || 0);
+//         const deduct = Math.min(available, remaining);
+
+//         row[mat] = available - deduct;
+//         remaining -= deduct;
+
+//         await row.save();
+//       }
+//     }
+
+//     // ✅ Step 5: Update Batching entry
+//     await batching.update({
+//       user_id,
+//       shift,
+//       operator_name,
+//       mould_no,
+//       slurry_waste,
+//       slurry_fresh,
+//       cement_qty,
+//       lime_qty,
+//       gypsum_qty,
+//       soluble_oil_qty,
+//       aluminium_qty,
+//       mould_oil_qty,
+//       density,
+//       flow_value,
+//       temperature,
+//       entry_time,
+//       hardener_qty,
+//        mixing_time,
+//       water_consume,
+//       dicromate,
+//       //  ph_booster,
+//       // nts_clate,
+//       remark,
+//     });
+
+//     // ✅ Step 6: Log entry
+//     const now = new Date();
+//     const entry_date = now.toISOString().split("T")[0];
+//     const entry_times = now.toTimeString().split(" ")[0];
+//     const user = await AuthModel.findByPk(user_id);
+//     const username = user ? user.name : "Unknown User";
+
+//     const logMessage = `Batching entry mould no: ${batching.mould_no}) was updated by ${username} on ${entry_date} at ${entry_times}.`;
+
+//     await createLogEntry({
+//       user_id,
+//       message: logMessage,
+//     });
+
+//     return res.status(200).json({
+//       message: "Batching updated successfully.",
+//       data: batching,
+//     });
+//   } catch (error) {
+//     console.error("Update Batching Error:", error);
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
 
 exports.deleteBatching = async (req, res) => {
   try {

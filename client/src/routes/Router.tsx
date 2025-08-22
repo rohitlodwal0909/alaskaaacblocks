@@ -24,7 +24,7 @@ import Receiving from 'src/views/Receiving/Receiving';
 import Boiler from 'src/views/Boiler/Boiler';
 import Diesel from 'src/views/Diesel/Diesel';
 import ROwater from 'src/views/ro-water/ROwater';
-import Security from 'src/views/security/Security';
+import FinishGood from 'src/views/Finishgood/FinishGood';
 import BoilerView from 'src/views/Boiler/BoilerComponent.tsx/BoilerView';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
@@ -73,7 +73,7 @@ const Router = [
         { path: '/boiler', element: <Boiler/> },
         { path: '/diesel-fuel', element: <Diesel/> },
         { path: '/ro-water', element: <ROwater/> },
-        { path: '/security', element: <Security/> },
+        { path: '/finish-good', element: <FinishGood/> },
         { path: '/dispatch', element: <Dispatch/> },
         { path: '/material', element: <Material/> },
         { path: '/receiving-stock', element: <Receiving/> },

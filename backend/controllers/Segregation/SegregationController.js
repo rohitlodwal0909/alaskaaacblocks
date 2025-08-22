@@ -1,22 +1,32 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const { Autoclave, Segregation ,AuthModel} = db;
+const { Autoclave, Segregation ,AuthModel , FinishGood} = db;
 
 // CREATE Segregation entry
 
 exports.createSegregation = async (req, res) => {
   try {
+
     const segregationEntry = await Segregation.create({
       user_id:req.body.user_id,
       mould_no: req.body.mould_no,
       size: req.body.size,
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
+      plate_no:req.body.plate_no,
       remark: req.body.remark,
       operator_name: req.body.operator_name,
       date: new Date(),
-     
     });
+
+    if (req.body.size && req.body.no_of_ok_pcs) {
+      await FinishGood.create({
+        size: req.body.size,
+        no_of_ok_pcs: req.body.no_of_ok_pcs,
+      });
+    }
+
+
       const user_id = req.body.user_id;
                    const now = new Date();
                   const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
@@ -42,6 +52,9 @@ exports.createSegregation = async (req, res) => {
 exports.getAllSegregation = async (req, res) => {
   try {
     const data = await Autoclave.findAll({
+      where: {
+        deleted_at: null, // Only non-deleted Rising entries
+      },
       include: [
         {
           model: Segregation,
@@ -57,8 +70,6 @@ exports.getAllSegregation = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 
 // Read By ID
 exports.getSegregationById = async (req, res) => {
@@ -89,6 +100,7 @@ exports.updateSegregation = async (req, res) => {
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
       remark: req.body.remark,
+          plate_no:req.body.plate_no,
       operator_name: req.body.operator_name,
     });
     
@@ -135,6 +147,32 @@ exports.deleteSegregation = async (req, res) => {
     res.json({ message: "Segregation entry deleted successfully" });
   } catch (error) {
     console.error("Delete Segregation Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.createFinishGood = async (req, res) => {
+  try {
+  const finish =  await FinishGood.create({
+        size: req.body.size,
+        no_of_ok_pcs: req.body.no_of_ok_pcs,
+      });
+    res.status(201).json({
+      message: "Finish good  entry created successfully",
+      data: finish,
+    });
+  } catch (error) {
+    console.error("Create Segregation Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getFinishGood = async (req, res) => {
+  try {
+    const data = await FinishGood.findAll();
+    res.json(data);
+  } catch (error) {
+    console.error("Get All Segregation Error:", error);
     res.status(500).json({ error: error.message });
   }
 };

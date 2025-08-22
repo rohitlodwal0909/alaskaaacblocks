@@ -75,7 +75,7 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
     setFormData((prev) => ({ ...prev, readings: updated }));
   };
 
-  const requiredFields = ["date", "location", "shift", "done_by", "total_wood_consumption"];
+  const requiredFields = ["date", "shift", "done_by", "total_wood_consumption"];
 
  const validateForm = () => {
   const newErrors: any = {};
@@ -181,7 +181,7 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
                {errors.total_wood_consumption && <p className="text-red-500 text-xs">{errors.total_wood_consumption}</p>}
 
           </div>
-          <div className="col-span-6">
+          {/* <div className="col-span-6">
             <Label htmlFor="location" value="Location" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -193,8 +193,8 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
             />
                {errors.location && <p className="text-red-500 text-xs">{errors.location}</p>}
 
-          </div>
-          <div className="col-span-6">
+          </div> */}
+          <div className="col-span-4">
             <Label htmlFor="date" value="Date" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -207,7 +207,7 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
                {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
           </div>
 
-           <div className="col-span-6">
+           <div className="col-span-4">
             <Label htmlFor="blow_tds" value="Blow down TDS" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -220,7 +220,7 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
                {errors.blow_tds && <p className="text-red-500 text-xs">{errors.blow_tds}</p>}
 
           </div>
-          <div className="col-span-6">
+          <div className="col-span-4">
             <Label htmlFor="blow_ph" value="Blow down ph" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput

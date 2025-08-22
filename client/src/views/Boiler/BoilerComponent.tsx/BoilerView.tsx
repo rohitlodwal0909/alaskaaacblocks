@@ -84,9 +84,9 @@ const BoilerView = () => {
     <div className="flex-1 border-r border-black px-2 py-1">
       <p><strong>Equipment ID</strong></p>
     </div>
-    <div className="flex-1 border-r border-black px-2 py-1">
+    {/* <div className="flex-1 border-r border-black px-2 py-1">
       <p><strong>Location</strong></p>
-    </div>
+    </div> */}
     <div className="flex-1 border-r border-black px-2 py-1">
       <p><strong>Frequency</strong></p>
     </div>
@@ -100,9 +100,9 @@ const BoilerView = () => {
     <div className="flex-1 border-r border-black px-2 py-1">
       <p>#{signleAutoClave?.id}</p>
     </div>
-    <div className="flex-1 border-r border-black px-2 py-1">
+    {/* <div className="flex-1 border-r border-black px-2 py-1">
       <p>{signleAutoClave?.location}</p>
-    </div>
+    </div> */}
     <div className="flex-1 border-r border-black px-2 py-1">
       <p>2 Hourly</p>
     </div>
