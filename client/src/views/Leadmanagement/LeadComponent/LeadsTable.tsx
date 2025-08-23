@@ -6,7 +6,7 @@ import {
 import { Badge, Button, Dropdown, DropdownItem, Tooltip } from "flowbite-react";
 import { Icon } from "@iconify/react";
 import { useEffect, useMemo, useState } from "react";
-import s1 from "../../../../src/assets/images/profile/user-1.jpg";
+// import s1 from "../../../../src/assets/images/profile/user-1.jpg";
 import EditLeadmodal from "./EditLeadmodal";
 import { useDispatch, useSelector } from "react-redux";
 import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
@@ -38,7 +38,9 @@ export interface PaginationTableType {
   tehsil?: string;
   address?: string;
   created_at:any;
-  actions:any
+  datetime:any;
+  actions:any;
+  srNo:any;
 }
 
 
@@ -210,10 +212,16 @@ return true;
   cell: (info) => <span className="hidden">{info.getValue()}</span>,
   header: () => null,
 }),
+columnHelper.accessor("srNo", {
+  id: "srNo", // give a unique ID for the column
+  cell: (info) => <span>#{info.row.index + 1}</span>,
+  header: () => <span>Sr. No.</span>,
+}),
+
     columnHelper.accessor("name", {
       cell: (info) => (
         <div className="flex gap-3 items-center">
-          <img src={s1} width={50} height={50} alt="icon" className="h-10 w-10 rounded-md" />
+          {/* <img src={s1} width={50} height={50} alt="icon" className="h-10 w-10 rounded-md" /> */}
           <div className="truncate line-clamp-2 max-w-56">
             <h6 className="text-base">{info.row.original.name}</h6>
             <p className="text-sm text-darklink dark:text-bodytext">{info.row.original.email}</p>
@@ -266,10 +274,40 @@ return true;
       cell: (info) => <span>{info.getValue() || "—"}</span>,
       header: () => <span>District</span>,
     }),
-    // columnHelper.accessor("tehsil", {
-    //   cell: (info) => <span>{info.getValue() || "—"}</span>,
-    //   header: () => <span>Tehsil</span>,
-    // }),
+columnHelper.accessor("datetime", {
+  cell: (info) => {
+    const rawDate = info.getValue();
+    const formatted = rawDate
+      ? {
+          date: new Date(rawDate).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+          time: new Date(rawDate).toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          }),
+        }
+      : null;
+
+    return (
+      <span>
+        {formatted ? (
+          <>
+            {formatted.date}
+            <br />
+            {formatted.time}
+          </>
+        ) : (
+          "—"
+        )}
+      </span>
+    );
+  },
+  header: () => <span>Date</span>,
+}),
     columnHelper.accessor("actions", {
       cell: (info) => {
         const rowData = info.row.original;

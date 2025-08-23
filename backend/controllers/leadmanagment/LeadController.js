@@ -60,10 +60,11 @@ await createLogEntry({
 
 exports.getAllLeads = async (req, res) => {
   try {
- 
-    const leads = await Lead.findAll();
-    res.status(200).json(leads);
+    const leads = await Lead.findAll({
+      order: [['created_at', 'DESC']], // descending order by createdAt
+    });
 
+    res.status(200).json(leads);
   } catch (error) {
     console.error("❌ Error in getAllLeads:", error);
     res.status(500).json({ error: error.message });
