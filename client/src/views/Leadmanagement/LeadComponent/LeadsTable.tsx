@@ -107,7 +107,7 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
 
   const handleupdateuser = (updatedata) => {
     dispatch(UpdateLeads(updatedata)).unwrap().then(() => {
-      toast.success("Lead updated successfully!");
+      toast.success("Lead has been successfully updated.");
       dispatch(GetLeads());
     }).catch((err) => {
       toast.error(err || "Failed to update lead.");
@@ -126,7 +126,7 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
     try {
       await dispatch(DeleteLeads(userToDelete?.id)).unwrap();
       setData(data.filter((user) => user.id !== userToDelete.id));
-toast.success("The lead  was successfully deleted. ");
+toast.success("Lead has been successfully deleted.");
     } catch (error: any) {
       console.error("Delete failed:", error);
       if (error?.response?.status === 404) toast.error("User not found.");
@@ -137,7 +137,7 @@ toast.success("The lead  was successfully deleted. ");
 
   const handleStatuschange = (status:any, id:any) => {
     dispatch(UpdateLeads({ status, id })).unwrap().then(() => {
-      toast.success("Lead Status Change successfully!");
+      toast.success("Lead status has been successfully changed.");
       dispatch(GetLeads());
     }).catch((err) => {
       toast.error(err || "Failed to update lead.");
@@ -283,11 +283,13 @@ columnHelper.accessor("datetime", {
             day: "2-digit",
             month: "short",
             year: "numeric",
+             timeZone: "Asia/Kolkata",
           }),
           time: new Date(rawDate).toLocaleTimeString("en-IN", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
+             timeZone: "Asia/Kolkata",
           }),
         }
       : null;

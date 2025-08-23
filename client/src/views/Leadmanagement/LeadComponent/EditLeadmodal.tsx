@@ -123,7 +123,7 @@ const Editusermodal = ({ setEditModal, modalPlacement, editModal, selectedUser, 
     e.preventDefault();
     if (!selectedUser?.id) return;
 
-    const requiredFields = ["name", "email", "phone", "source", "state", "district", "tehsil", "address", "delivery_address"];
+    const requiredFields = ["name", "phone", "source", "state", "district", "tehsil", "address", "delivery_address"];
     const emptyMain = requiredFields.some(f => !formData[f]?.toString().trim());
 
     const emptyMaterial = formData.materials.some(

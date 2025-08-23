@@ -90,7 +90,7 @@ const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal ,logindata}) =
         give_range: materials.map(m => m.give_range).join(',')
       };
       const result = await dispatch(CreateLeads(payload)).unwrap();
-      toast.success(result.message || 'Lead added');
+      toast.success(result.message || 'Lead has been successfully created.');
       dispatch(GetLeads());
       setFormData({
         name: '', email: '', phone: '', source: '',
