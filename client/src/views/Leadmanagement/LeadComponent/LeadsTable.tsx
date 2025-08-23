@@ -214,7 +214,7 @@ return true;
 }),
 columnHelper.accessor("srNo", {
   id: "srNo", // give a unique ID for the column
-  cell: (info) => <span>#{info.row.index + 1}</span>,
+  cell: (info) => <span> <h6 className="text-base">#{info.row.index + 1} </h6></span>,
   header: () => <span>Sr. No.</span>,
 }),
 

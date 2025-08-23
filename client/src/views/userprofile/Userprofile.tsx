@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import userImg from 'src/assets/images/profile/user-1.jpg';
 import CardBox from 'src/components/shared/CardBox';
 import { AuthenticationUpdatemodule } from 'src/features/authentication/AuthenticationSlice';
+import { imageurl } from 'src/constants/contant';
 
 const roleOptions = [
   { id: '1', label: 'Admin' },
@@ -98,7 +99,7 @@ const user = logindata?.admin ?? {};
     selectedImage
       ? selectedImage
       : logindata?.admin?.profile_image
-      ? "http://localhost:5000" + logindata.admin.profile_image
+      ? imageurl + logindata.admin.profile_image
       : userImg
   }
               alt="profile"

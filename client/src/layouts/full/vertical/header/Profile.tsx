@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Logoutmodel from "./Logoutmodel";
+import { imageurl } from "src/constants/contant";
 
 const Profile = ({logindata}) => {
   const navigate = useNavigate()
@@ -32,12 +33,12 @@ navigate("/admin/login");
             <img
               src={
                 logindata?.admin?.profile_image
-                  ? "http://localhost:5000" + logindata.admin.profile_image
+                  ? imageurl + logindata.admin.profile_image
                   : user1
               }
               alt="logo"
 
-              className="rounded-full w-full"
+              className="rounded-full w-full h-10 w-10 "
             />
           </span>
         )}
@@ -48,7 +49,7 @@ navigate("/admin/login");
             <img
               src={
                 logindata?.admin?.profile_image
-                  ? "http://localhost:5000" + logindata.admin.profile_image
+                  ? imageurl + logindata.admin.profile_image
                   : user1
               }
               alt="logo"
