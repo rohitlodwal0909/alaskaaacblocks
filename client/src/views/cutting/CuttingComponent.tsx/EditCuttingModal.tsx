@@ -15,6 +15,7 @@ import { updateCutting, GetCutting } from 'src/features/Cutting/CuttingSlice';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
 
 const EditCuttingModal = ({ show, setShowmodal, cuttingData }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -150,7 +151,7 @@ const parseField = (field) => {
             <span className="text-red-700 ps-1">*</span>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                value={formData.time ? dayjs(formData.time, 'HH:mm') : null}
+                value={formData.time ? getDateTimeFromTimeString(formData?.time) : null}
                 onChange={(value) => {
                   const formatted = value ? dayjs(value).format('HH:mm') : '';
                   handleChange('time', formatted);

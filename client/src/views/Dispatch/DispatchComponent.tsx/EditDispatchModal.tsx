@@ -20,6 +20,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { imageurl } from "src/constants/contant";
+import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 
 const EditDispatchModal = ({ show, setShowmodal, Dispatch, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -262,7 +263,7 @@ try {
             <span className="text-red-700 ps-1">*</span>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                value={formData.time ? dayjs(formData.time, "HH:mm") : null}
+                value={formData.time ? getDateTimeFromTimeString(formData?.time) : null}
                 onChange={(val) => handleChange("time", val ? dayjs(val).format("HH:mm") : "")}
                 slotProps={{
                   textField: {

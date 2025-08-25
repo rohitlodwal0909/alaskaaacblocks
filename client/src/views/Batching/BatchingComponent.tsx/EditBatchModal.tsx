@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 const EditBatchModal = ({ open, setOpen, batchingData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({});
@@ -138,9 +139,9 @@ const validateForm = () => {
       ) : isTime ? (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
-            value={formData[id] ? dayjs(formData[id], 'HH:mm:ss') : null}
-               views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']} // 👈 key line
-      format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
+           value={formData[id] ? getDateTimeFromTimeString(formData[id]) : null}
+views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']}
+format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
             onChange={(value) => {
               const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
               handleChange(id, formatted);

@@ -8,6 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { updateAutoclave, GetAutoclave } from 'src/features/Autoclave/AutoclaveSlice';
 import { Icon } from "@iconify/react";
+import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
 
 const EditAutoClaveModal = ({ show, setShowmodal, autoclave }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,26 +24,27 @@ const EditAutoClaveModal = ({ show, setShowmodal, autoclave }) => {
   });
 
   const [errors, setErrors] = useState<any>({});
-
-  useEffect(() => {
-    if (autoclave) {
-      const autoclaveData = autoclave?.autoclave_entries[0]
-      setFormData({
-        id: autoclaveData?.id || '',
-       
-        operator_name: autoclaveData?.operator_name || '',
-        on_time: autoclaveData?.on_time || '',
-        door_steam_time: autoclaveData?.door_steam_time || '',
-        vacuum_steam_time: autoclaveData?.vacuum_steam_time || '',
-        steam_pressure: autoclaveData?.steam_pressure
-        ? String(autoclaveData.steam_pressure)
-            .split(',')
-            .map((val) => val.trim())
+console.log(autoclave)
+ useEffect(() => {
+  if (autoclave && autoclave?.autoclave_entries.length > 0) {
+    const entry = autoclave.autoclave_entries[0];
+    setFormData({
+      id: entry.id || '',
+      operator_name: entry.operator_name || '',
+      on_time: entry.on_time || '',
+      door_steam_time: entry.door_steam_time || '',
+      vacuum_steam_time: entry.vacuum_steam_time || '',
+      steam_pressure: entry.steam_pressure
+        ? String(entry.steam_pressure).split(',').map((val) => val.trim())
         : [''],
-        remark: autoclaveData?.remark || '',
-      });
-    }
-  }, [autoclave]);
+      remark: entry.remark || '',
+    });
+  }
+}, [autoclave]);
+const isReady =
+  formData.on_time !== '' &&
+  formData.door_steam_time !== '' &&
+  formData.vacuum_steam_time !== '';
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -91,14 +93,20 @@ const EditAutoClaveModal = ({ show, setShowmodal, autoclave }) => {
     }
   };
 
+
   const renderTimePicker = (id, label) => (
     <div className="col-span-6">
       <Label htmlFor={id} value={label} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <TimePicker
-          value={formData[id] ? dayjs(formData[id], 'HH:mm') : null}
+         ampm={true} 
+        value={
+          formData[id] && getDateTimeFromTimeString(formData[id])?.isValid()
+            ? getDateTimeFromTimeString(formData[id])
+            : null
+        }
           onChange={(value) => {
-            const formatted = value ? dayjs(value).format('HH:mm') : '';
+            const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
             handleChange(id, formatted);
           }}
           slotProps={{
@@ -152,9 +160,10 @@ const EditAutoClaveModal = ({ show, setShowmodal, autoclave }) => {
             {errors.operator_name && <p className="text-red-500 text-xs">{errors.operator_name}</p>}
           </div>
 
+{   isReady &&<>
           {renderTimePicker('on_time', 'On Time')}
           {renderTimePicker('door_steam_time', 'Door Steam Time (15 min)')}
-          {renderTimePicker('vacuum_steam_time', 'Vacuum Steam Time (15-20 min)')}
+          {renderTimePicker('vacuum_steam_time', 'Vacuum Steam Time (15-20 min)')}</>}
 
           <div className="col-span-12">
             <Label value="Steam Pressure (kg/cm²)" />

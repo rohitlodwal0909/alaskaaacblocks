@@ -84,11 +84,12 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
   const validateForm = () => {
     const newErrors: any = {};
     formData.entries.forEach((entry, index) => {
-      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs) {
+      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs || !entry.plate_no) {
         newErrors[`entry_${index}`] = "All fields in this row are required";
       }
     });
-    if (!formData.mould_no) newErrors.mould_no = "Mould No is required";
+    if (!formData.operator_name) newErrors.operator_name = "Operator Name is required";
+     if (!formData.mould_no) newErrors.mould_no = "Mould No is required";
     if (!formData.entries.length) newErrors.entries = "At least one entry is required";
 
     setErrors(newErrors);

@@ -75,7 +75,7 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
     setFormData((prev) => ({ ...prev, readings: updated }));
   };
 
-  const requiredFields = ["date", "shift", "done_by", "total_wood_consumption"];
+  const requiredFields = ["date","shift","done_by","total_wood_consumption","blow_tds",'blow_ph'];
 
  const validateForm = () => {
   const newErrors: any = {};

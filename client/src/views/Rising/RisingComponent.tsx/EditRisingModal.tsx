@@ -7,6 +7,7 @@ import { updateRising, GetRising } from 'src/features/Rising/RisingSlice'; // Ma
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
 const EditRisingModal = ({ show, setShowmodal, risingData }) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -88,7 +89,7 @@ const EditRisingModal = ({ show, setShowmodal, risingData }) => {
                 {id === 'rising_time' ? (
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <TimePicker
-                      value={formData[id] ? dayjs(formData[id], 'HH:mm') : null}
+                      value={formData[id] ? getDateTimeFromTimeString(formData[id]) : null}
                       onChange={(value) => {
                         const formatted = value ? dayjs(value).format('HH:mm') : '';
                         handleChange(id, formatted);

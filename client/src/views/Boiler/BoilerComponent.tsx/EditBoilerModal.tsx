@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import {   GetBoiler, updateBoiler } from "src/features/Boiler/BoilerSlice";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 import dayjs from "dayjs";
 
 const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
@@ -130,7 +132,7 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     setFormData((prev) => ({ ...prev, readings: updated }));
   };
 
-  const requiredFields = ["date", "shift", "done_by", "total_wood_consumption"];
+  const requiredFields = ["date", "shift", "done_by", "total_wood_consumption","time","blow_ph",'blow_tds'];
 
  const validateForm = () => {
   const newErrors: any = {};
@@ -298,13 +300,15 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
         <div key={id}>
           <Label htmlFor={`${id}-${index}`} value={label} />
           <span className="text-red-700 ps-1">*</span>
-          {id === "time" ? (
+          {id == "time" ? (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                value={reading[id] ? dayjs(reading[id]) : null}
-                onChange={(value: any) =>
-                  handleReadingChange(index, id, value)
-                }
+                value={reading[id] ? getDateTimeFromTimeString(reading[id]) : null}
+onChange={(value) => {
+  // Convert picked date-time back to time string (HH:mm:ss)
+  const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
+  handleReadingChange(index, id, formatted);
+}}
                 slotProps={{
                   textField: {
                     fullWidth: true,

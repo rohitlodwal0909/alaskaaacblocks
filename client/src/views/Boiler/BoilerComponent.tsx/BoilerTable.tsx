@@ -101,7 +101,7 @@ const BoilerTable = () => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Done By", "Shift", "Date","Location", "Total Wood Consumption", "Action"].map((title) => (
+              {["Sr.No", "Done By", "Shift", "Date", "Total Wood Consumption", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -136,9 +136,9 @@ const BoilerTable = () => {
                     {item?.date|| '-'}
                   </td>
                     
-                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {/* <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.location  || '-'}
-                  </td>
+                  </td> */}
                 
                   
                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">

@@ -176,7 +176,7 @@ const SegregationTable = () => {
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
                       {
-                        !item?.segregation_entries[0]?.operator_name ?
+                        item?.segregation_entries?.length === 0 ?
                           <Tooltip content="Add" placement="bottom">
                             <Button
                               size="sm"
