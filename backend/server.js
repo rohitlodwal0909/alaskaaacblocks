@@ -4,7 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const { sequelize } = require("./models");
-      sequelize.sync();
+sequelize.sync();
 
 const authRoutes = require("./routes/authentication/AuthRoutes");
 const leadRoutes = require("./routes/leadmanagment/LeadRoutes");
@@ -19,6 +19,7 @@ const dispatchRoutes = require("./routes/Dispatch/DispatchRoutes");
 const NotificationRouter = require("./routes/notification/NotificationRoutes");
 const materialRoutes = require("./routes/Material/MaterialRoutes");
 const ReceivingRoutes = require("./routes/Receiving/ReceivingRoutes");
+const SecurityRoutes = require("./routes/security/security");
 const startLeadReminderJob = require("./cron/leadReminder");
 const app = express();
 
@@ -26,40 +27,36 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 app.use(authRoutes);
- app.use(batchingRoutes);
- app.use(risingRoutes);
- app.use(cuttingRoutes);
- app.use(autoclaveRoutes);
- app.use(segregationRoutes);
- app.use(BoilerRoutes);
- app.use(DieselRoutes);
- app.use(dispatchRoutes);
- app.use(materialRoutes);
- app.use(ReceivingRoutes);
+app.use(batchingRoutes);
+app.use(risingRoutes);
+app.use(cuttingRoutes);
+app.use(autoclaveRoutes);
+app.use(segregationRoutes);
+app.use(BoilerRoutes);
+app.use(DieselRoutes);
+app.use(dispatchRoutes);
+app.use(materialRoutes);
+app.use(ReceivingRoutes);
 app.use(leadRoutes);
 app.use(NotificationRouter);
-process.on('uncaoughtException', function (err) {
-console.error('UNCOUGHT EXCEPTION:', err);
-
+app.use(SecurityRoutes);
+process.on("uncaoughtException", function (err) {
+  console.error("UNCOUGHT EXCEPTION:", err);
 });
 
-// startLeadReminderJob();
+startLeadReminderJob();
 
-if(process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {
+  const disPath = path.join(__dirname, "../client/dist");
 
-const disPath = path.join(__dirname, "../client/dist");
+  app.use(express.static(disPath));
 
-app.use(express.static(disPath));
-
-app.get(/^\/(?!api).*/, (req,res) => {
-  res.sendFile(path.join(disPath, "index.html"));
-
-});
-
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(disPath, "index.html"));
+  });
 }
-
 
 sequelize
   .authenticate()

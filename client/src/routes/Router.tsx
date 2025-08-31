@@ -26,6 +26,7 @@ import Diesel from 'src/views/Diesel/Diesel';
 import ROwater from 'src/views/ro-water/ROwater';
 import FinishGood from 'src/views/Finishgood/FinishGood';
 import BoilerView from 'src/views/Boiler/BoilerComponent.tsx/BoilerView';
+import Security from 'src/views/security/Security';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
 
@@ -79,7 +80,7 @@ const Router = [
         { path: '/receiving-stock', element: <Receiving/> },
         { path: '/autoclave-view/:id', element: <AutoclaveView /> },
         { path: '/boiler-view/:id', element: <BoilerView/> },
-        
+        { path: '/security', element: <Security/> },
         { path: '/permission', element: <PermissionsTable /> },
         { path: '*', element: <Navigate to="/auth/404" /> },
       ],

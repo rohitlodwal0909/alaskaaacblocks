@@ -157,16 +157,17 @@ const FollowUpmodal = ({ placeModal, modalPlacement, setPlaceModal, selectedRow,
 </div>
 
           {/* Follow-up Date */}
+         
           <div>
-            <Label htmlFor="followUpDate" value="Follow-up Date" className="mb-1 block" />
-            <input
-              type="date"
-              id="followUpDate"
-              value={formData.followUpDate}
-              onChange={(e) => handleChange("followUpDate", e.target.value)}
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+  <Label htmlFor="followUpDate" value="Follow-up Date & Time" className="mb-1 block" />
+  <input
+    type="datetime-local"
+    id="followUpDate"
+    value={formData.followUpDate}
+    onChange={(e) => handleChange("followUpDate", e.target.value)}
+    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+  />
+</div>
 
           {/* Call Type */}
           <div>

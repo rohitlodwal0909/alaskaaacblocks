@@ -88,7 +88,7 @@ const filteredItems = (cuttingdata || []).filter((item: any) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Mould No", "Operator Name", "Broken Pcs", "Size", "Time", "Remark", "Action"].map((title) => (
+              {["Sr.No", "Mould No", "Operator Name", "Broken Pcs", "Size", "Date & Time", "Time", "Remark", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -123,6 +123,12 @@ const filteredItems = (cuttingdata || []).filter((item: any) => {
     : typeof item?.cutting_info?.size === "string" && item?.cutting_info?.size.startsWith("[")
     ? JSON.parse(item?.cutting_info?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
   : <div>{item?.cutting_info?.size}</div>}</td>
+
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item?.cutting_info?.datetime
+                      }
+                  </td>
+
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.cutting_info?.time
                       ? new Date(`1970-01-01T${item.cutting_info.time}`).toLocaleTimeString("en-IN", {
@@ -132,6 +138,7 @@ const filteredItems = (cuttingdata || []).filter((item: any) => {
                         })
                       : "-"}
                   </td>
+                  
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.cutting_info?.remark || "-"}</td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">

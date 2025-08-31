@@ -5,40 +5,43 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: true
       },
-       user_id: {
-        type: DataTypes.INTEGER,
-       
+      user_id: {
+        type: DataTypes.INTEGER
       },
       mould_no: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       operator_name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       size: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: false
       },
       broken_pcs: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: false
+      },
+      datetime: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       time: {
         type: DataTypes.TIME,
-        allowNull: false,
+        allowNull: false
       },
       remark: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: true
       },
       deleted_at: {
         type: DataTypes.DATE,
-        allowNull: true,
-      },
+        allowNull: true
+      }
     },
     {
       tableName: "cutting",
@@ -46,24 +49,23 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: "created_at",
       updatedAt: "updated_at",
       deletedAt: "deleted_at",
-      paranoid: true,           // enables soft deletes
-      underscored: true,        // uses snake_case column names
+      paranoid: true, // enables soft deletes
+      underscored: true // uses snake_case column names
     }
   );
 
+  Cutting.associate = (models) => {
+    Cutting.belongsTo(models.Rising, {
+      foreignKey: "mould_no",
+      targetKey: "mould_no",
+      as: "rising_info" // 👈 because this is pointing to Rising
+    });
+    Cutting.hasMany(models.Autoclave, {
+      foreignKey: "mould_no",
+      sourceKey: "mould_no",
+      as: "autoclave_entries"
+    });
+  };
 
- Cutting.associate = (models) => {
-  Cutting.belongsTo(models.Rising, {
-    foreignKey: "mould_no",
-    targetKey: "mould_no",
-    as: "rising_info", // 👈 because this is pointing to Rising
-  });
-  Cutting.hasMany(models.Autoclave, {
-  foreignKey: "mould_no",
-  sourceKey: "mould_no",
-  as: "autoclave_entries",
-});
-};
-
- return Cutting;
+  return Cutting;
 };

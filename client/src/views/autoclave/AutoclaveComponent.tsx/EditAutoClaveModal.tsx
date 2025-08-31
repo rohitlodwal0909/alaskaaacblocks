@@ -1,211 +1,242 @@
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Label, TextInput } from 'flowbite-react';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/store';
-import { toast } from 'react-toastify';
-import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { updateAutoclave, GetAutoclave } from 'src/features/Autoclave/AutoclaveSlice';
-import { Icon } from "@iconify/react";
-import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Label,
+  TextInput,
+} from "flowbite-react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "src/store";
+import { toast } from "react-toastify";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { updateAutoclave, GetAutoclave,GetAutoclaveSingle } from "src/features/Autoclave/AutoclaveSlice";
+import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 
-const EditAutoClaveModal = ({ show, setShowmodal, autoclave }) => {
+const EditAutoClaveModal = ({ show, setShowmodal, autoclaves }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [formData, setFormData] = useState({
-    id: '',
-    operator_name: '',
-    on_time: '',
-    door_steam_time: '',
-    vacuum_steam_time: '',
-    steam_pressure: [''],
-    remark: '',
+  // use main autoclave.id, not autoclave_entries[0]?.id
+const id = autoclaves?.autoclave_entries?.[0]?.id;
+
+  const [autoclave, setAutoclave] = useState<any>(null);
+
+  const [formData, setFormData] = useState<any>({
+    id: "",
+    operator_name: "",
+    records: [],
   });
 
-  const [errors, setErrors] = useState<any>({});
-console.log(autoclave)
- useEffect(() => {
-  if (autoclave && autoclave?.autoclave_entries.length > 0) {
-    const entry = autoclave.autoclave_entries[0];
-    setFormData({
-      id: entry.id || '',
-      operator_name: entry.operator_name || '',
-      on_time: entry.on_time || '',
-      door_steam_time: entry.door_steam_time || '',
-      vacuum_steam_time: entry.vacuum_steam_time || '',
-      steam_pressure: entry.steam_pressure
-        ? String(entry.steam_pressure).split(',').map((val) => val.trim())
-        : [''],
-      remark: entry.remark || '',
+  useEffect(() => {
+    if (!id) return;
+    dispatch(GetAutoclaveSingle(id)).then((res: any) => {
+      if (res?.payload) {
+        setAutoclave(res.payload);
+      }
     });
-  }
-}, [autoclave]);
-const isReady =
-  formData.on_time !== '' &&
-  formData.door_steam_time !== '' &&
-  formData.vacuum_steam_time !== '';
+  }, [dispatch, id]);
 
-  const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
+  // Populate form with API data
+  useEffect(() => {
+    if (autoclave) {
+      setFormData({
+        id: autoclave.id || "",
+        operator_name: autoclave.operator_name || "",
+        records:
+          autoclave.records?.length > 0
+            ? autoclave.records.map((r) => ({
+                ...r,
+                material_receipt_time: r.material_receipt_time || "",
+                door_closing_time: r.door_closing_time || "",
+                vacuum_on_time: r.vacuum_on_time || "",
+                vacuum_off_time: r.vacuum_off_time || "",
+                rising_pressure_time: r.rising_pressure_time || "",
+                rising_pressure_value: r.rising_pressure_value || "",
+                holding_pressure_time: r.holding_pressure_time || "",
+                holding_pressure_value: r.holding_pressure_value || "",
+                release_pressure_time: r.release_pressure_time || "",
+                release_pressure_value: r.release_pressure_value || "",
+                door_opening_time: r.door_opening_time || "",
+              }))
+            : [
+                {
+                  material_receipt_time: "",
+                  door_closing_time: "",
+                  vacuum_on_time: "",
+                  vacuum_off_time: "",
+                  rising_pressure_time: "",
+                  rising_pressure_value: "",
+                  holding_pressure_time: "",
+                  holding_pressure_value: "",
+                  release_pressure_time: "",
+                  release_pressure_value: "",
+                  door_opening_time: "",
+                },
+              ],
+      });
+    }
+  }, [autoclave]);
+
+  // --- handle input changes ---
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSteamChange = (index, value) => {
-    const updated = [...formData.steam_pressure];
-    updated[index] = value;
-    setFormData(prev => ({ ...prev, steam_pressure: updated }));
+  const handleRecordChange = (index: number, field: string, value: any) => {
+    const updatedRecords = [...formData.records];
+    updatedRecords[index][field] = value;
+    setFormData((prev) => ({ ...prev, records: updatedRecords }));
   };
 
-  const addSteamPressure = () => {
-    setFormData(prev => ({ ...prev, steam_pressure: [...prev.steam_pressure, ''] }));
-  };
-
-  const removeSteamPressure = (index) => {
-    const updated = formData.steam_pressure.filter((_, i) => i !== index);
-    setFormData(prev => ({ ...prev, steam_pressure: updated }));
-  };
-
-  const validateForm = () => {
-    const required = ['operator_name', 'on_time', 'door_steam_time', 'vacuum_steam_time'];
-    const newErrors: any = {};
-    required.forEach(field => {
-      if (!formData[field]) newErrors[field] = `${field.replace('_', ' ')} is required`;
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  // --- submit update ---
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!validateForm()) return;
     try {
-      const payload = {
-         ...formData,
-         steam_pressure: formData.steam_pressure.join(', '), // convert array to comma-separated string
-       };
-      const result = await dispatch(updateAutoclave(payload)).unwrap();
-      toast.success(result.message || 'Autoclave entry updated successfully');
+      const result = await dispatch(updateAutoclave(formData)).unwrap();
+      toast.success(result.message || "Autoclave entry updated successfully");
       dispatch(GetAutoclave());
       setShowmodal(false);
     } catch (err) {
-      toast.error('Failed to update autoclave entry');
+      toast.error("Failed to update autoclave entry");
     }
   };
 
-
-  const renderTimePicker = (id, label) => (
-    <div className="col-span-6">
-      <Label htmlFor={id} value={label} />
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <TimePicker
-         ampm={true} 
+  // --- render time picker ---
+  const renderTime = (val: string, onChange: (val: string) => void) => (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <TimePicker
+        ampm={true}
         value={
-          formData[id] && getDateTimeFromTimeString(formData[id])?.isValid()
-            ? getDateTimeFromTimeString(formData[id])
+          val && getDateTimeFromTimeString(val)?.isValid()
+            ? getDateTimeFromTimeString(val)
             : null
         }
-          onChange={(value) => {
-            const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
-            handleChange(id, formatted);
-          }}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              error: !!errors[id],
-              helperText: errors[id],
-              sx: {
-                '& .MuiInputBase-root': {
-                  fontSize: '14px',
-                  backgroundColor: '#f1f5f9',
-                  borderRadius: '6px',
-                },
-                '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
-            height: '42px',
-            fontSize: '14px',
-           
-            backgroundColor: '#f1f5f9',
-            borderRadius: '6px',
-          },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#cbd5e1',
-                },
-                '& input': {
-                  padding: '4px 10px',
-                },
-              },
-            },
-          }}
-        />
-      </LocalizationProvider>
-      {errors[id] && <p className="text-red-500 text-xs">{errors[id]}</p>}
-    </div>
+        onChange={(value) => {
+          const formatted = value ? dayjs(value).format("HH:mm:ss") : "";
+          onChange(formatted);
+        }}
+        slotProps={{
+          textField: { size: "small", sx: { width: "100%" } },
+        }}
+      />
+    </LocalizationProvider>
   );
 
   return (
-    <Modal show={show} onClose={() => setShowmodal(false)} size="4xl">
+    <Modal show={show} onClose={() => setShowmodal(false)} size="6xl">
       <ModalHeader>Edit Autoclave Entry</ModalHeader>
       <ModalBody className="overflow-auto max-h-[85vh]">
-        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
-          <div className="col-span-6">
-            <Label value="Operator Name" />
-            <TextInput
-              id="operator_name"
-              value={formData.operator_name}
-              onChange={(e) => handleChange('operator_name', e.target.value)}
-              placeholder="Enter operator name"
-              className='form-rounded-md'
-              color={errors.operator_name ? 'failure' : 'gray'}
-            />
-            {errors.operator_name && <p className="text-red-500 text-xs">{errors.operator_name}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* --- Operator Name --- */}
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <Label>Operator Name</Label>
+              <TextInput
+                value={formData.operator_name}
+                onChange={(e) => handleChange("operator_name", e.target.value)}
+              />
+            </div>
           </div>
 
-{   isReady &&<>
-          {renderTimePicker('on_time', 'On Time')}
-          {renderTimePicker('door_steam_time', 'Door Steam Time (15 min)')}
-          {renderTimePicker('vacuum_steam_time', 'Vacuum Steam Time (15-20 min)')}</>}
-
-          <div className="col-span-12">
-            <Label value="Steam Pressure (kg/cm²)" />
-            {formData.steam_pressure.map((val, idx) => (
-              <div key={idx} className="flex items-center gap-2 mb-2">
-                <TextInput
-                  value={val}
-                  placeholder={`Steam Pressure #${idx + 1}`}
-                  onChange={(e) => handleSteamChange(idx, e.target.value)}
-                  className="form-rounded-md w-full"
-                />
-                {idx > 0 ? (
-                  <Button color="failure" size="xs" onClick={() => removeSteamPressure(idx)}>
-                    <Icon icon="solar:trash-bin-minimalistic-outline" height={18} />
-                  </Button>
-                ) : (
-                  <Button size="xs" onClick={addSteamPressure}>
-                    <Icon icon="ic:baseline-plus" height={18} />
-                  </Button>
-                )}
+          {/* --- Records Section --- */}
+          {formData.records.map((row: any, idx: number) => (
+            <div key={idx} className="border rounded-lg p-3 mb-4 shadow-sm">
+              <div className="grid grid-cols-4 gap-4">
+                <div>
+                  <Label>Material Receipt</Label>
+                  {renderTime(row.material_receipt_time, (val) =>
+                    handleRecordChange(idx, "material_receipt_time", val)
+                  )}
+                </div>
+                <div>
+                  <Label>Door Closing</Label>
+                  {renderTime(row.door_closing_time, (val) =>
+                    handleRecordChange(idx, "door_closing_time", val)
+                  )}
+                </div>
+                <div>
+                  <Label>Vacuum On</Label>
+                  {renderTime(row.vacuum_on_time, (val) =>
+                    handleRecordChange(idx, "vacuum_on_time", val)
+                  )}
+                </div>
+                <div>
+                  <Label>Vacuum Off</Label>
+                  {renderTime(row.vacuum_off_time, (val) =>
+                    handleRecordChange(idx, "vacuum_off_time", val)
+                  )}
+                </div>
+                <div>
+                  <Label>Rising Pressure</Label>
+                  <div className="flex flex-col gap-1">
+                    {renderTime(row.rising_pressure_time, (val) =>
+                      handleRecordChange(idx, "rising_pressure_time", val)
+                    )}
+                    <TextInput
+                      type="number"
+                      value={row.rising_pressure_value}
+                      onChange={(e) =>
+                        handleRecordChange(idx, "rising_pressure_value", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Holding Pressure</Label>
+                  <div className="flex flex-col gap-1">
+                    {renderTime(row.holding_pressure_time, (val) =>
+                      handleRecordChange(idx, "holding_pressure_time", val)
+                    )}
+                    <TextInput
+                      type="number"
+                      value={row.holding_pressure_value}
+                      onChange={(e) =>
+                        handleRecordChange(idx, "holding_pressure_value", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Release Pressure</Label>
+                  <div className="flex flex-col gap-1">
+                    {renderTime(row.release_pressure_time, (val) =>
+                      handleRecordChange(idx, "release_pressure_time", val)
+                    )}
+                    <TextInput
+                      type="number"
+                      value={row.release_pressure_value}
+                      onChange={(e) =>
+                        handleRecordChange(idx, "release_pressure_value", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Door Opening</Label>
+                  {renderTime(row.door_opening_time, (val) =>
+                    handleRecordChange(idx, "door_opening_time", val)
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
-
-          <div className="col-span-12">
-            <Label value="Remark" />
-            <textarea
-              value={formData.remark}
-              onChange={(e) => handleChange('remark', e.target.value)}
-              placeholder="Any notes or comments"
-              rows={2}
-              className="w-full border rounded-md p-2 border-gray-300"
-            />
-          </div>
+            </div>
+          ))}
         </form>
       </ModalBody>
       <ModalFooter className="justify-end">
-        <Button color="gray" onClick={() => setShowmodal(false)}>Cancel</Button>
-        <Button onClick={handleSubmit} color='primary'>Update</Button>
+        <Button color="gray" onClick={() => setShowmodal(false)}>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color="primary">
+          Update
+        </Button>
       </ModalFooter>
     </Modal>
   );
 };
+
 
 export default EditAutoClaveModal;

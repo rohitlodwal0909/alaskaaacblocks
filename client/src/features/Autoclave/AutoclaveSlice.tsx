@@ -28,7 +28,6 @@ export const GetAutoclave= createAsyncThunk(
 export const GetAutoclaveSingle= createAsyncThunk(
   "GetAutoclaveSingle/getSingle",
   async (id:string, thunkAPI) => {
-    console.log(id)
     try {
       const response = await axios.get(`${apiUrl}/autoclave-signle/${id}`);
       return response.data;

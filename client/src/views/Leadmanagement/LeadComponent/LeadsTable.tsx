@@ -37,6 +37,7 @@ export interface PaginationTableType {
   district?: string;
   tehsil?: string;
   address?: string;
+  delivery_address?:string,
   created_at:any;
   datetime:any;
   actions:any;
@@ -54,19 +55,21 @@ function LeadsTable({searchText ,toDate ,fromDate}) {
   const notesLeads = useSelector((state: any) => state.leadmanagement.getnotesData);
   const [data, setData] = useState<PaginationTableType[]>(users);
   const [selectedRow, setSelectedRow] = useState<PaginationTableType | null>(null);
-    const [followupdata, setFollowupData] = useState<any>(notesLeads);
+  const [followupdata, setFollowupData] = useState<any>(notesLeads);
   const [filters, setFilters] = useState<{ [key: string]: string }>({ qa_qc_status: '' });
   const dispatch = useDispatch<AppDispatch>()
   const [editModal, setEditModal] = useState(false);
   const modalPlacement = "center";
   const location = useLocation();
   const leadId = location.state?.lead_id;
-  console.log(leadId)
   const [viewModal, setViewModal] = useState(false);
   const [followUpModal, setFollowupModal] = useState(false);
  const uniqueDistricts = Array.from(
   new Set(data?.map((item) => item?.district))
 );
+
+
+
 
 const uniquetehsile = Array.from(
   new Set(data?.map((item) => item?.tehsil))
@@ -89,7 +92,7 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
     setEditModal(true);
   };
 
-  useEffect(() => { setData(users) ,setFollowupData(notesLeads)  }, [users,notesLeads]);
+   
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -100,20 +103,25 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
         console.error("Error fetching leads:", error);
       }
     };
-
-   
     fetchLeads();
   }, []);
 
-  const handleupdateuser = (updatedata) => {
-    dispatch(UpdateLeads(updatedata)).unwrap().then(() => {
-      toast.success("Lead has been successfully updated.");
-      dispatch(GetLeads());
-    }).catch((err) => {
-      toast.error(err || "Failed to update lead.");
-      console.error("Update error:", err);
-    });
-  };
+  
+const handleupdateuser = (updatedata) => {
+  dispatch(UpdateLeads(updatedata)).unwrap().then(() => {
+    toast.success("Lead has been successfully updated.");
+    // ✅ local patch
+    setData(prev =>
+      prev.map(user =>
+        user.id === updatedata.id ? { ...user, ...updatedata } : user
+      )
+    );
+  }).catch((err) => {
+    toast.error(err || "Failed to update lead.");
+    console.error("Update error:", err);
+  });
+};
+
 
   const handleDelete = (row: PaginationTableType) => {
     triggerGoogleTranslateRescan();
@@ -126,7 +134,7 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
     try {
       await dispatch(DeleteLeads(userToDelete?.id)).unwrap();
       setData(data.filter((user) => user.id !== userToDelete.id));
-toast.success("Lead has been successfully deleted.");
+      toast.success("Lead has been successfully deleted.");
     } catch (error: any) {
       console.error("Delete failed:", error);
       if (error?.response?.status === 404) toast.error("User not found.");
@@ -135,15 +143,21 @@ toast.success("Lead has been successfully deleted.");
     }
   };
 
-  const handleStatuschange = (status:any, id:any) => {
-    dispatch(UpdateLeads({ status, id })).unwrap().then(() => {
-      toast.success("Lead status has been successfully changed.");
-      dispatch(GetLeads());
-    }).catch((err) => {
-      toast.error(err || "Failed to update lead.");
-      console.error("Update error:", err);
-    });
-  };
+const handleStatuschange = (status:any, id:any) => {
+  dispatch(UpdateLeads({ status, id })).unwrap().then(() => {
+    toast.success("Lead status has been successfully changed.");
+    // ✅ local patch
+    setData(prev =>
+      prev.map(user =>
+        user.id === id ? { ...user, status } : user
+      )
+    );
+  }).catch((err) => {
+    toast.error(err || "Failed to update lead.");
+    console.error("Update error:", err);
+  });
+};
+
 
   const handleView = async (row: PaginationTableType) => {
     setViewModal(true);
@@ -161,6 +175,29 @@ toast.success("Lead has been successfully deleted.");
     setFollowupModal(true);
     setSelectedRow(row)
   };
+
+
+  useEffect(() => { 
+  setData(users),
+  setFollowupData(notesLeads) 
+}, [users, notesLeads]);
+
+//   useEffect(() => {
+//     console.log('sd')
+//   if (users?.length) {
+//     setData(users);
+//   }
+// }, []);
+
+
+// useEffect(() => {
+
+//   if (notesLeads?.length) {
+//     setFollowupData(notesLeads);
+//   }
+// }, []);
+
+
 const filteredData = useMemo(() => {
   if (!data) return [];
 
@@ -189,34 +226,35 @@ const filteredData = useMemo(() => {
     const byDate = (() => {
       if (!fromDate && !toDate) return true;
 
-const itemDate = new Date(item?.created_at);
-itemDate.setHours(0, 0, 0, 0);
+        const itemDate = new Date(item?.created_at);
+        itemDate.setHours(0, 0, 0, 0);
 
-const from = fromDate ? new Date(fromDate) : null;
-from?.setHours(0, 0, 0, 0);
+        const from = fromDate ? new Date(fromDate) : null;
+        from?.setHours(0, 0, 0, 0);
 
-const to = toDate ? new Date(toDate) : null;
-to?.setHours(0, 0, 0, 0);
+        const to = toDate ? new Date(toDate) : null;
+        to?.setHours(0, 0, 0, 0);
 
-if (from && to) return itemDate >= from && itemDate <= to;
-if (from) return itemDate >= from;
-if (to) return itemDate <= to;
-return true;
-    })();
-    return bySearch && byFilters && byDate;
-  });
-}, [data, filters, searchText,fromDate,toDate]);
+        if (from && to) return itemDate >= from && itemDate <= to;
+        if (from) return itemDate >= from;
+        if (to) return itemDate <= to;
+        return true;
+            })();
+            return bySearch && byFilters && byDate;
+          });
+        }, [data, filters, searchText,fromDate,toDate]);
 
-  const columns = [
-    columnHelper.accessor("id", {
-  cell: (info) => <span className="hidden">{info.getValue()}</span>,
-  header: () => null,
-}),
-columnHelper.accessor("srNo", {
-  id: "srNo", // give a unique ID for the column
-  cell: (info) => <span> <h6 className="text-base">#{info.row.index + 1} </h6></span>,
-  header: () => <span>Sr. No.</span>,
-}),
+        const columns = [
+          columnHelper.accessor("id", {
+        cell: (info) => <span className="hidden">{info.getValue()}</span>,
+        header: () => null,
+      }),
+
+      columnHelper.accessor("srNo", {
+        id: "srNo", // give a unique ID for the column
+        cell: (info) => <span> <h6 className="text-base">#{info.row.index + 1} </h6></span>,
+        header: () => <span>Sr. No.</span>,
+      }),
 
     columnHelper.accessor("name", {
       cell: (info) => (
@@ -230,6 +268,7 @@ columnHelper.accessor("srNo", {
       ),
       header: () => <span>Name</span>,
     }),
+
     columnHelper.accessor("phone", {
       cell: (info) => (
         <div className="truncate line-clamp-2 max-w-56">
@@ -238,6 +277,7 @@ columnHelper.accessor("srNo", {
       ),
       header: () => <span>Phone</span>,
     }),
+
     columnHelper.accessor("status", {
       cell: (info) => {
         const status = info.row.original.status;
@@ -253,9 +293,10 @@ columnHelper.accessor("srNo", {
       },
       header: () => <span>Status</span>,
     }),
+
     columnHelper.accessor("source", {
       cell: (info) => {
-        const source = info.getValue() as string;;
+        const source = info.getValue() as string;
         const roleMap = {
           "India mart": "India mart",
           "Justdial": "Justdial",
@@ -270,46 +311,55 @@ columnHelper.accessor("srNo", {
       },
       header: () => <span>Source</span>,
     }),
-    columnHelper.accessor("district", {
-      cell: (info) => <span>{info.getValue() || "—"}</span>,
-      header: () => <span>District</span>,
-    }),
-columnHelper.accessor("datetime", {
-  cell: (info) => {
-    const rawDate = info.getValue();
-    const formatted = rawDate
-      ? {
-          date: new Date(rawDate).toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-             timeZone: "Asia/Kolkata",
-          }),
-          time: new Date(rawDate).toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-             timeZone: "Asia/Kolkata",
-          }),
-        }
-      : null;
 
-    return (
-      <span>
-        {formatted ? (
-          <>
-            {formatted.date}
-            <br />
-            {formatted.time}
-          </>
-        ) : (
-          "—"
-        )}
-      </span>
-    );
-  },
-  header: () => <span>Date</span>,
-}),
+    columnHelper.accessor("tehsil", {
+          cell: (info) => <span>{info.getValue() || "—"}</span>,
+          header: () => <span>Tehsil</span>,
+        }),
+
+    columnHelper.accessor("delivery_address", {
+      cell: (info) => <span>{info.getValue() || "—"}</span>,
+      header: () => <span>Delivery Location</span>,
+    }),
+    
+
+    columnHelper.accessor("datetime", {
+      cell: (info) => {
+        const rawDate = info.getValue();
+        const formatted = rawDate
+          ? {
+              date: new Date(rawDate).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                timeZone: "Asia/Kolkata",
+              }),
+              time: new Date(rawDate).toLocaleTimeString("en-IN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+                timeZone: "Asia/Kolkata",
+              }),
+            }
+          : null;
+
+        return (
+          <span>
+            {formatted ? (
+              <>
+                {formatted.date}
+                <br />
+                {formatted.time}
+              </>
+            ) : (
+              "—"
+            )}
+          </span>
+        );
+      },
+      header: () => <span>Date</span>,
+    }),
+
     columnHelper.accessor("actions", {
       cell: (info) => {
         const rowData = info.row.original;
@@ -325,17 +375,17 @@ columnHelper.accessor("datetime", {
               ))}
             </Dropdown>
           {info.row.original.status !== "Interested" && info.row.original.status !== "Lost" && (
-  <Tooltip content="Follow up" placement="bottom">
-    <Button
-      size="sm"
-      color={"lightinfo"}
-      className="p-0"
-      onClick={() => handleNotes(rowData)}
-    >
-      <Icon icon="simple-line-icons:user-follow" height={18} />
-    </Button>
-  </Tooltip>
-)}
+          <Tooltip content="Follow up" placement="bottom">
+            <Button
+              size="sm"
+              color={"lightinfo"}
+              className="p-0"
+              onClick={() => handleNotes(rowData)}
+            >
+              <Icon icon="simple-line-icons:user-follow" height={18} />
+            </Button>
+          </Tooltip>
+        )}
             <Tooltip content="View" placement="bottom" >
               <Button size="sm" color={"lightsecondary"} className="p-0" onClick={() => handleView(rowData)}>
                 <Icon icon="hugeicons:view" height={18} />
@@ -357,6 +407,8 @@ columnHelper.accessor("datetime", {
       },
       header: () => <span>Action</span>,
     }),
+
+    
   ];
 
   const table = useReactTable({
@@ -367,6 +419,7 @@ columnHelper.accessor("datetime", {
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
   useEffect(() => {
     if (!leadId) return;
 
@@ -379,7 +432,7 @@ columnHelper.accessor("datetime", {
       const targetPage = Math.floor(rowIndex / pageSize);
       table.setPageIndex(targetPage);
     }
-  }, [leadId, table]);
+  }, []);
 
   return (
     <>

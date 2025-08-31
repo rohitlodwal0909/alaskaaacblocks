@@ -152,6 +152,13 @@ const SidebarContent: MenuItem[] = [
             icon: "mdi:material-ui",
             color: "text-primary",
           },
+          {
+            id: uniqueId(),
+            url: "/security",
+            name: "Security",
+            icon: "mdi:material-ui",
+            color: "text-primary",
+          },
         ],
       },
     ],

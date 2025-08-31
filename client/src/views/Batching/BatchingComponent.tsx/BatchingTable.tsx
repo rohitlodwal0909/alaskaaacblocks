@@ -117,7 +117,7 @@ const BatchingTable = ({ logindata }) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Mould No", "Operator", "Shift", "Batch date", "Batch time", "Action"].map((title) => (
+              {["Sr.No", "Mould No", "Operator", "Shift", "Batch date & Time", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -148,10 +148,7 @@ const BatchingTable = ({ logindata }) => {
                     </Badge>
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item.batch_date ? formatDate(item.batch_date) : ""}
-                  </td>
-                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item.entry_time
+                    {item.batch_date ? formatDate(item.batch_date) : ""} {" "}{item.entry_time
                       ? new Date(`1970-01-01T${item.entry_time}`).toLocaleTimeString("en-IN", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -159,6 +156,7 @@ const BatchingTable = ({ logindata }) => {
                         })
                       : "-"}
                   </td>
+                  
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
                       <Tooltip content="View" placement="bottom">
