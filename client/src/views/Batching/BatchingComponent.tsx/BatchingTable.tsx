@@ -12,10 +12,15 @@ import { toast } from "react-toastify";
 import ViewBatchModal from "./ViewBatchModal";
 import AddBatchModal from "./AddBatchModal";
 import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
+import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
+import CardBox from "src/components/shared/CardBox";
+import { useParams } from "react-router";
 
 const BatchingTable = ({ logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
   const { batchingdata, loading } = useSelector((state: any) => state.batching);
+  
 
   const [showmodal, setShowmodal] = useState(false);
   const [editmodal, setEditmodal] = useState(false);
@@ -28,7 +33,7 @@ const BatchingTable = ({ logindata }) => {
   const [shiftFilter, setShiftFilter] = useState("");
 
   useEffect(() => {
-    dispatch(GetBatching());
+    dispatch(GetBatching(id));
   }, [dispatch]);
 
   const handleEdit = (entry: any) => {
@@ -40,7 +45,7 @@ const BatchingTable = ({ logindata }) => {
     if (!userToDelete) return;
     try {
       await dispatch(deleteBatching(userToDelete?.id)).unwrap();
-      dispatch(GetBatching());
+      dispatch(GetBatching(id));
       toast.success("The batching was successfully deleted.");
     } catch (error: any) {
       console.error("Delete failed:", error);
@@ -79,6 +84,9 @@ const BatchingTable = ({ logindata }) => {
 
   return (
     <div>
+      <BreadcrumbComp    items={[{ title: "Batching ", to: "/" }]}
+        title="Batching List"/>
+                <CardBox>
 
       <div className="">
         <div className="flex items-center gap-2 mb-3 justify-end">
@@ -113,6 +121,9 @@ const BatchingTable = ({ logindata }) => {
       </div>
 
       {/* Table */}
+      
+          
+      
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
@@ -211,6 +222,8 @@ const BatchingTable = ({ logindata }) => {
           </tbody>
         </table>
       </div>
+
+       </CardBox>
 
       {/* Pagination */}
       <CommonPagination

@@ -29,6 +29,7 @@ import BoilerView from 'src/views/Boiler/BoilerComponent.tsx/BoilerView';
 import Security from 'src/views/security/Security';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
+const BatchingTable = Loadable(lazy(() => import('src/views/Batching/BatchingComponent.tsx/BatchingTable')));
 
 const Userprofile = Loadable(lazy(() => import('src/views/userprofile/Userprofile')));
 const PermissionsTable = Loadable(lazy(() => import('src/views/permission/PermissionsTable')));
@@ -79,6 +80,8 @@ const Router = [
         { path: '/material', element: <Material/> },
         { path: '/receiving-stock', element: <Receiving/> },
         { path: '/autoclave-view/:id', element: <AutoclaveView /> },
+        { path: '/batching-list/:id', element: <BatchingTable /> },
+
         { path: '/boiler-view/:id', element: <BoilerView/> },
         { path: '/security', element: <Security/> },
         { path: '/permission', element: <PermissionsTable /> },

@@ -6,16 +6,31 @@ const initialState = {
   loading: false,
   error: null,
   batchingdata: [],         
+  batching: [],         
   addResult: null,  
   updateResult: null,
   deleteResult: null 
 };
 
-export const GetBatching = createAsyncThunk(
-  "GetBatching/fetch",
+export const GetBatchingdate = createAsyncThunk(
+  "GetBatchingdate/fetch",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-all-batching`);
+      const response = await axios.get(`${apiUrl}/get-batching-datewise`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const GetBatching = createAsyncThunk(
+  "GetBatching/fetch",
+  async (id: any, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-all-batching/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -100,6 +115,20 @@ const BatchingSlice = createSlice({
         state.batchingdata = action.payload;
       })
       .addCase(GetBatching.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(GetBatchingdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      
+      .addCase(GetBatchingdate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.batching = action.payload;
+      })
+      .addCase(GetBatchingdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
