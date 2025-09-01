@@ -20,14 +20,12 @@ const BatchingdateTable = ({ logindata }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [shiftFilter, setShiftFilter] = useState("");
 
   useEffect(() => {
     dispatch(GetBatchingdate());
   }, [dispatch]);
 
-
-const handleView = (id) => {
+  const handleView = (id: string) => {
     navigate(`/batching-list/${id}`);
   };
 
@@ -39,38 +37,31 @@ const handleView = (id) => {
     return `${dd}-${mm}-${yyyy}`;
   };
 
- const filteredItems = (batching || []).filter((item: any) => {
-  const searchText = searchTerm.toLowerCase();
+  const filteredItems = (batching || []).filter((item: any) => {
+    const searchText = searchTerm.toLowerCase();
 
-  const matchesSearch =
-    
-    (item?.batch_date ? formatDate(item?.batch_date).toLowerCase() : "").includes(searchText) 
-
-  const matchesShift = shiftFilter
-    ? (item?.shift || "").toString().toLowerCase() === shiftFilter.toLowerCase()
-    : true;
-
-  return matchesSearch && matchesShift;
-});
+    return (item?.batch_date ? formatDate(item?.batch_date).toLowerCase() : "").includes(searchText);
+  });
 
   const totalPages = Math.ceil(filteredItems.length / pageSize);
-  const currentItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
+  const currentItems = filteredItems.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div>
+      {/* Search + Add */}
+      <div className="flex items-center gap-2 mb-3 justify-end">
+        <input
+          type="text"
+          placeholder="Search by Batch Date..."
+          className="border rounded-md border-gray-300 px-2 py-1"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
-      <div className="">
-        <div className="flex items-center gap-2 mb-3 justify-end">
-          <input
-            type="text"
-            placeholder="Search by any field..."
-            className=" border rounded-md border-gray-300 "
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-         
-        
+        {/* Add New Batch */}
         <Button
           onClick={() => {
             setShowmodal(true);
@@ -81,7 +72,6 @@ const handleView = (id) => {
         >
           Create New Batching
         </Button>
-        </div>
       </div>
 
       {/* Table */}
@@ -89,7 +79,7 @@ const handleView = (id) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No",  "Batch Date", "Action"].map((title) => (
+              {["Sr.No", "Batch Date", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -102,46 +92,49 @@ const handleView = (id) => {
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {loading ? (
               <tr>
-                <td colSpan={7} className="text-center py-6">
+                <td colSpan={3} className="text-center py-6">
                   Loading...
                 </td>
               </tr>
             ) : currentItems.length > 0 ? (
               currentItems.map((item: any, index: number) => (
-                <tr key={item.id} className="bg-white dark:bg-gray-900">
-                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"> #{(currentPage - 1) * pageSize + index + 1}</td>
-                 
-                 
+                <tr key={`${item.id}-${index}`} className="bg-white dark:bg-gray-900">
+                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    #{(currentPage - 1) * pageSize + index + 1}
+                  </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item.batch_date ? formatDate(item.batch_date) : ""}
                   </td>
-                  
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
                       <Tooltip content="View" placement="bottom">
                         <Button
                           size="sm"
-                          color={"lightsecondary"}
+                          color="light"
                           className="p-0"
-                          onClick={() => {
-                            handleView(item?.sample_id);
-                          }}
+                          onClick={() => handleView(item?.sample_id)}
                         >
                           <Icon icon="hugeicons:view" height={18} />
                         </Button>
                       </Tooltip>
-                    
-                    
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="text-center py-8 px-4">
+                <td colSpan={3} className="text-center py-8 px-4">
                   <div className="flex flex-col items-center">
-                    <img src={noData} alt="No data" height={100} width={100} className="mb-4" />
-                    <p className="text-gray-500 dark:text-gray-400">No data available</p>
+                    <img
+                      src={noData}
+                      alt="No data"
+                      height={100}
+                      width={100}
+                      className="mb-4"
+                    />
+                    <p className="text-gray-500 dark:text-gray-400">
+                      No data available
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -159,8 +152,13 @@ const handleView = (id) => {
         setPageSize={setPageSize}
       />
 
-      <AddBatchModal show={showmodal} setShowmodal={setShowmodal} logindata={logindata}batchingdata={batching} />
-
+      {/* Add Batch Modal */}
+      <AddBatchModal
+        show={showmodal}
+        setShowmodal={setShowmodal}
+        logindata={logindata}
+        batchingdata={batching}
+      />
     </div>
   );
 };
