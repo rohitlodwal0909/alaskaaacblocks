@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/store';
 import { toast } from 'react-toastify';
-import { addBatching, GetBatching } from 'src/features/batching/BatchingSlice';
+import { addBatching, GetBatchingdate } from 'src/features/batching/BatchingSlice';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -75,7 +75,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     try {
       const result = await dispatch(addBatching(formData)).unwrap();
       toast.success(result.message || 'Batch created successfully');
-      dispatch(GetBatching())
+      dispatch(GetBatchingdate())
       setFormData({
        user_id:logindata?.admin?.id,
     shift: '',

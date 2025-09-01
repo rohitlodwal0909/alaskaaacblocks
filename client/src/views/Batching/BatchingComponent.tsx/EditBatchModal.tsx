@@ -10,9 +10,11 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
+import { useParams } from "react-router";
 const EditBatchModal = ({ open, setOpen, batchingData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({});
+  const {id} = useParams();
 const requiredFields = [
   "mould_no",
   "operator_name",
@@ -72,7 +74,7 @@ const validateForm = () => {
     try {
      await dispatch(updateBatching(formData)).unwrap();
       toast.success("Batch updated successfully");
-      dispatch(GetBatching());
+      dispatch(GetBatching(id));
       setOpen(false);
     } catch (err: any) {
   if (typeof err === "string") {

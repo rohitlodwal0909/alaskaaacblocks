@@ -10,19 +10,16 @@ import { AppDispatch } from "src/store";
 import EditBatchModal from "./EditBatchModal";
 import { toast } from "react-toastify";
 import ViewBatchModal from "./ViewBatchModal";
-import AddBatchModal from "./AddBatchModal";
-import { triggerGoogleTranslateRescan } from "src/utils/triggerTranslateRescan";
 import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
 import CardBox from "src/components/shared/CardBox";
 import { useParams } from "react-router";
 
-const BatchingTable = ({ logindata }) => {
+const BatchingTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {id} = useParams();
   const { batchingdata, loading } = useSelector((state: any) => state.batching);
   
 
-  const [showmodal, setShowmodal] = useState(false);
   const [editmodal, setEditmodal] = useState(false);
   const [deletemodal, setDeletemodal] = useState(false);
   const [viewmodal, setViewmodal] = useState(false);
@@ -107,16 +104,7 @@ const BatchingTable = ({ logindata }) => {
             <option value="night">Night</option>
           </select>
         
-        <Button
-          onClick={() => {
-            setShowmodal(true);
-            triggerGoogleTranslateRescan();
-          }}
-          className="w-fit rounded-sm"
-          color="primary"
-        >
-          Create New Batching
-        </Button>
+        
         </div>
       </div>
 
@@ -242,7 +230,6 @@ const BatchingTable = ({ logindata }) => {
         selectedUser={selectedrow}
         title="Are you sure you want to Delete this Batching?"
       />
-      <AddBatchModal show={showmodal} setShowmodal={setShowmodal} logindata={logindata}batchingdata={batchingdata} />
       <EditBatchModal open={editmodal} setOpen={setEditmodal} batchingData={selectedrow} />
       <ViewBatchModal
         setPlaceModal={setViewmodal}
