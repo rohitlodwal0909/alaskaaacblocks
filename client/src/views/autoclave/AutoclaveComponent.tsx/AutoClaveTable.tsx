@@ -10,11 +10,14 @@ import { toast } from "react-toastify";
 import AddAutoClaveModal from "./AddAutoClaveModal";
 import EditAutoClaveModal from "./EditAutoClaveModal";
 import { deleteAutoclave, GetAutoclave } from "src/features/Autoclave/AutoclaveSlice";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
+import CardBox from "src/components/shared/CardBox";
 
 const AutoClaveTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { autoclavedata, loading } = useSelector((state: any) => state.autoclave);
+  const {id} = useParams();
   const logindata = useSelector((state: any) => state.authentication?.logindata);
   const navigate = useNavigate();
 
@@ -27,16 +30,19 @@ const AutoClaveTable = () => {
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
-    dispatch(GetAutoclave());
+    dispatch(GetAutoclave(id));
   }, [dispatch]);
+
 
   // ✅ Filtered search data
   const filteredData = (autoclavedata || []).filter((item: any) => {
+    const autoclave = item?.rising_info?.cutting_info?.autoclave;
     const search = searchTerm.toLowerCase();
 
+
     const mouldNo = String(item?.mould_no || "");
-    const operator = String(item?.autoclave_entries?.[0]?.operator_name || "");
-    const onTime = String(item?.autoclave_entries?.[0]?.on_time || "");
+    const operator = String(autoclave?.operator_name || "");
+    const onTime = String(autoclave?.datetime || "");
 
     return (
       mouldNo.toLowerCase().includes(search) ||
@@ -54,14 +60,16 @@ const AutoClaveTable = () => {
   };
 
   const handleView = (autoclave: any) => {
-    navigate(`/autoclave-view/${autoclave?.autoclave_entries?.[0]?.id}`);
+    navigate(`/autoclave-view/${autoclave?.id}`);
   };
 
   const handleDelete = async (userToDelete: any) => {
-    if (!userToDelete) return;
+    const deleteid = userToDelete?.rising_info?.cutting_info?.autoclave?.id;
+   
+    if (!deleteid) return;
     try {
-      await dispatch(deleteAutoclave(userToDelete?.autoclave_entries?.[0]?.id)).unwrap();
-      dispatch(GetAutoclave());
+      await dispatch(deleteAutoclave(deleteid)).unwrap();
+      dispatch(GetAutoclave(id));
       toast.success("The autoclave was successfully deleted.");
     } catch (error: any) {
       console.error("Delete failed:", error);
@@ -74,6 +82,10 @@ const AutoClaveTable = () => {
   return (
     <div>
       {/* ✅ Search Input */}
+     <BreadcrumbComp  items={[{ title: "Autoclave List", to: "/" }]}
+        title="Autoclave List"/>
+         <CardBox>
+
       <div className="flex justify-end mb-3">
         <input
           placeholder="Search..."
@@ -104,23 +116,26 @@ const AutoClaveTable = () => {
                 <td colSpan={5} className="text-center py-6">Loading...</td>
               </tr>
             ) : currentItems.length > 0 ? (
-              currentItems.map((item, index) => (
+              currentItems.map((item, index) => {
+                const autoclaveList = item?.rising_info?.cutting_info?.autoclave;
+
+               return( 
                 <tr key={item.id} className="bg-white dark:bg-gray-900">
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"> #{(currentPage - 1) * pageSize + index + 1}</td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">{item?.mould_no}</td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.autoclave_entries?.[0]?.operator_name
-                      ? item?.autoclave_entries?.[0]?.operator_name.charAt(0).toUpperCase() +
-                        item?.autoclave_entries?.[0]?.operator_name.slice(1)
+                    {autoclaveList?.operator_name
+                      ? autoclaveList?.operator_name.charAt(0).toUpperCase() +
+                        autoclaveList?.operator_name.slice(1)
                       : "-"}
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.autoclave_entries?.[0]?.datetime
+                    {autoclaveList?.datetime
                      }
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
-                      {!item?.autoclave_entries?.[0]?.operator_name ? (
+                      {!autoclaveList?.operator_name ? (
                         <Tooltip content="Add" placement="bottom">
                           <Button
                             size="sm"
@@ -149,7 +164,7 @@ const AutoClaveTable = () => {
                               size="sm"
                               color="lightsecondary"
                               className="p-0"
-                              onClick={() => handleView(item)}
+                              onClick={() => handleView(autoclaveList)}
                             >
                               <Icon icon="hugeicons:view" height={18} />
                             </Button>
@@ -172,7 +187,7 @@ const AutoClaveTable = () => {
                     </div>
                   </td>
                 </tr>
-              ))
+              )})
             ) : (
               <tr>
                 <td colSpan={7} className="text-center py-8 px-4">
@@ -186,6 +201,9 @@ const AutoClaveTable = () => {
           </tbody>
         </table>
       </div>
+
+              </CardBox>
+
 
       {/* Pagination */}
       <CommonPagination

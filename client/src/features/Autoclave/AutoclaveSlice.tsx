@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   autoclavedata: [],
   signleautoclave:[],
+  Cuttingdata:[],
   addResult: null,  
   updateResult: null,
   deleteResult: null 
@@ -14,9 +15,9 @@ const initialState = {
 
 export const GetAutoclave= createAsyncThunk(
   "GetAutoclave /fetch",
-  async (_, thunkAPI) => {
+  async (id:string, thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-autoclave`);
+      const response = await axios.get(`${apiUrl}/get-autoclave/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -25,6 +26,21 @@ export const GetAutoclave= createAsyncThunk(
     }
   }
 );
+export const GetCuttingdate= createAsyncThunk(
+  "GetCuttingdate/fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-cutting-date`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
 export const GetAutoclaveSingle= createAsyncThunk(
   "GetAutoclaveSingle/getSingle",
   async (id:string, thunkAPI) => {
@@ -56,13 +72,17 @@ export const addAutoclave = createAsyncThunk(
   }
 );
 
-  export const updateAutoclave = createAsyncThunk("Autoclave/update", async (updatedUser:any) => {
+  export const updateAutoclave = createAsyncThunk("Autoclave/update", async ({ id, data }: any) => {
   const response = await axios.put(
-     `${apiUrl}/update-autoclave/${updatedUser?.id}`,
-    updatedUser
+     `${apiUrl}/update-autoclave/${id}`,
+    data
   );
   return response.data;
 });
+
+
+
+
 
 export const deleteAutoclave= createAsyncThunk(
   "Autoclave/delete",
@@ -98,6 +118,21 @@ const AutoclaveSlice = createSlice({
         state.autoclavedata = action.payload;
       })
       .addCase(GetAutoclave.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+
+
+      .addCase(GetCuttingdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetCuttingdate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Cuttingdata = action.payload;
+      })
+      .addCase(GetCuttingdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

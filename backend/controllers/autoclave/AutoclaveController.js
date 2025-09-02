@@ -1,26 +1,15 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const { Cutting, Autoclave, AuthModel, AutoclaveRecord } = db;
+const { Cutting, Autoclave, AuthModel, AutoclaveRecord, Rising, Batching } = db;
+const { Op, fn, col, literal, where } = require("sequelize");
 
 // CREATE Autoclave entry
 exports.createAutoclave = async (req, res) => {
   try {
     const { autoclaveData, records } = req.body;
 
-    const today = new Date();
-    const formatted = today.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Kolkata"
-    });
-
     const newAutoclave = await Autoclave.create({
-      ...autoclaveData,
-      datetime: formatted // 👈 naya datetime field
+      ...autoclaveData
     });
 
     // 🔹 Create related records (agar diye gaye ho)
@@ -56,15 +45,44 @@ exports.createAutoclave = async (req, res) => {
 // GET all Cutting entries with related Autoclave
 exports.getAllAutoclave = async (req, res) => {
   try {
-    const data = await Cutting.findAll({
+    const { id } = req.params;
+
+    const getdate = await Cutting.findOne({ where: { id } });
+
+    if (!getdate) {
+      return res.json([]);
+    }
+
+    const date = new Date(getdate.datetime).toISOString().split("T")[0];
+
+    const data = await Batching.findAll({
       where: {
-        deleted_at: null // Only non-deleted Rising entries
+        deleted_at: null
       },
       include: [
         {
-          model: Autoclave,
-          as: "autoclave_entries",
-          required: false
+          model: Rising,
+          as: "rising_info",
+          required: true,
+          include: [
+            {
+              model: Cutting,
+              as: "cutting_info",
+              where: where(
+                fn("DATE", col("rising_info.cutting_info.datetime")),
+                Op.eq,
+                date
+              ),
+              required: true,
+              include: [
+                {
+                  model: Autoclave,
+                  as: "autoclave",
+                  required: false
+                }
+              ]
+            }
+          ]
         }
       ]
     });
@@ -72,6 +90,25 @@ exports.getAllAutoclave = async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error("Get All Autoclave Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getCuttingdate = async (req, res) => {
+  try {
+    const data = await Cutting.findAll({
+      attributes: [
+        [fn("DATE", col("datetime")), "Date"],
+        [fn("COUNT", col("id")), "total_records"],
+        [fn("MIN", col("id")), "sample_id"]
+      ],
+      where: { deleted_at: null },
+      group: [fn("DATE", col("datetime"))],
+      order: [[literal("datetime"), "DESC"]]
+    });
+
+    res.json(data);
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -105,6 +142,9 @@ exports.updateAutoclave = async (req, res) => {
   try {
     const { id } = req.params;
     const { autoclaveData, records } = req.body;
+
+    console.log(autoclaveData);
+    console.log(records);
 
     // 🔹 Find main Autoclave
     const autoclave = await Autoclave.findByPk(id, {

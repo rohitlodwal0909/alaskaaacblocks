@@ -5,44 +5,44 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: true
       },
-       user_id: {
+      user_id: {
+        type: DataTypes.INTEGER
+      },
+      batching_id: {
         type: DataTypes.INTEGER,
-       
+        allowNull: false
       },
-      mould_no: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+
       hardness: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+        allowNull: false
       },
       temperature: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+        allowNull: false
       },
       rising_time: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       rising_date: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
+        type: DataTypes.STRING,
+        allowNull: true
       },
       operator_name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       remark: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
       },
       deleted_at: {
         type: DataTypes.DATE,
-        allowNull: true,
-      },
+        allowNull: true
+      }
     },
     {
       tableName: "rising",
@@ -51,23 +51,22 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: "updated_at",
       deletedAt: "deleted_at",
       paranoid: true,
-      underscored: true,
+      underscored: true
     }
   );
 
- Rising.associate = (models) => {
-  Rising.belongsTo(models.Batching, {
-    foreignKey: "mould_no",
-    targetKey: "mould_no",
-    as: "batching_info",
-  });
-
- Rising.hasOne(models.Cutting, {
-  foreignKey: "mould_no",
-  sourceKey: "mould_no",
-  as: "cutting_info",
-});
-};
+  Rising.associate = (models) => {
+    Rising.belongsTo(models.Batching, {
+      foreignKey: "batching_id",
+      targetKey: "id",
+      as: "batching_info"
+    });
+    Rising.hasOne(models.Cutting, {
+      foreignKey: "rising_id",
+      targetKey: "id",
+      as: "cutting_info"
+    });
+  };
 
   return Rising;
 };

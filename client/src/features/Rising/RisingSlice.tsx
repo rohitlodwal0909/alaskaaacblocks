@@ -13,9 +13,9 @@ const initialState = {
 
 export const GetRising = createAsyncThunk(
   "GetRising /fetch",
-  async (_, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-rising`);
+      const response = await axios.get(`${apiUrl}/get-rising/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -24,6 +24,8 @@ export const GetRising = createAsyncThunk(
     }
   }
 );
+
+
 
 export const addRising = createAsyncThunk(
   "Rising/add",
@@ -89,6 +91,8 @@ const RisingSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+//  get Risign Date
+      
 
       // ADD user
       .addCase(addRising.fulfilled, (state, action) => {

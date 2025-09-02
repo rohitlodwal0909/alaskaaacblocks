@@ -27,6 +27,11 @@ import ROwater from 'src/views/ro-water/ROwater';
 import FinishGood from 'src/views/Finishgood/FinishGood';
 import BoilerView from 'src/views/Boiler/BoilerComponent.tsx/BoilerView';
 import Security from 'src/views/security/Security';
+import SecurityTable from 'src/views/security/SecurityComponent/SecurityTable';
+import RisingTable from 'src/views/Rising/RisingComponent.tsx/RisingTable';
+import CuttingTable from 'src/views/cutting/CuttingComponent.tsx/CuttingTable';
+import AutoClaveTable from 'src/views/autoclave/AutoclaveComponent.tsx/AutoClaveTable';
+import SegregationTable from 'src/views/segregation/SegregationComponent.tsx/SegregationTable';
 
 const Usermanagment = Loadable(lazy(() => import('src/views/usermanagment/Usermanagment')));
 const BatchingTable = Loadable(lazy(() => import('src/views/Batching/BatchingComponent.tsx/BatchingTable')));
@@ -47,8 +52,6 @@ const Maintainance = Loadable(lazy(() => import('../views/authentication/Maintai
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 
 /* Pages */
-
-
 
 const Router = [
  {
@@ -81,6 +84,13 @@ const Router = [
         { path: '/receiving-stock', element: <Receiving/> },
         { path: '/autoclave-view/:id', element: <AutoclaveView /> },
         { path: '/batching-list/:id', element: <BatchingTable /> },
+        { path: '/security-list/:id', element: <SecurityTable /> },
+        { path: '/rising-list/:id', element: <RisingTable /> },
+        { path: '/cutting-list/:id', element: <CuttingTable /> },
+        { path: '/autoclave-list/:id', element: <AutoClaveTable /> },
+        { path: '/segregation-list/:id', element: <SegregationTable /> },
+
+        
 
         { path: '/boiler-view/:id', element: <BoilerView/> },
         { path: '/security', element: <Security/> },

@@ -7,16 +7,17 @@ const initialState = {
   error: null,
   securitydata: [],
   signlesecurity:[],
+  securitydatewise:[],
   addResult: null,  
   updateResult: null,
   deleteResult: null 
 };
 
 export const GetSecurity= createAsyncThunk(
-  "GetSecurity /fetch",
-  async (_, thunkAPI) => {
+  "GetSecurity/fetch",
+  async (id:string, thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-security`);
+      const response = await axios.get(`${apiUrl}/get-security/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -25,6 +26,21 @@ export const GetSecurity= createAsyncThunk(
     }
   }
 );
+
+export const GetSecuritydate= createAsyncThunk(
+  "GetSecuritydate/fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-security-date`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const GetSecuritySingle= createAsyncThunk(
   "GetSecuritySingle/getSingle",
   async (id:string, thunkAPI) => {
@@ -99,6 +115,20 @@ const SecuritySlice = createSlice({
         state.securitydata = action.payload;
       })
       .addCase(GetSecurity.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+
+       .addCase(GetSecuritydate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetSecuritydate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.securitydatewise = action.payload;
+      })
+      .addCase(GetSecuritydate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

@@ -2,41 +2,44 @@ module.exports = (sequelize, DataTypes) => {
   const Segregation = sequelize.define(
     "Segregation",
     {
-       id: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: true
       },
-       user_id: {
-        type: DataTypes.INTEGER,
+      user_id: {
+        type: DataTypes.INTEGER
+      },
+      autoclave_id: {
+        type: DataTypes.INTEGER
       },
       mould_no: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING
       },
       size: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSON
       },
       no_of_broken_pcs: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSON
       },
       no_of_ok_pcs: {
-         type: DataTypes.JSON,
+        type: DataTypes.JSON
       },
-       plate_no: {
-         type: DataTypes.JSON,
+      plate_no: {
+        type: DataTypes.JSON
       },
       remark: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT
       },
       operator_name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING
       },
       date: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY
       },
       deleted_at: {
-        type: DataTypes.DATE,
-      },
+        type: DataTypes.DATE
+      }
     },
     {
       tableName: "segregation",
@@ -45,17 +48,16 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true, // Enables soft delete using deleted_at
       createdAt: "created_at",
       updatedAt: "updated_at",
-      deletedAt: "deleted_at",
+      deletedAt: "deleted_at"
     }
   );
 
   Segregation.associate = function (models) {
     Segregation.belongsTo(models.Autoclave, {
-      foreignKey: "mould_no",
-      targetKey: "mould_no",
-      as: "autoclave",
+      foreignKey: "autoclave_id",
+      targetKey: "id",
+      as: "autoclave"
     });
-  
   };
 
   return Segregation;

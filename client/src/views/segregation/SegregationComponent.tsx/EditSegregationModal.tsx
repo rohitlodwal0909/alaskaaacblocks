@@ -12,9 +12,11 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/store';
 import { toast } from 'react-toastify';
 import { updateSegregation, GetSegregation } from 'src/features/Segregation/SegregationSlice';
+import { useParams } from 'react-router';
 
 const EditSegregationModal = ({ show, setShowmodal, autoclave }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
   const sizeOptions = [
     "600x200x225",
     "600x200x200",
@@ -34,7 +36,7 @@ const EditSegregationModal = ({ show, setShowmodal, autoclave }) => {
   const [errors, setErrors] = useState<any>({});
 
 useEffect(() => {
-  const entry = autoclave?.segregation_entries?.[0] || {};
+  const entry =   autoclave?.rising_info?.cutting_info?.autoclave?.segregation || {};
 
   const sizes = Array.isArray(entry.size)
     ? entry.size
@@ -126,7 +128,7 @@ useEffect(() => {
 
       const result = await dispatch(updateSegregation(payload)).unwrap();
       toast.success(result.message || 'Segregation entry updated successfully');
-      dispatch(GetSegregation());
+      dispatch(GetSegregation(id));
       setShowmodal(false);
     } catch (err) {
       toast.error('Failed to update segregation entry');

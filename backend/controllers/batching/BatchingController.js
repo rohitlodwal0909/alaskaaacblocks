@@ -171,7 +171,7 @@ exports.getBatching = async (req, res) => {
     // First get the record by id
     const data = await Batching.findOne({ where: { id } });
     if (!data) {
-      return res.status(404).json({ message: "Batching not found" });
+      return res.json([]);
     }
 
     // Extract only date part

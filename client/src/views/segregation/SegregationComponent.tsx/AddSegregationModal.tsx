@@ -15,13 +15,21 @@ import {
   addSegregation,
   GetSegregation,
 } from "src/features/Segregation/SegregationSlice";
+import { useParams } from "react-router";
 
 const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
+
+  const autoclave_id = segregationdata?.rising_info?.cutting_info?.autoclave?.id;
+
+
 
   const [formData, setFormData] = useState({
     user_id: logindata?.admin?.id,
     mould_no: segregationdata?.mould_no || "",
+    datetime:'',
+    autoclave_id:autoclave_id,
     operator_name:'',
     entries: [
       {
@@ -40,6 +48,7 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
     setFormData((prev) => ({
       ...prev,
       mould_no: segregationdata?.mould_no || "",
+      autoclave_id:autoclave_id,
     }));
   }, [segregationdata]);
 
@@ -112,11 +121,13 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
 
       const result = await dispatch(addSegregation(payload)).unwrap();
       toast.success(result.message || "Segregation entry created successfully");
-      dispatch(GetSegregation());
+      dispatch(GetSegregation(id));
 
       setFormData({
         operator_name:"",
         user_id: logindata?.admin?.id,
+         datetime:'',
+        autoclave_id:autoclave_id,
         mould_no:  "",
         entries: [{ size: "", no_of_broken_pcs: "", no_of_ok_pcs: "",plate_no:"" }],
         remark: "",
@@ -134,7 +145,7 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
       <ModalBody className="overflow-auto max-h-[85vh]">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
           {/* Operator Name */}
-          <div className="col-span-12">
+          <div className="col-span-6">
             <Label value="Operator Name" />
             <span className="text-red-700 ps-1">*</span>
             <TextInput
@@ -148,6 +159,23 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
               <p className="text-red-500 text-xs">{errors.operator_name}</p>
             )}
           </div>
+
+           <div className="col-span-6">
+            <Label value="Date & Time" />
+            <span className="text-red-700 ps-1">*</span>
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={formData.datetime}
+                onChange={(e) => handleChange("datetime", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            {errors.operator_name && (
+              <p className="text-red-500 text-xs">{errors.datetime}</p>
+            )}
+          </div>
+
+         
 
           {/* Mould No */}
          

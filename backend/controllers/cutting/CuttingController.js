@@ -1,28 +1,19 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const { Rising, Cutting, AuthModel } = db;
+const { Rising, Cutting, AuthModel, Batching } = db;
+const { Op, fn, col, literal, where } = require("sequelize");
 
 exports.createCutting = async (req, res) => {
   try {
-    const today = new Date();
-    const formatted = today.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Kolkata"
-    });
-
     const cutting = await Cutting.create({
       user_id: req.body.user_id,
       mould_no: req.body.mould_no,
       operator_name: req.body.operator_name,
+      rising_id: req.body.rising_id,
       size: req.body.size,
       broken_pcs: req.body.broken_pcs,
       time: req.body.time,
-      datetime: formatted,
+      datetime: req.body.datetime,
       remark: req.body.remark
     });
 
@@ -46,19 +37,57 @@ exports.createCutting = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getAllCutting = async (req, res) => {
   try {
-    const data = await Rising.findAll({
+    const { id } = req.params;
+
+    const getdate = await Rising.findOne({ where: { id } });
+
+    if (!getdate) {
+      return res.json([]);
+    }
+
+    const date = new Date(getdate.rising_date).toISOString().split("T")[0];
+
+    const data = await Batching.findAll({
       where: {
-        deleted_at: null // Only non-deleted Rising entries
+        deleted_at: null
       },
       include: [
         {
-          model: Cutting,
-          as: "cutting_info", // must match hasOne alias
-          required: false
+          model: Rising,
+          where: where(fn("DATE", col("rising_date")), date),
+          as: "rising_info",
+          required: true,
+          include: [
+            {
+              model: Cutting,
+              as: "cutting_info",
+              required: false
+            }
+          ]
         }
       ]
+    });
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getRisingDate = async (req, res) => {
+  try {
+    const data = await Rising.findAll({
+      attributes: [
+        [fn("DATE", col("rising_date")), "Date"],
+        [fn("COUNT", col("id")), "total_records"],
+        [fn("MIN", col("id")), "sample_id"]
+      ],
+      where: { deleted_at: null },
+      group: [fn("DATE", col("rising_date"))],
+      order: [[literal("rising_date"), "DESC"]]
     });
 
     res.json(data);

@@ -1,15 +1,34 @@
-const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
 const { Security } = db;
+const { Op, fn, col, literal, where } = require("sequelize");
 
 // Create
 
 exports.createSecurity = async (req, res) => {
   try {
-    const log = await Security.create(req.body);
-    res
-      .status(201)
-      .json({ message: "Security  created successfully", data: log });
+    const today = new Date();
+
+    const formattedDate = today.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+
+    // Add comma between date and time manually
+    const finalDate = formattedDate.replace(" at", ",");
+
+    const log = await Security.create({
+      ...req.body,
+      datetime: finalDate
+    });
+
+    res.status(201).json({
+      message: "Security created successfully",
+      data: log
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to create security log", error });
@@ -18,10 +37,53 @@ exports.createSecurity = async (req, res) => {
 
 exports.getSecurity = async (req, res) => {
   try {
-    const logs = await Security.findAll({ order: [["created_at", "DESC"]] });
+    const { id } = req.params;
+
+    const record = await Security.findOne({
+      where: { id }
+    });
+
+    if (!record) {
+      return res.json([]);
+    }
+
+    const dateOnly = record.created_at.toISOString().split("T")[0];
+
+    const logs = await Security.findAll({
+      where: {
+        created_at: {
+          [Op.gte]: new Date(`${dateOnly} 00:00:00`),
+          [Op.lte]: new Date(`${dateOnly} 23:59:59`)
+        }
+      },
+      order: [["created_at", "DESC"]]
+    });
+
     res.json(logs);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch ", error });
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch", error });
+  }
+};
+
+exports.getSecurityDate = async (req, res) => {
+  try {
+    const logs = await Security.findAll({
+      attributes: [
+        [fn("DATE", col("created_at")), "date"],
+        [fn("COUNT", col("id")), "total_records"],
+        [fn("MIN", col("id")), "id"],
+        [fn("MIN", col("datetime")), "datetime"]
+      ],
+      where: { deleted_at: null },
+      group: [fn("DATE", col("created_at"))],
+      order: [[fn("DATE", col("created_at")), "DESC"]]
+    });
+
+    res.json(logs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch", error });
   }
 };
 

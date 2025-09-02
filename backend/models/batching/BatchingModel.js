@@ -1,5 +1,3 @@
-
-
 module.exports = (sequelize, DataTypes) => {
   const Batching = sequelize.define(
     "Batching",
@@ -9,16 +7,15 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true
       },
-       user_id: {
-              type: DataTypes.INTEGER,
-             
-            },
+      user_id: {
+        type: DataTypes.INTEGER
+      },
       batch_date: {
         type: DataTypes.DATE,
         allowNull: false
       },
       shift: {
-        type: DataTypes.ENUM('Day', 'Night'),
+        type: DataTypes.ENUM("Day", "Night"),
         allowNull: false
       },
       operator_name: {
@@ -73,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false
       },
-       water_consume: {
+      water_consume: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
       },
@@ -84,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       dicromate: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
-      }, 
+      },
       // nts_clate: {
       //   type: DataTypes.DECIMAL(10, 2),
       //   allowNull: false
@@ -107,12 +104,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       created_at: {
         type: DataTypes.DATE,
-       
+
         defaultValue: DataTypes.NOW
       },
       updated_at: {
-        type: DataTypes.DATE,
-        
+        type: DataTypes.DATE
       },
       deleted_at: {
         type: DataTypes.DATE,
@@ -121,20 +117,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+      createdAt: "created_at",
+      updatedAt: "updated_at",
       paranoid: true,
-      deletedAt: 'deleted_at',
+      deletedAt: "deleted_at",
       tableName: "batching_entries",
       underscored: true
     }
   );
-Batching.associate = (models) => {
-  Batching.hasMany(models.Rising, {
-    foreignKey: "mould_no",
-    sourceKey: "mould_no",
-    as: "rising_info"
-  });
-};
+  Batching.associate = (models) => {
+    Batching.hasOne(models.Rising, {
+      foreignKey: "batching_id",
+      sourceKey: "id",
+      as: "rising_info"
+    });
+  };
   return Batching;
 };

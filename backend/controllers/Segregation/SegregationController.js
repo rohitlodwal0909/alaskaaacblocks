@@ -1,47 +1,54 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const { Autoclave, Segregation ,AuthModel , FinishGood} = db;
-
+const {
+  Batching,
+  Rising,
+  Cutting,
+  Autoclave,
+  Segregation,
+  AuthModel,
+  FinishGood
+} = db;
+const { Op, fn, col, literal, where } = require("sequelize");
 // CREATE Segregation entry
 
 exports.createSegregation = async (req, res) => {
   try {
-
     const segregationEntry = await Segregation.create({
-      user_id:req.body.user_id,
+      user_id: req.body.user_id,
       mould_no: req.body.mould_no,
+      autoclave_id: req.body.autoclave_id,
       size: req.body.size,
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
-      plate_no:req.body.plate_no,
+      plate_no: req.body.plate_no,
       remark: req.body.remark,
       operator_name: req.body.operator_name,
-      date: new Date(),
+      date: req.body.datetime
     });
 
     if (req.body.size && req.body.no_of_ok_pcs) {
       await FinishGood.create({
         size: req.body.size,
-        no_of_ok_pcs: req.body.no_of_ok_pcs,
+        no_of_ok_pcs: req.body.no_of_ok_pcs
       });
     }
 
-
-      const user_id = req.body.user_id;
-                   const now = new Date();
-                  const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-                  const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
-                const user = await AuthModel.findByPk(user_id);
-                const username = user ? user?.name : "Unknown User";
-                const logMessage = `Segregation  mould number ${req.body.mould_no}  was created by ${username} on ${entry_date} at ${entry_time}.`;
-                await createLogEntry({
-                  user_id,
-                  message:logMessage
-                });
+    const user_id = req.body.user_id;
+    const now = new Date();
+    const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+    const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+    const user = await AuthModel.findByPk(user_id);
+    const username = user ? user?.name : "Unknown User";
+    const logMessage = `Segregation  mould number ${req.body.mould_no}  was created by ${username} on ${entry_date} at ${entry_time}.`;
+    await createLogEntry({
+      user_id,
+      message: logMessage
+    });
 
     res.status(201).json({
       message: "Segregation entry created successfully",
-      data: segregationEntry,
+      data: segregationEntry
     });
   } catch (error) {
     console.error("Create Segregation Error:", error);
@@ -51,17 +58,56 @@ exports.createSegregation = async (req, res) => {
 // GET all Cutting entries with related Segregation
 exports.getAllSegregation = async (req, res) => {
   try {
-    const data = await Autoclave.findAll({
+    const { id } = req.params;
+
+    const getdate = await Autoclave.findOne({ where: { id } });
+
+    if (!getdate) {
+      return res.json([]);
+    }
+
+    const date = new Date(getdate.datetime).toISOString().split("T")[0];
+
+    const data = await Batching.findAll({
       where: {
-        deleted_at: null, // Only non-deleted Rising entries
+        deleted_at: null
       },
       include: [
         {
-          model: Segregation,
-          as: "segregation_entries", 
-          required: false,
-        },
-      ],
+          model: Rising,
+          as: "rising_info",
+          required: true,
+          include: [
+            {
+              model: Cutting,
+              as: "cutting_info",
+              required: true,
+              include: [
+                {
+                  model: Autoclave,
+                  as: "autoclave",
+                  required: true,
+                  where: where(
+                    fn(
+                      "DATE",
+                      col("rising_info.cutting_info.autoclave.datetime")
+                    ),
+                    Op.eq,
+                    date
+                  ),
+                  include: [
+                    {
+                      model: Segregation,
+                      as: "segregation",
+                      required: false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     });
 
     res.json(data);
@@ -71,9 +117,27 @@ exports.getAllSegregation = async (req, res) => {
   }
 };
 
+exports.getAutoclaveData = async (req, res) => {
+  try {
+    const data = await Autoclave.findAll({
+      attributes: [
+        [fn("DATE", col("datetime")), "Date"],
+        [fn("COUNT", col("id")), "total_records"],
+        [fn("MIN", col("id")), "sample_id"]
+      ],
+      where: { deleted_at: null },
+      group: [fn("DATE", col("datetime"))],
+      order: [[literal("datetime"), "DESC"]]
+    });
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Read By ID
 exports.getSegregationById = async (req, res) => {
-  
   try {
     const Segregation = await Segregation.findByPk(req.params.id);
     if (!Segregation)
@@ -100,24 +164,24 @@ exports.updateSegregation = async (req, res) => {
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
       remark: req.body.remark,
-          plate_no:req.body.plate_no,
-      operator_name: req.body.operator_name,
+      plate_no: req.body.plate_no,
+      operator_name: req.body.operator_name
     });
-    
-     const user_id = segregation?.user_id;
-           const now = new Date();
-          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
-        const user = await AuthModel.findByPk(user_id);
-        const username = user ? user?.name : "Unknown User";
-        const logMessage = `Segregation mould number ${segregation?.mould_no}  was updated by ${username} on ${entry_date} at ${entry_time}.`;
-        await createLogEntry({
-          user_id,
-          message:logMessage
-        });
+
+    const user_id = segregation?.user_id;
+    const now = new Date();
+    const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+    const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+    const user = await AuthModel.findByPk(user_id);
+    const username = user ? user?.name : "Unknown User";
+    const logMessage = `Segregation mould number ${segregation?.mould_no}  was updated by ${username} on ${entry_date} at ${entry_time}.`;
+    await createLogEntry({
+      user_id,
+      message: logMessage
+    });
     res.json({
       message: "Segregation entry updated successfully",
-      data: segregation,
+      data: segregation
     });
   } catch (error) {
     console.error("Update Segregation Error:", error);
@@ -132,17 +196,17 @@ exports.deleteSegregation = async (req, res) => {
     if (!segEntry) {
       return res.status(404).json({ message: "Segregation entry not found" });
     }
- const user_id = segEntry?.user_id;
-           const now = new Date();
-          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
-        const user = await AuthModel.findByPk(user_id);
-        const username = user ? user?.name : "Unknown User";
-        const logMessage = `Segregation mould number ${segEntry?.mould_no}  was deleted by ${username} on ${entry_date} at ${entry_time}.`;
-        await createLogEntry({
-          user_id,
-          message:logMessage
-        });
+    const user_id = segEntry?.user_id;
+    const now = new Date();
+    const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+    const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+    const user = await AuthModel.findByPk(user_id);
+    const username = user ? user?.name : "Unknown User";
+    const logMessage = `Segregation mould number ${segEntry?.mould_no}  was deleted by ${username} on ${entry_date} at ${entry_time}.`;
+    await createLogEntry({
+      user_id,
+      message: logMessage
+    });
     await segEntry.destroy(); // soft delete (paranoid: true)
     res.json({ message: "Segregation entry deleted successfully" });
   } catch (error) {
@@ -153,13 +217,13 @@ exports.deleteSegregation = async (req, res) => {
 
 exports.createFinishGood = async (req, res) => {
   try {
-  const finish =  await FinishGood.create({
-        size: req.body.size,
-        no_of_ok_pcs: req.body.no_of_ok_pcs,
-      });
+    const finish = await FinishGood.create({
+      size: req.body.size,
+      no_of_ok_pcs: req.body.no_of_ok_pcs
+    });
     res.status(201).json({
       message: "Finish good  entry created successfully",
-      data: finish,
+      data: finish
     });
   } catch (error) {
     console.error("Create Segregation Error:", error);

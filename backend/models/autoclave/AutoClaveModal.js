@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER
       },
+      cutting_id: {
+        type: DataTypes.INTEGER
+      },
       mould_no: {
         type: DataTypes.STRING,
         allowNull: false
@@ -41,15 +44,15 @@ module.exports = (sequelize, DataTypes) => {
   // Association: Autoclave belongs to Cutting via mould_no
   Autoclave.associate = (models) => {
     Autoclave.belongsTo(models.Cutting, {
-      foreignKey: "mould_no",
-      targetKey: "mould_no",
+      foreignKey: "cutting_id",
+      targetKey: "id",
       as: "cutting_info"
     });
 
-    Autoclave.hasMany(models.Segregation, {
-      foreignKey: "mould_no",
-      sourceKey: "mould_no",
-      as: "segregation_entries"
+    Autoclave.hasOne(models.Segregation, {
+      foreignKey: "autoclave_id",
+      sourceKey: "id",
+      as: "segregation"
     });
 
     Autoclave.hasMany(models.AutoclaveRecord, {

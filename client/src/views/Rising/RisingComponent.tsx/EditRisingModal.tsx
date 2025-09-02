@@ -8,8 +8,11 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
+import { useParams } from 'react-router';
 const EditRisingModal = ({ show, setShowmodal, risingData }) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  const {id} = useParams();
 
   const [formData, setFormData] = useState({
     id: '',              // Needed for editing
@@ -25,7 +28,7 @@ const EditRisingModal = ({ show, setShowmodal, risingData }) => {
 
  useEffect(() => {
   if (risingData) {
-    const info = risingData.rising_info?.[0] || {};
+    const info = risingData.rising_info || {};
     setFormData({
       mould_no: risingData.mould_no || '',
       hardness: info.hardness || '',
@@ -60,7 +63,7 @@ const EditRisingModal = ({ show, setShowmodal, risingData }) => {
     try {
       const result = await dispatch(updateRising(formData)).unwrap();
       toast.success(result.message || 'Rising entry updated successfully');
-      dispatch(GetRising());
+      dispatch(GetRising(id));
       setShowmodal(false);
     } catch (err) {
       toast.error('Failed to update rising entry');
@@ -146,7 +149,6 @@ const EditRisingModal = ({ show, setShowmodal, risingData }) => {
                     className="form-rounded-md"
                   />
                 )}
-          
           
                 {errors[id] && <p className="text-red-500 text-xs">{errors[id]}</p>}
               </div>

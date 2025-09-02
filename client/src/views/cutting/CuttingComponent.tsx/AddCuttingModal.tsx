@@ -7,23 +7,30 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { addCutting, GetCutting } from 'src/features/Cutting/CuttingSlice';
+import { useParams } from 'react-router';
 
 
 const AddCuttingModal = ({ show, setShowmodal, batchingData,logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
+
 
   const [formData, setFormData] = useState({
     user_id:logindata?.admin?.id,
     mould_no: batchingData?.mould_no || '',
+    rising_id:batchingData?.rising_info?.id,
     operator_name: '',
     sizes: [''],
-      broken_pcs: [''],
+    broken_pcs: [''],
     time: '',
     remark: '',
+    datetime:'',
   });
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, mould_no: batchingData?.mould_no || '' }));
+    setFormData(prev => ({ ...prev, mould_no: batchingData?.mould_no || '',
+      rising_id:batchingData?.rising_info?.id
+     }));
   }, [batchingData]);
 
   const [errors, setErrors] = useState<any>({});
@@ -76,15 +83,18 @@ const removeRow = (index) => {
 
       const result = await dispatch(addCutting(payload)).unwrap();
       toast.success(result.message || 'Cutting entry created successfully');
-      dispatch(GetCutting());
+      dispatch(GetCutting(id));
       setFormData({
-       user_id:logindata?.admin?.id,
+        user_id:logindata?.admin?.id,
+        rising_id:'',
         mould_no: '',
         operator_name: '',
         sizes: [''],
-      broken_pcs: [''],
+        broken_pcs: [''],
         time: '',
         remark: '',
+        datetime:'',
+
       });
       
       setShowmodal(false);
@@ -196,7 +206,18 @@ const removeRow = (index) => {
   </div>
 ))}
 
+           <div className="col-span-6">
+            <Label htmlFor="Date" value="Date & Time" />
+                <span className="text-red-700 ps-1">*</span>
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={formData.datetime}
+                onChange={(e) => handleChange("datetime", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
 
+              </div>
        
 
           {/* Remark Textarea */}

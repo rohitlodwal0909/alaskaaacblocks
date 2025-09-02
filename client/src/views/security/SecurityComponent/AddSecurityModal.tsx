@@ -14,7 +14,7 @@ import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
 import {
   addSecurity,
-  GetSecurity,
+  GetSecuritydate,
 } from "src/features/Security/SecuritySlice";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -63,7 +63,7 @@ const AddSecurityModal = ({ show, setShowmodal }) => {
     try {
       const result = await dispatch(addSecurity(formData)).unwrap();
       toast.success(result.message || "Security log created successfully");
-      dispatch(GetSecurity());
+      dispatch(GetSecuritydate());
       setShowmodal(false);
     } catch (err) {
       toast.error("Failed to create security log");

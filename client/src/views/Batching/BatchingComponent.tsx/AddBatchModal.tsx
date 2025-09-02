@@ -66,6 +66,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     e.preventDefault();
    
     if (!validateForm()) return;
+        console.log('ddd')
+
     const existing = batchingdata?.some((item: any) => item.mould_no == formData.mould_no);
     if (existing) {
       toast.error(`Mould No ${formData.mould_no} already exists.`);
@@ -294,5 +296,6 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     </Modal>
   );
 };
+
 
 export default AddBatchModal;

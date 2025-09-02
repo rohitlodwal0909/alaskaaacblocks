@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   error: null,
   segregationdata: [],
+  autoclavedata: [],
   signlesegregation:[],
   finishgood:[],
   addResult: null,  
@@ -15,9 +16,9 @@ const initialState = {
 
 export const GetSegregation= createAsyncThunk(
   "GetSegregation /fetch",
-  async (_, thunkAPI) => {
+  async (id:string,  thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-segregation`);
+      const response = await axios.get(`${apiUrl}/get-segregation/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -26,6 +27,22 @@ export const GetSegregation= createAsyncThunk(
     }
   }
 );
+
+export const GetAutoclavedate= createAsyncThunk(
+  "GetAutoclavedate /fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-autoclave-date`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
 
 export const GetFinishGood= createAsyncThunk(
   "GetFinishGood/fetch",
@@ -133,6 +150,22 @@ const SegregationSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+
+       .addCase(GetAutoclavedate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetAutoclavedate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.autoclavedata = action.payload;
+      })
+      .addCase(GetAutoclavedate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+
+      
        .addCase(GetFinishGood.pending, (state) => {
         state.loading = true;
         state.error = null;

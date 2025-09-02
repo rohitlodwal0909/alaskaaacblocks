@@ -16,12 +16,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { updateAutoclave, GetAutoclave,GetAutoclaveSingle } from "src/features/Autoclave/AutoclaveSlice";
 import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
+import { useParams } from "react-router";
 
 const EditAutoClaveModal = ({ show, setShowmodal, autoclaves }) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const editId = autoclaves?.rising_info?.cutting_info?.autoclave?.id;
+const {id} = useParams();
+
   // use main autoclave.id, not autoclave_entries[0]?.id
-const id = autoclaves?.autoclave_entries?.[0]?.id;
 
   const [autoclave, setAutoclave] = useState<any>(null);
 
@@ -32,13 +35,13 @@ const id = autoclaves?.autoclave_entries?.[0]?.id;
   });
 
   useEffect(() => {
-    if (!id) return;
-    dispatch(GetAutoclaveSingle(id)).then((res: any) => {
+    if (!editId) return;
+    dispatch(GetAutoclaveSingle(editId)).then((res: any) => {
       if (res?.payload) {
         setAutoclave(res.payload);
       }
     });
-  }, [dispatch, id]);
+  }, [dispatch, editId]);
 
   // Populate form with API data
   useEffect(() => {
@@ -93,17 +96,26 @@ const id = autoclaves?.autoclave_entries?.[0]?.id;
   };
 
   // --- submit update ---
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      const result = await dispatch(updateAutoclave(formData)).unwrap();
-      toast.success(result.message || "Autoclave entry updated successfully");
-      dispatch(GetAutoclave());
-      setShowmodal(false);
-    } catch (err) {
-      toast.error("Failed to update autoclave entry");
-    }
-  };
+const handleSubmit = async (e: any) => {
+  e.preventDefault();
+  try {
+    const payload = {
+      autoclaveData: {
+        id: formData.id,
+        operator_name: formData.operator_name,
+      },
+      records: formData.records,
+    };
+
+    const result = await dispatch(updateAutoclave({ id: formData.id, data: payload })).unwrap();
+    toast.success(result.message || "Autoclave entry updated successfully");
+    dispatch(GetAutoclave(id));
+    setShowmodal(false);
+  } catch (err) {
+    toast.error("Failed to update autoclave entry");
+  }
+};
+
 
   // --- render time picker ---
   const renderTime = (val: string, onChange: (val: string) => void) => (

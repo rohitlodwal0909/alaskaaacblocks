@@ -13,27 +13,25 @@ const AutoclaveView = () => {
     const fetchSingleAutoclave = async () => {
         try {
             const result = await dispatch(GetAutoclaveSingle(id)).unwrap();
-       
-  setSignleAutoclave(result)
-        
+            setSignleAutoclave(result)
         } catch (error) {
           console.error("Failed to fetch Autoclave:", error);
         }
     
     };
-
     fetchSingleAutoclave();
   },[id]);
+
   return (
     <div className="max-w-5xl mx-auto p-4 border border-black text-sm font-sans bg-white">
       <div className="flex justify-between items-start border-b border-black pb-1">
         <h2 className="font-bold uppercase text-base">Build Block Company</h2>
         <div className="text-right">
           <span className="font-semibold text-dark">Date:</span> {new Date(signleAutoClave?.created_at).toLocaleDateString("en-GB", {
-  day: "2-digit",
-  month: "long",
-  year: "numeric",
-})}
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        })}
         </div>
       </div>
 

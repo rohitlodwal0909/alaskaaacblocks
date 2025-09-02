@@ -16,9 +16,12 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { getDateTimeFromTimeString } from 'src/utils/getDateTimeFromTimeString';
+import { useParams } from 'react-router';
 
 const EditCuttingModal = ({ show, setShowmodal, cuttingData }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
+
 
   const [formData, setFormData] = useState({
     id: '',
@@ -45,7 +48,7 @@ const parseField = (field) => {
 };
   useEffect(() => {
     if (cuttingData) {
-      const info = cuttingData?.cutting_info || {};
+      const info = cuttingData?.rising_info?.cutting_info || {};
       
       setFormData({
         id: info.id || '',
@@ -107,7 +110,7 @@ const parseField = (field) => {
       };
       const res = await dispatch(updateCutting(payload)).unwrap();
       toast.success(res.message || 'Cutting entry updated successfully');
-      dispatch(GetCutting());
+      dispatch(GetCutting(id));
       setShowmodal(false);
     } catch (err) {
       toast.error('Failed to update cutting entry');

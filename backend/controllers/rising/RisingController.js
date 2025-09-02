@@ -1,28 +1,18 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
 const { Rising, Batching, AuthModel } = db;
+const { Op, fn, col, literal, where } = require("sequelize");
 
 // Create
 exports.createRising = async (req, res) => {
   try {
-    const today = new Date();
-    const formatted = today.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Kolkata"
-    });
-
     const rising = await Rising.create({
       user_id: req.body?.user_id,
-      mould_no: req.body.mould_no,
+      batching_id: req.body.batching_id,
       hardness: req.body.hardness,
       temperature: req.body.temperature,
       rising_time: req.body.rising_time,
-      rising_date: formatted,
+      rising_date: req.body.datetime,
       operator_name: req.body.operator_name,
       remark: req.body.remark
     });
@@ -43,12 +33,23 @@ exports.createRising = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getAllRising = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // First get the record by id
+    const data = await Batching.findOne({ where: { id } });
+    if (!data) {
+      return res.json([]);
+    }
+
+    // Extract only date part
+    const date = data.batch_date;
+
+    // Get all records of same date (ignoring time)
     const batchings = await Batching.findAll({
-      where: {
-        deleted_at: null // Only non-deleted Rising entries
-      },
+      where: where(fn("DATE", col("batch_date")), date),
       include: [
         {
           model: Rising,
@@ -57,6 +58,7 @@ exports.getAllRising = async (req, res) => {
         }
       ]
     });
+
     res.json(batchings);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -84,7 +86,6 @@ exports.updateRising = async (req, res) => {
       return res.status(404).json({ message: "Rising entry not found" });
 
     await rising.update({
-      mould_no: req.body.mould_no,
       hardness: req.body.hardness,
       temperature: req.body.temperature,
       rising_time: req.body.rising_time,

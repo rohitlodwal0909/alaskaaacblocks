@@ -13,8 +13,11 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FollowupLeads } from "src/features/leadmanagment/LeadmanagmentSlice";
 import { AppDispatch } from 'src/store';
-  const sizeOptions = ["600x200x225", "600x200x200", "600x200x150", "600x200x100", "600x200x75"]
+
+ const sizeOptions = ["600x200x225", "600x200x200", "600x200x150", "600x200x100", "600x200x75"]
+
 const FollowUpmodal = ({ placeModal, modalPlacement, setPlaceModal, selectedRow, setFollowupData }) => {
+
   const [formData, setFormData] = useState({
     lead_id: selectedRow?.id,
     notes: "",

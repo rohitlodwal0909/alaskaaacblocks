@@ -1,7 +1,6 @@
 import BreadcrumbComp from 'src/layouts/full/shared/breadcrumb/BreadcrumbComp';
 import CardBox from 'src/components/shared/CardBox';
-
-import SegregationTable from './SegregationComponent.tsx/SegregationTable';
+import SegregationTabledate from './SegregationComponent.tsx/SegregationTabledate';
 
 const Segregation = () => {
   return (
@@ -9,7 +8,7 @@ const Segregation = () => {
       <BreadcrumbComp    items={[{ title: "Segregation ", to: "/" }]}
         title="Segregation"/>
          <CardBox>
-          <SegregationTable/>
+          <SegregationTabledate/>
         </CardBox>
         </>
   )

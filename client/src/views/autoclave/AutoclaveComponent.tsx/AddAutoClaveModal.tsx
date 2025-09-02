@@ -16,27 +16,31 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { addAutoclave, GetAutoclave } from "src/features/Autoclave/AutoclaveSlice";
 import { Icon } from "@iconify/react";
+import { useParams } from "react-router";
 
 const AddAutoClaveModal = ({ show, setShowmodal, batchingData, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-
+const {id} = useParams();
 
   const [header, setHeader] = useState({
     user_id: logindata?.admin?.id,
     mould_no: batchingData?.mould_no || "",
+    cutting_id: batchingData?.rising_info?.cutting_info?.id || "",
+    datetime:'',
     operator_name: "",
   });
-
   
 useEffect(() => {
   if (batchingData) {
     setHeader((prev) => ({
       ...prev,
-      mould_no: batchingData.mould_no || "",
+      mould_no: batchingData?.mould_no || "",
+      cutting_id:batchingData?.rising_info?.cutting_info?.id || "",
     }));
   }
 }, [batchingData]);
+
 
   // multiple rows
   const [rows, setRows] = useState([
@@ -98,7 +102,7 @@ useEffect(() => {
 
     const result = await dispatch(addAutoclave(payload)).unwrap();
     toast.success(result.message || "Autoclave entry created successfully");
-    dispatch(GetAutoclave());
+    dispatch(GetAutoclave(id));
     setShowmodal(false);
   } catch (err) {
     toast.error("Failed to create autoclave entry");
@@ -132,6 +136,21 @@ useEffect(() => {
                 onChange={(e) => handleHeaderChange("operator_name", e.target.value)}
               />
             </div>
+          </div>
+           <div className="grid grid-cols-4 gap-4">
+            <div>
+              <Label>Date & Time</Label>
+           
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={header.datetime}
+                onChange={(e) => handleHeaderChange("datetime", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+
+            
+          </div>
           </div>
 
           {/* ===== Rows Section (4-4 grid layout) ===== */}

@@ -11,11 +11,16 @@ import { toast } from "react-toastify";
 import AddSegregationModal from "./AddSegregationModal";
 import EditSegregationModal from "./EditSegregationModal";
 import { deleteSegregation, GetSegregation } from "src/features/Segregation/SegregationSlice";
+import { useParams } from "react-router";
+import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
+import CardBox from "src/components/shared/CardBox";
 
 
 const SegregationTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { segregationdata, loading } = useSelector((state: any) => state.segregation);
+
+  const {id} = useParams();
   const logindata = useSelector((state: any) => state.authentication?.logindata);
   // const navigate = useNavigate()
   const [editmodal, setEditmodal] = useState(false);
@@ -27,7 +32,7 @@ const SegregationTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    dispatch(GetSegregation());
+    dispatch(GetSegregation(id));
   }, [dispatch]);
 
 
@@ -40,11 +45,13 @@ const SegregationTable = () => {
   //  navigate(`/autoclave-view/${autoclave?.segregation_entries[0]?.id}`)
   // }
   const handleDelete = async (userToDelete) => {
-    if (!userToDelete) return;
+  const deleteId =   userToDelete?.rising_info?.cutting_info?.autoclave?.segregation?.id || {};
+
+    if (!deleteId) return;
     try {
       console.log
-      await dispatch(deleteSegregation(userToDelete?.segregation_entries[0]?.id)).unwrap();
-      dispatch(GetSegregation());
+      await dispatch(deleteSegregation(deleteId)).unwrap();
+      dispatch(GetSegregation(id));
       toast.success("The segregation  was successfully deleted. ");
     } catch (error: any) {
       console.error("Delete failed:", error);
@@ -57,14 +64,15 @@ const SegregationTable = () => {
 
 
   const filteredItems = (segregationdata || []).filter((item: any) => {
+    const list = item?.rising_info?.cutting_info?.autoclave?.segregation;
     const searchText = searchTerm.toLowerCase();
-    const operator = item?.segregation_entries?.[0]?.operator_name || "";
+    const operator = list?.operator_name || "";
     const mouldNo = item?.mould_no || "";
-    const okpeac = item?.segregation_entries?.[0]?.no_of_ok_pcs || "";
-    const brokenpeac = item?.segregation_entries?.[0]?.no_of_broken_pcs || "";
-    const size = item?.segregation_entries?.[0]?.size || "";
-    const date = item?.segregation_entries?.[0]?.date || "";
-    const remark = item?.segregation_entries?.[0]?.remark || "";
+    const okpeac = list?.no_of_ok_pcs || "";
+    const brokenpeac = list?.no_of_broken_pcs || "";
+    const size = list?.size || "";
+    const date = list?.date || "";
+    const remark = list?.remark || "";
 
     return (
       mouldNo.toString().toLowerCase().includes(searchText) ||
@@ -82,6 +90,10 @@ const SegregationTable = () => {
 
   return (
     <div>
+
+      <BreadcrumbComp    items={[{ title: "Segregation List", to: "/" }]}
+              title="Segregation List"/>
+               <CardBox>
       <div className="flex justify-end mb-3">
         <input
           placeholder="Search..."
@@ -114,7 +126,11 @@ const SegregationTable = () => {
                 </td>
               </tr>
             ) : currentItems.length > 0 ? (
-              currentItems.map((item, index) => (
+              currentItems.map((item, index) => {
+             const seglist = item?.rising_info?.cutting_info?.autoclave?.segregation;
+
+
+                return(
                 <tr key={item.id} className="bg-white dark:bg-gray-900">
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     #{(currentPage - 1) * pageSize + index + 1}
@@ -123,20 +139,20 @@ const SegregationTable = () => {
                     {item?.mould_no}
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.operator_name.charAt(0).toUpperCase() + item?.segregation_entries[0]?.operator_name.slice(1) || "-"}
+                    {seglist?.operator_name.charAt(0).toUpperCase() + seglist?.operator_name.slice(1) || "-"}
                   </td>
 
 
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
 
-                    {item?.segregation_entries?.[0]?.no_of_ok_pcs ? (
-                      Array.isArray(item.segregation_entries[0].no_of_ok_pcs) ? (
-                        item.segregation_entries[0].no_of_ok_pcs.map((val, idx) => <div key={idx}>{val}</div>)
-                      ) : typeof item.segregation_entries[0].no_of_ok_pcs === "string" &&
-                        item.segregation_entries[0].no_of_ok_pcs.startsWith("[") ? (
-                        JSON.parse(item.segregation_entries[0].no_of_ok_pcs).map((val, idx) => <div key={idx}>{idx + 1}. {val}</div>)
+                    {seglist?.no_of_ok_pcs ? (
+                      Array.isArray(seglist.no_of_ok_pcs) ? (
+                        seglist.no_of_ok_pcs.map((val, idx) => <div key={idx}>{val}</div>)
+                      ) : typeof seglist.no_of_ok_pcs === "string" &&
+                        seglist.no_of_ok_pcs.startsWith("[") ? (
+                        JSON.parse(seglist.no_of_ok_pcs).map((val, idx) => <div key={idx}>{idx + 1}. {val}</div>)
                       ) : (
-                        <div>{item.segregation_entries[0].no_of_ok_pcs}</div>
+                        <div>{seglist.no_of_ok_pcs}</div>
                       )
                     ) : (
                       <div>-</div> // fallback if no data
@@ -144,39 +160,39 @@ const SegregationTable = () => {
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
 
-                    {Array.isArray(item?.segregation_entries[0]?.no_of_broken_pcs)
-                      ? item?.segregation_entries[0]?.no_of_broken_pcs.join(", ")
-                      : typeof item?.segregation_entries[0]?.no_of_broken_pcs === "string" && item?.segregation_entries[0].no_of_broken_pcs.startsWith("[")
-                        ? JSON.parse(item?.segregation_entries[0]?.no_of_broken_pcs).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
-                        : <div>{item?.segregation_entries[0]?.no_of_broken_pcs}</div>}
+                    {Array.isArray(seglist?.no_of_broken_pcs)
+                      ? seglist?.no_of_broken_pcs.join(", ")
+                      : typeof seglist?.no_of_broken_pcs === "string" && seglist.no_of_broken_pcs.startsWith("[")
+                        ? JSON.parse(seglist?.no_of_broken_pcs).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.no_of_broken_pcs}</div>}
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
 
-                    {Array.isArray(item?.segregation_entries[0]?.size)
-                      ? item?.segregation_entries[0]?.size.join(", ")
-                      : typeof item?.segregation_entries[0]?.size === "string" && item?.segregation_entries[0]?.size.startsWith("[")
-                        ? JSON.parse(item?.segregation_entries[0]?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
-                        : <div>{item?.segregation_entries[0]?.size} </div>}
+                    {Array.isArray(seglist?.size)
+                      ? seglist?.size.join(", ")
+                      : typeof seglist?.size === "string" && seglist?.size.startsWith("[")
+                        ? JSON.parse(seglist?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.size} </div>}
                   </td>
                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
 
-                    {Array.isArray(item?.segregation_entries[0]?.plate_no)
-                      ? item?.segregation_entries[0]?.plate_no.join(", ")
-                      : typeof item?.segregation_entries[0]?.plate_no === "string" && item?.segregation_entries[0]?.plate_no.startsWith("[")
-                        ? JSON.parse(item?.segregation_entries[0]?.plate_no).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
-                        : <div>{item?.segregation_entries[0]?.plate_no} </div>}
+                    {Array.isArray(seglist?.plate_no)
+                      ? seglist?.plate_no.join(", ")
+                      : typeof seglist?.plate_no === "string" && seglist?.plate_no.startsWith("[")
+                        ? JSON.parse(seglist?.plate_no).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.plate_no} </div>}
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.date || '-'}
+                    {seglist?.date || '-'}
 
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.segregation_entries[0]?.remark || '-'}
+                    {seglist?.remark || '-'}
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
                       {
-                        item?.segregation_entries?.length === 0 ?
+                        seglist === null ?
                           <Tooltip content="Add" placement="bottom">
                             <Button
                               size="sm"
@@ -214,7 +230,8 @@ const SegregationTable = () => {
                     </div>
                   </td>
                 </tr>
-              ))
+
+              )})
             ) : (
               <tr className="">
                 <td colSpan={8} className="text-center py-8 px-4">
@@ -228,6 +245,8 @@ const SegregationTable = () => {
           </tbody>
         </table>
       </div>
+
+      </CardBox>
 
       {/* Pagination */}
       <CommonPagination

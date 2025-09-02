@@ -19,9 +19,11 @@ import {
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useParams } from "react-router";
 
 const EditSecurityModal = ({ show, setShowmodal, security }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { id } = useParams();
 
   const [formData, setFormData] = useState({
     id: "",
@@ -82,7 +84,7 @@ const EditSecurityModal = ({ show, setShowmodal, security }) => {
     try {
       const result = await dispatch(updateSecurity(formData)).unwrap();
       toast.success(result.message || "Security log updated successfully");
-      dispatch(GetSecurity());
+      dispatch(GetSecurity(id));
       setShowmodal(false);
     } catch (err) {
       toast.error("Failed to update security log");

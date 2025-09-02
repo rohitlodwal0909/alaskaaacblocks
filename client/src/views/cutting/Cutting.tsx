@@ -1,6 +1,6 @@
 import BreadcrumbComp from 'src/layouts/full/shared/breadcrumb/BreadcrumbComp';
 import CardBox from 'src/components/shared/CardBox';
-import CuttingTable from './CuttingComponent.tsx/CuttingTable';
+import CuttingTableDate from './CuttingComponent.tsx/CuttingTableDate';
 
 const Cutting = () => {
   return (
@@ -8,7 +8,7 @@ const Cutting = () => {
       <BreadcrumbComp    items={[{ title: "Cutting ", to: "/" }]}
         title="Cutting"/>
          <CardBox>
-        <CuttingTable/>
+        <CuttingTableDate/>
         </CardBox>
         </>
   )

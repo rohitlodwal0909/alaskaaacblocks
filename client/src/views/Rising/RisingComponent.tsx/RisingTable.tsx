@@ -10,10 +10,14 @@ import { toast } from "react-toastify";
 import EditRisingModal from "./EditRisingModal";
 import AddRisingModal from "./AddRisingModal";
 import { deleteRising, GetRising } from "src/features/Rising/RisingSlice";
+import BreadcrumbComp from "src/layouts/full/shared/breadcrumb/BreadcrumbComp";
+import CardBox from "src/components/shared/CardBox";
+import { useParams } from "react-router";
 
 const RisingTable = () => {
   const logindata = useSelector((state: any) => state.authentication?.logindata);
   const dispatch = useDispatch<AppDispatch>();
+  const {id} = useParams();
   const { risingdata, loading } = useSelector((state: any) => state.rising);
 
   const [editmodal, setEditmodal] = useState(false);
@@ -25,7 +29,7 @@ const RisingTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    dispatch(GetRising());
+    dispatch(GetRising(id));
   }, [dispatch]);
 
   const handleEdit = (entry: any) => {
@@ -36,8 +40,8 @@ const RisingTable = () => {
   const handleDelete = async (userToDelete: any) => {
     if (!userToDelete) return;
     try {
-      await dispatch(deleteRising(userToDelete?.rising_info?.[0]?.id)).unwrap();
-      dispatch(GetRising());
+      await dispatch(deleteRising(userToDelete?.rising_info?.id)).unwrap();
+      dispatch(GetRising(id));
       toast.success("The rising was successfully deleted.");
     } catch (error: any) {
       console.error("Delete failed:", error);
@@ -49,12 +53,12 @@ const RisingTable = () => {
 
   const filteredItems = (risingdata || []).filter((item: any) => {
     const searchText = searchTerm.toLowerCase();
-    const operator = item?.rising_info?.[0]?.operator_name || "";
+    const operator = item?.rising_info?.operator_name || "";
     const mouldNo = item?.mould_no || "";
-    const hardness = item?.rising_info?.[0]?.hardness || "";
-    const temperature = item?.rising_info?.[0]?.temperature || "";
-    const risingDate = item?.rising_info?.[0]?.rising_date || "";
-    const risingTime = item?.rising_info?.[0]?.rising_time || "";
+    const hardness = item?.rising_info?.hardness || "";
+    const temperature = item?.rising_info?.temperature || "";
+    const risingDate = item?.rising_info?.rising_date || "";
+    const risingTime = item?.rising_info?.rising_time || "";
 
     return (
       mouldNo.toString().toLowerCase().includes(searchText) ||
@@ -72,6 +76,9 @@ const RisingTable = () => {
   return (
     <div>
       {/* Search Bar */}
+ <BreadcrumbComp    items={[{ title: "Rising List", to: "/" }]}
+        title="Rising List"/>
+      <CardBox>
       <div className="flex justify-end mb-3">
         <input
           type="text"
@@ -107,15 +114,15 @@ const RisingTable = () => {
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300"> #{(currentPage - 1) * pageSize + index + 1}</td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.mould_no || "-"}</td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {(item?.rising_info?.[0]?.operator_name || "-")
+                    {(item?.rising_info?.operator_name || "-")
                       .replace(/^\w/, (c: string) => c.toUpperCase())}
                   </td>
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.[0]?.hardness || "-"}</td>
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.[0]?.temperature || "-"}</td>
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.[0]?.rising_date || "-"}</td>
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.hardness || "-"}</td>
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.temperature || "-"}</td>
+                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">{item?.rising_info?.rising_date || "-"}</td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item?.rising_info?.[0]?.rising_time
-                      ? new Date(`1970-01-01T${item?.rising_info?.[0].rising_time}`).toLocaleTimeString("en-IN", {
+                    {item?.rising_info?.rising_time
+                      ? new Date(`1970-01-01T${item?.rising_info.rising_time}`).toLocaleTimeString("en-IN", {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,
@@ -124,7 +131,7 @@ const RisingTable = () => {
                   </td>
                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
-                      {!item?.rising_info?.[0]?.hardness ? (
+                      {!item?.rising_info?.hardness ? (
                         <Tooltip content="Add" placement="bottom">
                           <Button
                             size="sm"
@@ -180,6 +187,8 @@ const RisingTable = () => {
           </tbody>
         </table>
       </div>
+
+      </CardBox>
 
       <CommonPagination
         currentPage={currentPage}

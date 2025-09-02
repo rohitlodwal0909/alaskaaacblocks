@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   error: null,
   cuttingdata: [],         
+  risingdata: [],         
   addResult: null,  
   updateResult: null,
   deleteResult: null 
@@ -13,9 +14,9 @@ const initialState = {
 
 export const GetCutting= createAsyncThunk(
   "GetCutting /fetch",
-  async (_, thunkAPI) => {
+  async (id:any, thunkAPI) => {
     try {
-      const response = await axios.get(`${apiUrl}/get-cutting`);
+      const response = await axios.get(`${apiUrl}/get-cutting/${id}`);
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -24,6 +25,22 @@ export const GetCutting= createAsyncThunk(
     }
   }
 );
+
+export const GetRisingdate= createAsyncThunk(
+  "GetRising /fetch",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-risingdate`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user modules.";
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
 
 export const addCutting = createAsyncThunk(
   "Cutting/add",
@@ -83,6 +100,20 @@ const CuttingSlice = createSlice({
         state.cuttingdata = action.payload;
       })
       .addCase(GetCutting.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+
+      .addCase(GetRisingdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetRisingdate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.risingdata = action.payload;
+      })
+      .addCase(GetRisingdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER
       },
+      rising_id: {
+        type: DataTypes.INTEGER
+      },
       mould_no: {
         type: DataTypes.STRING,
         allowNull: false
@@ -56,14 +59,14 @@ module.exports = (sequelize, DataTypes) => {
 
   Cutting.associate = (models) => {
     Cutting.belongsTo(models.Rising, {
-      foreignKey: "mould_no",
-      targetKey: "mould_no",
-      as: "rising_info" // 👈 because this is pointing to Rising
+      foreignKey: "rising_id",
+      sourceKey: "id",
+      as: "rising"
     });
-    Cutting.hasMany(models.Autoclave, {
-      foreignKey: "mould_no",
-      sourceKey: "mould_no",
-      as: "autoclave_entries"
+    Cutting.hasOne(models.Autoclave, {
+      foreignKey: "cutting_id",
+      sourceKey: "id",
+      as: "autoclave"
     });
   };
 
