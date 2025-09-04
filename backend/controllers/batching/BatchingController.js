@@ -27,19 +27,17 @@ exports.createBatching = async (req, res) => {
       dicromate,
       // ph_booster,
       // nts_clate,
+      datetime,
       hardener_qty,
       remark
     } = req.body;
 
-    const today = new Date();
-    const formattedDate = today.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    });
+    const formattedDate = datetime.split("T")[0]; // "2025-09-03"
+    let time = datetime.split("T")[1]; // "19:08"
+
+    if (time.length === 5) {
+      time = time + ":00";
+    }
 
     const requiredMaterials = {
       cement: parseFloat(cement_qty || 0),

@@ -20,6 +20,7 @@ import Select from 'react-select';
 import ViewLeadmodal from "./ViewLeadmodal";
 import FollowUpmodal from "./FollowUpmodal";
 import { useLocation } from "react-router";
+import ConversationModal from "./ConversationModal";
 
 export interface PaginationTableType {
   id?: string;
@@ -63,6 +64,7 @@ function LeadsTable({searchText ,toDate ,fromDate}) {
   const location = useLocation();
   const leadId = location.state?.lead_id;
   const [viewModal, setViewModal] = useState(false);
+  const [conversationModal, setConversationModal] = useState(false);
   const [followUpModal, setFollowupModal] = useState(false);
  const uniqueDistricts = Array.from(
   new Set(data?.map((item) => item?.district))
@@ -92,7 +94,32 @@ const tehsileoptions = uniquetehsile?.map((tehsil) => ({
     setEditModal(true);
   };
 
-   
+useEffect(() => {
+  if (!leadId) return;
+
+  const allRows = table.getPrePaginationRowModel().rows;
+  const selected = allRows.find((row) => row.getValue("id") == leadId);
+
+  if (selected) {
+    setConversationModal(true);
+    const row = selected.original;
+    setSelectedRow(row);
+
+    if (row) {
+      const fetchFollowups = async () => {
+        try {
+          await dispatch(GetFollowupLeads(row.id)).unwrap();
+        } catch (error: any) {
+          toast.error(error || "Failed to fetch leads");
+          console.error("Error fetching leads:", error);
+        }
+      };
+
+      fetchFollowups();
+    }
+  }
+}, [leadId, dispatch]);
+
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -171,6 +198,7 @@ const handleStatuschange = (status:any, id:any) => {
        }
     }
   };
+
   const handleNotes = async (row: PaginationTableType) => {
     setFollowupModal(true);
     setSelectedRow(row)
@@ -537,6 +565,7 @@ const filteredData = useMemo(() => {
       </div>
       <FollowUpmodal  setPlaceModal={setFollowupModal} modalPlacement={modalPlacement} selectedRow={selectedRow} placeModal={followUpModal}  setFollowupData={setFollowupData} />
       <ViewLeadmodal setPlaceModal={setViewModal} modalPlacement={modalPlacement} selectedRow={selectedRow} placeModal={viewModal} followupdata={followupdata} />
+      <ConversationModal setopenModal={()=>setConversationModal(false)} modalPlacement={modalPlacement} selectedRow={selectedRow} openModal={conversationModal} followupdata={followupdata} />
       <ComonDeletemodal
         handleConfirmDelete={handleConfirmDelete}
         isOpen={isOpen}

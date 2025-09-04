@@ -32,6 +32,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
      water_consume:'',
      mixing_time:'',
      dicromate:'',
+     datetime:'',
     //  ph_booster: "",
     // nts_clate: "",
     remark: '',
@@ -99,6 +100,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     mould_oil_qty: '',
     water_consume:'',
     dicromate:'',
+    datetime:'',
     // ph_booster: "",
     // nts_clate: "",
     mixing_time:'',
@@ -178,6 +180,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   {/* Rest of the fields */}
   {[
     { id: 'entry_time', label: 'Discharge Time', type: 'time', placeholder: 'Select Discharge Time' },
+
     { id: 'mould_oil_qty', label: 'Mould Oil Qty (ml)', type: 'number', placeholder: 'Enter mould oil (ml)' },
     { id: 'slurry_waste', label: 'Slurry Waste (ltr)', type: 'number', placeholder: 'Enter waste slurry (ltr)' },
     { id: 'slurry_fresh', label: 'Slurry Fresh (ltr)', type: 'number', placeholder: 'Enter fresh slurry (ltr)' },
@@ -195,6 +198,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     // { id: 'nts_clate', label: 'NTS Clate ', type: 'number', placeholder: 'Enter NTS Clate' },
     { id: 'hardener_qty', label: 'Hardner Qty (ltr)', type: 'number', placeholder: 'Enter hardner qty (ltr)' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
+    { id: 'datetime', label: 'Date & Time', type: 'datetime', placeholder: 'Select Date time' },
+
     { id: 'remark', label: 'Remark', type: 'text', placeholder: 'Enter remarks or QC notes' },
   ].map(({ id, label, type = 'text', placeholder }) => {
   const isTextarea = id === 'remark';
@@ -206,6 +211,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     <Label htmlFor={id} value={label} />
    <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' || id === 'flow_value' || id === 'hardener_qty' ? ""  :  "*"}</span>
   {/* Time Picker Field */}
+  
   {id === 'entry_time'  ||  id === 'mixing_time' ? (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
@@ -247,7 +253,17 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
         }}
       />
     </LocalizationProvider>
-  ) : isTextarea ? (
+  )
+  
+  : id === 'datetime' ? (
+        <input
+          type="datetime-local"
+          id={id}
+          value={formData[id]}
+          onChange={(e) => handleChange(id, e.target.value)}
+          className={`w-full border rounded-md p-2 ${errors[id] ? 'border-red-500' : 'border-gray-300'}`}
+        />
+      ) : isTextarea ? (
     
     <textarea
       id={id}
@@ -286,6 +302,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
 </div>
   );
 })}
+
 </form>
 
       </ModalBody>
