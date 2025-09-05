@@ -14,14 +14,12 @@ import { toast } from "react-toastify";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { addAutoclave, GetAutoclave } from "src/features/Autoclave/AutoclaveSlice";
+import { addAutoclave, GetCuttingdate } from "src/features/Autoclave/AutoclaveSlice";
 import { Icon } from "@iconify/react";
-import { useParams } from "react-router";
 
 const AddAutoClaveModal = ({ show, setShowmodal, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-const {id} = useParams();
 
   const [header, setHeader] = useState({
     user_id: logindata?.admin?.id,
@@ -92,7 +90,7 @@ const {id} = useParams();
 
     const result = await dispatch(addAutoclave(payload)).unwrap();
     toast.success(result.message || "Autoclave entry created successfully");
-    dispatch(GetAutoclave(id));
+    dispatch(GetCuttingdate());
     setShowmodal(false);
   } catch (err) {
     toast.error("Failed to create autoclave entry");
