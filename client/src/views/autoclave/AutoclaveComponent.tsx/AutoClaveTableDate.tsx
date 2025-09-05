@@ -8,15 +8,19 @@ import noData from "src/assets/images/svgs/no-data.webp";
 import CommonPagination from "src/utils/CommonPagination";
 import { GetCuttingdate } from "src/features/Autoclave/AutoclaveSlice";
 import { AppDispatch } from "src/store";
+import AddAutoClaveModal from "./AddAutoClaveModal";
 
 const AutoclaveTableDate = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { Cuttingdata, loading } = useSelector((state: any) => state.autoclave);
+  const logindata = useSelector((state: any) => state.authentication?.logindata);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [addmodal, setAddmodal] = useState(false);
+
 
 
   useEffect(() => {
@@ -38,7 +42,7 @@ const AutoclaveTableDate = () => {
   // 🔎 Filtered & Paginated data
   const filteredItems = (Cuttingdata || []).filter((item: any) => {
     const searchText = searchTerm.toLowerCase();
-    return (item?.batch_date ? formatDate(item?.batch_date).toLowerCase() : "").includes(searchText);
+    return (item?.Date ? formatDate(item?.Date).toLowerCase() : "").includes(searchText);
   });
 
   const totalPages = Math.ceil(filteredItems.length / pageSize);
@@ -61,6 +65,15 @@ const AutoclaveTableDate = () => {
             setCurrentPage(1); // Reset to first page when searching
           }}
         />
+              <Button onClick={() => {
+                    setAddmodal(true);
+                  }}
+                  className="w-fit mx-2 rounded-sm"
+                  color="primary"
+                >
+                  Create Autoclave
+                </Button>
+
       </div>
 
       {/* 📊 Table */}
@@ -137,6 +150,11 @@ const AutoclaveTableDate = () => {
         setPageSize={setPageSize}
       />
 
+      <AddAutoClaveModal
+        setShowmodal={setAddmodal}
+        show={addmodal}
+        logindata={logindata}
+      />
      
     </div>
   );

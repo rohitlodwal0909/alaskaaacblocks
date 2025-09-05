@@ -44,16 +44,9 @@ const ViewBatchModal = ({
   ["Density (kg/m³)", selectedRow?.density],
   ["Flow Value", selectedRow?.flow_value],
   ["Temperature (°C)", selectedRow?.temperature],
-  ["Water Consume", selectedRow?.density],
+  ["Water Consume", selectedRow?.water_consume],
   ["Dicromate (gm)", selectedRow?.dicromate],
-["Mixing Time", selectedRow?.mixing_time
-  ? new Date(`1970-01-01T${selectedRow?.mixing_time}`).toLocaleTimeString("en-IN", {
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    })+" min/s"
-  : '-'],
-
+  ["Mixing Time", selectedRow?.mixing_time],
   ["Hardener Qty (ltr)", selectedRow?.hardener_qty],
   ["Mould Oil Qty", selectedRow?.mould_oil_qty],
   ["Remark", selectedRow?.remark],

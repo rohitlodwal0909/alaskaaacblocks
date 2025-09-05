@@ -10,13 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER
       },
-      cutting_id: {
-        type: DataTypes.INTEGER
-      },
-      mould_no: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       operator_name: {
         type: DataTypes.STRING,
         allowNull: false
@@ -47,12 +40,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "cutting_id",
       targetKey: "id",
       as: "cutting_info"
-    });
-
-    Autoclave.hasOne(models.Segregation, {
-      foreignKey: "autoclave_id",
-      sourceKey: "id",
-      as: "segregation"
     });
 
     Autoclave.hasMany(models.AutoclaveRecord, {

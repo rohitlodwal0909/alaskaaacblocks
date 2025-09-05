@@ -39,6 +39,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     mould_oil_qty: '',
   });
 
+
   const [errors, setErrors] = useState<any>({});
 
   const handleChange = (field: string, value: string) => {
@@ -212,50 +213,55 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
    <span className="text-red-700 ps-1">{ isHalfWidth || id === 'density' || id === 'flow_value' || id === 'hardener_qty' ? ""  :  "*"}</span>
   {/* Time Picker Field */}
   
-  {id === 'entry_time'  ||  id === 'mixing_time' ? (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <TimePicker
-        value={formData[id] ? dayjs(formData[id]) : null}
-        onChange={(value:any) => handleChange(id, value)}
-           views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']} // 👈 key line
+{id === 'entry_time'  ||  id === 'mixing_time' ? (
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <TimePicker
+      value={formData[id] ? dayjs(formData[id], id === 'mixing_time' ? "mm:ss" : "HH:mm") : null}
+      onChange={(value: any) => {
+        if (value) {
+          // 👇 server ka time avoid karke sirf user selected format save kar rahe
+          const formatted = id === "mixing_time" 
+            ? value.format("mm:ss") 
+            : value.format("HH:mm"); 
+          handleChange(id, formatted);
+        } else {
+          handleChange(id, null);
+        }
+      }}
+      views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']}
       format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
-        slotProps={{
-          textField: {
-            id,
-            fullWidth: true,
-            // error: !!errors[id],
-            // helperText: errors[id],
-            sx: {
-              '& .MuiInputBase-root': {
-                fontSize: '14px',
-                backgroundColor: '#f1f5f9',
-                borderRadius: '6px',
-                 height: '38px',
-              },
-              '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
-            height: '42px',
-            fontSize: '14px',
-           
-            backgroundColor: '#f1f5f9',
-            borderRadius: '6px',
-          },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#cbd5e1',
-              },
-              '& input': {
-               padding: '9.5px 0'
-              },
-              '& .MuiInputLabel-root': {
-                fontSize: '12px',
-              },
+      slotProps={{
+        textField: {
+          id,
+          fullWidth: true,
+          sx: {
+            '& .MuiInputBase-root': {
+              fontSize: '14px',
+              backgroundColor: '#f1f5f9',
+              borderRadius: '6px',
+              height: '38px',
+            },
+            '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
+              height: '42px',
+              fontSize: '14px',
+              backgroundColor: '#f1f5f9',
+              borderRadius: '6px',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#cbd5e1',
+            },
+            '& input': {
+              padding: '9.5px 0'
+            },
+            '& .MuiInputLabel-root': {
+              fontSize: '12px',
             },
           },
-        }}
-      />
-    </LocalizationProvider>
-  )
-  
-  : id === 'datetime' ? (
+        },
+      }}
+    />
+  </LocalizationProvider>
+)   : id === 'datetime' ? (
         <input
           type="datetime-local"
           id={id}

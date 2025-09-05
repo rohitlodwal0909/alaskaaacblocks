@@ -7,8 +7,8 @@ const { Op, fn, col, literal, where } = require("sequelize");
 exports.createSecurity = async (req, res) => {
   try {
     const today = new Date();
-
     const formattedDate = today.toLocaleString("en-GB", {
+      timeZone: "Asia/Kolkata",
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -17,7 +17,6 @@ exports.createSecurity = async (req, res) => {
       hour12: true
     });
 
-    // Add comma between date and time manually
     const finalDate = formattedDate.replace(" at", ",");
 
     const log = await Security.create({

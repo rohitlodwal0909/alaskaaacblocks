@@ -21,7 +21,9 @@ import { useParams } from "react-router";
 const EditAutoClaveModal = ({ show, setShowmodal, autoclaves }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const editId = autoclaves?.rising_info?.cutting_info?.autoclave?.id;
+  console.log(autoclaves);
+  // const editId = autoclaves?.rising_info?.cutting_info?.autoclave?.id;
+   const editId = autoclaves?.id;
 const {id} = useParams();
 
   // use main autoclave.id, not autoclave_entries[0]?.id
@@ -67,6 +69,7 @@ const {id} = useParams();
               }))
             : [
                 {
+                  autoclave_no:"", 
                   material_receipt_time: "",
                   door_closing_time: "",
                   vacuum_on_time: "",
@@ -158,6 +161,24 @@ const handleSubmit = async (e: any) => {
           {formData.records.map((row: any, idx: number) => (
             <div key={idx} className="border rounded-lg p-3 mb-4 shadow-sm">
               <div className="grid grid-cols-4 gap-4">
+
+          
+                <div>
+         
+                  <Label>Autoclave No.</Label>
+                  <div className="flex flex-col gap-1">
+                   
+                    <TextInput
+                      type="number"
+                      value={row.autoclave_no}
+                      onChange={(e) =>
+                        handleRecordChange(idx, "autoclave_no", e.target.value)
+                      }
+                    />
+                  </div>
+                  </div>
+
+                
                 <div>
                   <Label>Material Receipt</Label>
                   {renderTime(row.material_receipt_time, (val) =>

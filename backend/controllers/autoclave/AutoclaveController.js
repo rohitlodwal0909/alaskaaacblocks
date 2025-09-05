@@ -47,7 +47,7 @@ exports.getAllAutoclave = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const getdate = await Cutting.findOne({ where: { id } });
+    const getdate = await Autoclave.findOne({ where: { id } });
 
     if (!getdate) {
       return res.json([]);
@@ -55,36 +55,8 @@ exports.getAllAutoclave = async (req, res) => {
 
     const date = new Date(getdate.datetime).toISOString().split("T")[0];
 
-    const data = await Batching.findAll({
-      where: {
-        deleted_at: null
-      },
-      include: [
-        {
-          model: Rising,
-          as: "rising_info",
-          required: true,
-          include: [
-            {
-              model: Cutting,
-              as: "cutting_info",
-              where: where(
-                fn("DATE", col("rising_info.cutting_info.datetime")),
-                Op.eq,
-                date
-              ),
-              required: true,
-              include: [
-                {
-                  model: Autoclave,
-                  as: "autoclave",
-                  required: false
-                }
-              ]
-            }
-          ]
-        }
-      ]
+    const data = await Autoclave.findAll({
+      where: where(fn("DATE", col("datetime")), Op.eq, date)
     });
 
     res.json(data);
@@ -96,7 +68,7 @@ exports.getAllAutoclave = async (req, res) => {
 
 exports.getCuttingdate = async (req, res) => {
   try {
-    const data = await Cutting.findAll({
+    const data = await Autoclave.findAll({
       attributes: [
         [fn("DATE", col("datetime")), "Date"],
         [fn("COUNT", col("id")), "total_records"],

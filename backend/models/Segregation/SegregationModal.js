@@ -10,12 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER
       },
-      autoclave_id: {
-        type: DataTypes.INTEGER
-      },
-      mould_no: {
-        type: DataTypes.STRING
-      },
+
       size: {
         type: DataTypes.JSON
       },
@@ -51,14 +46,6 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "deleted_at"
     }
   );
-
-  Segregation.associate = function (models) {
-    Segregation.belongsTo(models.Autoclave, {
-      foreignKey: "autoclave_id",
-      targetKey: "id",
-      as: "autoclave"
-    });
-  };
 
   return Segregation;
 };

@@ -42,7 +42,7 @@ exports.getAllCutting = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const getdate = await Rising.findOne({ where: { id } });
+    const getdate = await Rising.findOne({ where: { id, deleted_at: null } });
 
     if (!getdate) {
       return res.json([]);
@@ -58,13 +58,17 @@ exports.getAllCutting = async (req, res) => {
         {
           model: Rising,
           where: where(fn("DATE", col("rising_date")), date),
+          deleted_at: null,
           as: "rising_info",
           required: true,
           include: [
             {
               model: Cutting,
               as: "cutting_info",
-              required: false
+              required: false,
+              where: {
+                deleted_at: null
+              }
             }
           ]
         }

@@ -7,29 +7,25 @@ import {
   Label,
   TextInput,
 } from "flowbite-react";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
 import {
   addSegregation,
-  GetSegregation,
+  GetAutoclavedate,
 } from "src/features/Segregation/SegregationSlice";
-import { useParams } from "react-router";
 
-const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata }) => {
+const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {id} = useParams();
 
-  const autoclave_id = segregationdata?.rising_info?.cutting_info?.autoclave?.id;
+  // const autoclave_id = segregationdata?.id;
 
 
 
   const [formData, setFormData] = useState({
     user_id: logindata?.admin?.id,
-    mould_no: segregationdata?.mould_no || "",
     datetime:'',
-    autoclave_id:autoclave_id,
     operator_name:'',
     entries: [
       {
@@ -44,13 +40,13 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
 
   const [errors, setErrors] = useState<any>({});
 
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      mould_no: segregationdata?.mould_no || "",
-      autoclave_id:autoclave_id,
-    }));
-  }, [segregationdata]);
+  // useEffect(() => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     mould_no: segregationdata?.mould_no || "",
+  //     autoclave_id:autoclave_id,
+  //   }));
+  // }, [segregationdata]);
 
   const sizeOptions = [
     "600x200x225",
@@ -98,7 +94,6 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
       }
     });
     if (!formData.operator_name) newErrors.operator_name = "Operator Name is required";
-     if (!formData.mould_no) newErrors.mould_no = "Mould No is required";
     if (!formData.entries.length) newErrors.entries = "At least one entry is required";
 
     setErrors(newErrors);
@@ -112,23 +107,21 @@ const AddSegregationModal = ({ show, setShowmodal, segregationdata, logindata })
     try {
       const payload = {
         ...formData,
-        user_id: logindata?.admin?.id,
-         size: formData.entries.map((row) => row.size),
-  no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
-  no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
-   plate_no:formData.entries.map((row) => row.plate_no),
+          user_id: logindata?.admin?.id,
+          size: formData.entries.map((row) => row.size),
+          no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
+          no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
+          plate_no:formData.entries.map((row) => row.plate_no),
       };
 
       const result = await dispatch(addSegregation(payload)).unwrap();
       toast.success(result.message || "Segregation entry created successfully");
-      dispatch(GetSegregation(id));
+      dispatch(GetAutoclavedate());
 
       setFormData({
         operator_name:"",
         user_id: logindata?.admin?.id,
-         datetime:'',
-        autoclave_id:autoclave_id,
-        mould_no:  "",
+        datetime:'',
         entries: [{ size: "", no_of_broken_pcs: "", no_of_ok_pcs: "",plate_no:"" }],
         remark: "",
       });

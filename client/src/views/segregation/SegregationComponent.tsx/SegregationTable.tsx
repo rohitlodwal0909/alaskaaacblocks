@@ -45,11 +45,10 @@ const SegregationTable = () => {
   //  navigate(`/autoclave-view/${autoclave?.segregation_entries[0]?.id}`)
   // }
   const handleDelete = async (userToDelete) => {
-  const deleteId =   userToDelete?.rising_info?.cutting_info?.autoclave?.segregation?.id || {};
+  const deleteId =   userToDelete?.id || {};
 
     if (!deleteId) return;
     try {
-      console.log
       await dispatch(deleteSegregation(deleteId)).unwrap();
       dispatch(GetSegregation(id));
       toast.success("The segregation  was successfully deleted. ");
@@ -61,13 +60,10 @@ const SegregationTable = () => {
     }
   }
 
-
-
   const filteredItems = (segregationdata || []).filter((item: any) => {
-    const list = item?.rising_info?.cutting_info?.autoclave?.segregation;
+    const list = item;
     const searchText = searchTerm.toLowerCase();
     const operator = list?.operator_name || "";
-    const mouldNo = item?.mould_no || "";
     const okpeac = list?.no_of_ok_pcs || "";
     const brokenpeac = list?.no_of_broken_pcs || "";
     const size = list?.size || "";
@@ -75,7 +71,6 @@ const SegregationTable = () => {
     const remark = list?.remark || "";
 
     return (
-      mouldNo.toString().toLowerCase().includes(searchText) ||
       operator.toString().toLowerCase().includes(searchText) ||
       okpeac.toString().toLowerCase().includes(searchText) ||
       brokenpeac.toString().toLowerCase().includes(searchText) ||
@@ -108,7 +103,7 @@ const SegregationTable = () => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Mould No", "Operator Name", , "Ok Pcs", "Broken Pcs", "Size", "Plate No.", "Date", "Remark", "Action"].map((title) => (
+              {["Sr.No", "Operator Name", "Plate No." , "Ok Pcs", "Broken Pcs", "Size",  "Date", "Remark", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -127,7 +122,7 @@ const SegregationTable = () => {
               </tr>
             ) : currentItems.length > 0 ? (
               currentItems.map((item, index) => {
-             const seglist = item?.rising_info?.cutting_info?.autoclave?.segregation;
+             const seglist = item;
 
 
                 return(
@@ -135,11 +130,20 @@ const SegregationTable = () => {
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     #{(currentPage - 1) * pageSize + index + 1}
                   </td>
-                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                  
+                  {/* <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item?.mould_no}
-                  </td>
+                  </td> */}
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {seglist?.operator_name.charAt(0).toUpperCase() + seglist?.operator_name.slice(1) || "-"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+
+                    {Array.isArray(seglist?.plate_no)
+                      ? seglist?.plate_no.join(", ")
+                      : typeof seglist?.plate_no === "string" && seglist?.plate_no.startsWith("[")
+                        ? JSON.parse(seglist?.plate_no).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.plate_no} </div>}
                   </td>
 
 
@@ -174,14 +178,7 @@ const SegregationTable = () => {
                         ? JSON.parse(seglist?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
                         : <div>{seglist?.size} </div>}
                   </td>
-                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-
-                    {Array.isArray(seglist?.plate_no)
-                      ? seglist?.plate_no.join(", ")
-                      : typeof seglist?.plate_no === "string" && seglist?.plate_no.startsWith("[")
-                        ? JSON.parse(seglist?.plate_no).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
-                        : <div>{seglist?.plate_no} </div>}
-                  </td>
+                  
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {seglist?.date || '-'}
 
@@ -265,7 +262,7 @@ const SegregationTable = () => {
         selectedUser={selectedrow}
         title="Are you sure you want to Delete this Segregation ?"
       />
-      <AddSegregationModal setShowmodal={setAddmodal} show={addmodal} segregationdata={selectedrow} logindata={logindata} />
+      <AddSegregationModal setShowmodal={setAddmodal} show={addmodal} logindata={logindata} />
       <EditSegregationModal show={editmodal} setShowmodal={setEditmodal} autoclave={selectedrow} />
 
     </div>

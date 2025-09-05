@@ -61,6 +61,7 @@ const formatTime = (time: string) => {
       <table className="w-full border border-black border-collapse text-[13px]">
         <thead className="bg-gray-100">
           <tr>
+            <th className="border border-black px-2 py-1">Autoclave No.</th>
             <th className="border border-black px-2 py-1">Material Receipt</th>
             <th className="border border-black px-2 py-1">Door Closing</th>
             <th className="border border-black px-2 py-1">Vacuum On</th>
@@ -77,6 +78,7 @@ const formatTime = (time: string) => {
         <tbody>
   {singleAutoClave?.records?.map((r: any, index: number) => (
     <tr key={r.id || index}>
+      <td className="border px-2 py-1 text-center">{r.autoclave_no}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.material_receipt_time)}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.door_closing_time)}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.vacuum_on_time)}</td>

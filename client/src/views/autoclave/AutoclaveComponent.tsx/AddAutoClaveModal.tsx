@@ -7,7 +7,7 @@ import {
   Label,
   TextInput,
 } from "flowbite-react";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
@@ -18,33 +18,22 @@ import { addAutoclave, GetAutoclave } from "src/features/Autoclave/AutoclaveSlic
 import { Icon } from "@iconify/react";
 import { useParams } from "react-router";
 
-const AddAutoClaveModal = ({ show, setShowmodal, batchingData, logindata }) => {
+const AddAutoClaveModal = ({ show, setShowmodal, logindata }) => {
   const dispatch = useDispatch<AppDispatch>();
 
 const {id} = useParams();
 
   const [header, setHeader] = useState({
     user_id: logindata?.admin?.id,
-    mould_no: batchingData?.mould_no || "",
-    cutting_id: batchingData?.rising_info?.cutting_info?.id || "",
     datetime:'',
     operator_name: "",
   });
   
-useEffect(() => {
-  if (batchingData) {
-    setHeader((prev) => ({
-      ...prev,
-      mould_no: batchingData?.mould_no || "",
-      cutting_id:batchingData?.rising_info?.cutting_info?.id || "",
-    }));
-  }
-}, [batchingData]);
-
 
   // multiple rows
   const [rows, setRows] = useState([
     {
+      autoclave_no:"",
       material_receipt_time: "",
       door_closing_time: "",
       vacuum_on_time: "",
@@ -72,7 +61,8 @@ useEffect(() => {
   const addRow = () => {
     setRows([
       ...rows,
-      {
+      { 
+        autoclave_no:"",
         material_receipt_time: "",
         door_closing_time: "",
         vacuum_on_time: "",
@@ -136,11 +126,9 @@ useEffect(() => {
                 onChange={(e) => handleHeaderChange("operator_name", e.target.value)}
               />
             </div>
-          </div>
-           <div className="grid grid-cols-4 gap-4">
+         
             <div>
               <Label>Date & Time</Label>
-           
               <input
                 type="datetime-local"
                 id="datetime"
@@ -157,6 +145,19 @@ useEffect(() => {
           {rows.map((row, idx) => (
             <div key={idx} className="border rounded-lg p-3 mb-4 shadow-sm">
               <div className="grid grid-cols-4 gap-4">
+
+                 <div>
+                  <Label>Autoclave No.</Label>
+                  <TextInput
+                      type="number"
+                      placeholder="Enter Autoclave No."
+                      value={row.autoclave_no}
+                      onChange={(e) =>
+                        handleRowChange(idx, "autoclave_no", e.target.value)
+                      }
+                    />
+                </div>
+
                 <div>
                   <Label>Material Receipt</Label>
                   {renderTime(row.material_receipt_time, (val) =>

@@ -8,7 +8,7 @@ import { CreateLeads, GetLeads } from 'src/features/leadmanagment/LeadmanagmentS
 import Select from 'react-select';
 import { AppDispatch } from 'src/store';
 import { Icon } from "@iconify/react";
-const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal ,logindata}) => {
+const Addusermodal = ({ placeModal, modalPlacement, setPlaceModal, logindata}) => {
    const dispatch = useDispatch<AppDispatch>();
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);

@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
       //   allowNull: false
       // },
       mixing_time: {
-        type: DataTypes.TIME,
+        type: DataTypes.STRING,
         allowNull: false
       },
       hardener_qty: {

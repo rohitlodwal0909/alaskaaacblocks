@@ -7,7 +7,6 @@ import CommonPagination from "src/utils/CommonPagination";
 import ComonDeletemodal from "../../../utils/deletemodal/ComonDeletemodal";
 import { AppDispatch } from "src/store";
 import { toast } from "react-toastify";
-import AddAutoClaveModal from "./AddAutoClaveModal";
 import EditAutoClaveModal from "./EditAutoClaveModal";
 import { deleteAutoclave, GetAutoclave } from "src/features/Autoclave/AutoclaveSlice";
 import { useNavigate, useParams } from "react-router";
@@ -18,11 +17,9 @@ const AutoClaveTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { autoclavedata, loading } = useSelector((state: any) => state.autoclave);
   const {id} = useParams();
-  const logindata = useSelector((state: any) => state.authentication?.logindata);
   const navigate = useNavigate();
 
   const [editmodal, setEditmodal] = useState(false);
-  const [addmodal, setAddmodal] = useState(false);
   const [deletemodal, setDeletemodal] = useState(false);
   const [selectedrow, setSelectedRow] = useState();
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,7 +33,7 @@ const AutoClaveTable = () => {
 
   // ✅ Filtered search data
   const filteredData = (autoclavedata || []).filter((item: any) => {
-    const autoclave = item?.rising_info?.cutting_info?.autoclave;
+    const autoclave = item;
     const search = searchTerm.toLowerCase();
 
 
@@ -64,7 +61,7 @@ const AutoClaveTable = () => {
   };
 
   const handleDelete = async (userToDelete: any) => {
-    const deleteid = userToDelete?.rising_info?.cutting_info?.autoclave?.id;
+    const deleteid = userToDelete?.id;
    
     if (!deleteid) return;
     try {
@@ -100,7 +97,7 @@ const AutoClaveTable = () => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Mould No", "Operator Name", "Date & Time", "Action"].map((title) => (
+              {["Sr.No", "Operator Name", "Date & Time", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -117,12 +114,12 @@ const AutoClaveTable = () => {
               </tr>
             ) : currentItems.length > 0 ? (
               currentItems.map((item, index) => {
-                const autoclaveList = item?.rising_info?.cutting_info?.autoclave;
+                const autoclaveList = item;
 
                return( 
                 <tr key={item.id} className="bg-white dark:bg-gray-900">
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300"> #{(currentPage - 1) * pageSize + index + 1}</td>
-                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">{item?.mould_no}</td>
+                  {/* <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">{item?.mould_no}</td> */}
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {autoclaveList?.operator_name
                       ? autoclaveList?.operator_name.charAt(0).toUpperCase() +
@@ -135,20 +132,6 @@ const AutoClaveTable = () => {
                   </td>
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
-                      {!autoclaveList?.operator_name ? (
-                        <Tooltip content="Add" placement="bottom">
-                          <Button
-                            size="sm"
-                            className="p-0 bg-lightprimary text-primary hover:bg-primary hover:text-white"
-                            onClick={() => {
-                              setAddmodal(true);
-                              setSelectedRow(item);
-                            }}
-                          >
-                            <Icon icon="ic:baseline-plus" height={18} />
-                          </Button>
-                        </Tooltip>
-                      ) : (
                         <>
                           <Tooltip content="Edit" placement="bottom">
                             <Button
@@ -183,7 +166,7 @@ const AutoClaveTable = () => {
                             </Button>
                           </Tooltip>
                         </>
-                      )}
+                      
                     </div>
                   </td>
                 </tr>
@@ -222,12 +205,7 @@ const AutoClaveTable = () => {
         selectedUser={selectedrow}
         title="Are you sure you want to Delete this Autoclave?"
       />
-      <AddAutoClaveModal
-        setShowmodal={setAddmodal}
-        show={addmodal}
-        batchingData={selectedrow}
-        logindata={logindata}
-      />
+      
       <EditAutoClaveModal show={editmodal} setShowmodal={setEditmodal} autoclaves={selectedrow} />
     </div>
   );

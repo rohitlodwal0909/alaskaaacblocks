@@ -8,15 +8,17 @@ import noData from "src/assets/images/svgs/no-data.webp";
 import CommonPagination from "src/utils/CommonPagination";
 import { GetAutoclavedate } from "src/features/Segregation/SegregationSlice";
 import { AppDispatch } from "src/store";
+import AddSegregationModal from "./AddSegregationModal";
 
 const SegregationTabledate = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
+  const logindata = useSelector((state: any) => state.authentication?.logindata);
   const { autoclavedata, loading } = useSelector((state: any) => state.segregation);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [addmodal, setAddmodal] = useState(false);
 
 
   useEffect(() => {
@@ -61,6 +63,18 @@ const SegregationTabledate = () => {
             setCurrentPage(1); // Reset to first page when searching
           }}
         />
+
+
+        <Button
+          onClick={() => setAddmodal(true)}
+          className="w-fit rounded-sm ml-2"
+          color="primary"
+        >
+          Create Segregation
+        </Button>
+
+
+        
       </div>
 
       {/* 📊 Table */}
@@ -136,6 +150,7 @@ const SegregationTabledate = () => {
         setCurrentPage={setCurrentPage}
         setPageSize={setPageSize}
       />
+        <AddSegregationModal setShowmodal={setAddmodal} show={addmodal} logindata={logindata} />
 
      
     </div>

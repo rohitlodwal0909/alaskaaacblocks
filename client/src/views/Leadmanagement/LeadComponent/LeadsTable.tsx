@@ -66,6 +66,7 @@ function LeadsTable({searchText ,toDate ,fromDate}) {
   const [viewModal, setViewModal] = useState(false);
   const [conversationModal, setConversationModal] = useState(false);
   const [followUpModal, setFollowupModal] = useState(false);
+  
  const uniqueDistricts = Array.from(
   new Set(data?.map((item) => item?.district))
 );
@@ -173,12 +174,12 @@ const handleupdateuser = (updatedata) => {
 const handleStatuschange = (status:any, id:any) => {
   dispatch(UpdateLeads({ status, id })).unwrap().then(() => {
     toast.success("Lead status has been successfully changed.");
-    // ✅ local patch
     setData(prev =>
       prev.map(user =>
         user.id === id ? { ...user, status } : user
       )
     );
+
   }).catch((err) => {
     toast.error(err || "Failed to update lead.");
     console.error("Update error:", err);
@@ -209,6 +210,8 @@ const handleStatuschange = (status:any, id:any) => {
   setData(users),
   setFollowupData(notesLeads) 
 }, [users, notesLeads]);
+
+
 
 //   useEffect(() => {
 //     console.log('sd')

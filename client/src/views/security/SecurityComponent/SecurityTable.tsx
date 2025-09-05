@@ -154,8 +154,20 @@ const handleDelete = async (row: any) => {
                     <td className="py-3 px-4">{item.product_name || "-"}</td>
                     <td className="py-3 px-4">{item.from || "-"}</td>
                     <td className="py-3 px-4">{item.to || "-"}</td>
-                    <td className="py-3 px-4">{item.in_time || "-"}</td>
-                    <td className="py-3 px-4">{item.out_time || "-"}</td>
+                    <td className="py-3 px-4"> {item.in_time
+                      ? new Date(`1970-01-01T${item.in_time}`).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                      : "-"}</td>
+                      <td className="py-3 px-4"> {item.out_time
+                      ? new Date(`1970-01-01T${item.out_time}`).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                      : "-"}</td>
                     <td className="py-3 px-4">
                       {item.signature === "Yes" ? (
                         <span className="text-green-600 font-semibold">

@@ -9,7 +9,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 import { useParams } from "react-router";
 const EditBatchModal = ({ open, setOpen, batchingData }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,6 +35,8 @@ const requiredFields = [
   // ✅ "flow_value", "remark", "hardener_qty" are NOT included here (optional)
 ];
   // const required = ['shift', 'operator_name', 'mould_no', 'cement_qty' ,'mould_no'];
+
+  console.log(batchingData)
   const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
@@ -105,11 +106,10 @@ const validateForm = () => {
     { id: 'temperature', label: 'Temperature (°C)', type: 'number' },
     { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
     { id: 'dicromate', label: 'Dicromate (gm)', type: 'number', placeholder: 'Enter Dicromate (gm) ' },
+    { id: 'hardener_qty', label: 'Hardener Qty (ltr)',   type: 'number' ,placeholder: 'Enter Hardener (ltr)' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
-    { id: 'hardener_qty', label: 'Hardener Qty (ltr)',   type: 'number' ,placeholder: 'NIL or qty' },
     { id: 'remark', label: 'Remark', placeholder: 'Remarks or notes' },
-    
-];
+    ];
   return (
     <Modal show={open} onClose={() => setOpen(false)} size="4xl">
       <ModalHeader>Edit Batching Entry</ModalHeader>
@@ -117,7 +117,7 @@ const validateForm = () => {
         <form className="grid grid-cols-12 gap-3" onSubmit={handleSubmit}>
            {fields.map(({ id, label, type = 'text', options = [], placeholder }) => {
   const isTextarea = id === 'remark';
-  const isHalfWidth = id === 'remark' || id === 'hardener_qty';
+  const isHalfWidth = id === 'remark';
   const isTime = id === 'entry_time' ||  id === 'mixing_time';
   const colSpan = isHalfWidth ? 'col-span-6' : 'col-span-4';
 
@@ -140,49 +140,61 @@ const validateForm = () => {
         </select>
       ) : isTime ? (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker
-           value={formData[id] ? getDateTimeFromTimeString(formData[id]) : null}
-views={id === 'mixing_time' ? ['minutes', 'seconds'] : ['hours', 'minutes']}
-format={id === 'mixing_time' ? 'mm:ss' : 'hh:mm A'}
-            onChange={(value) => {
-              const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
-              handleChange(id, formatted);
-            }}
-            slotProps={{
-              textField: {
-                id,
-                fullWidth: true,
-                error: !!errors[id],
-                helperText: errors[id],
-                sx: {
-                  '& .MuiInputBase-root': {
-                    fontSize: '14px',
-                    backgroundColor: '#f1f5f9',
-                    borderRadius: '6px',
-                    height: '38px',
-                  },
-                   '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
-            height: '42px',
-            fontSize: '14px',
-           
-            backgroundColor: '#f1f5f9',
-            borderRadius: '6px',
-          },
-                  '& input': {
-                    padding: '4px 8px',
-                    fontSize: '13px',
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '12px',
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#cbd5e1',
-                  },
-                },
-              },
-            }}
-          />
-        </LocalizationProvider>
+  <TimePicker
+  value={
+    formData[id]
+      ? (id === "mixing_time"
+          ? dayjs(formData[id], "mm:ss") // 👈 mixing_time ke liye
+          : dayjs(formData[id], "HH:mm:ss") // 👈 entry_time ke liye
+        )
+      : null
+  }
+  views={id === "mixing_time" ? ["minutes", "seconds"] : ["hours", "minutes"]}
+  format={id === "mixing_time" ? "mm:ss" : "hh:mm A"}
+  onChange={(value) => {
+    const formatted = value
+      ? (id === "mixing_time"
+          ? dayjs(value).format("mm:ss") // 👈 DB me sirf mm:ss save hoga
+          : dayjs(value).format("HH:mm:ss")) // 👈 DB me full time save hoga
+      : "";
+    handleChange(id, formatted);
+  }}
+  slotProps={{
+    textField: {
+      id,
+      fullWidth: true,
+      error: !!errors[id],
+      helperText: errors[id],
+      sx: {
+        '& .MuiInputBase-root': {
+          fontSize: '14px',
+          backgroundColor: '#f1f5f9',
+          borderRadius: '6px',
+          height: '38px',
+        },
+        '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
+          height: '42px',
+          fontSize: '14px',
+          backgroundColor: '#f1f5f9',
+          borderRadius: '6px',
+        },
+        '& input': {
+          padding: '4px 8px',
+          fontSize: '13px',
+        },
+        '& .MuiInputLabel-root': {
+          fontSize: '12px',
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: '#cbd5e1',
+        },
+      },
+    },
+  }}
+/>
+
+</LocalizationProvider>
+
       ) : isTextarea ? (
         <textarea
           id={id}

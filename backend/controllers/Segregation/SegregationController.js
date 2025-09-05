@@ -16,8 +16,6 @@ exports.createSegregation = async (req, res) => {
   try {
     const segregationEntry = await Segregation.create({
       user_id: req.body.user_id,
-      mould_no: req.body.mould_no,
-      autoclave_id: req.body.autoclave_id,
       size: req.body.size,
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
@@ -36,8 +34,8 @@ exports.createSegregation = async (req, res) => {
 
     const user_id = req.body.user_id;
     const now = new Date();
-    const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-    const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+    const entry_date = now.toISOString().split("T")[0];
+    const entry_time = now.toTimeString().split(" ")[0];
     const user = await AuthModel.findByPk(user_id);
     const username = user ? user?.name : "Unknown User";
     const logMessage = `Segregation  mould number ${req.body.mould_no}  was created by ${username} on ${entry_date} at ${entry_time}.`;
@@ -60,54 +58,17 @@ exports.getAllSegregation = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const getdate = await Autoclave.findOne({ where: { id } });
+    const getdate = await Segregation.findOne({ where: { id } });
 
     if (!getdate) {
       return res.json([]);
     }
 
-    const date = new Date(getdate.datetime).toISOString().split("T")[0];
+    const date = new Date(getdate.date).toISOString().split("T")[0];
 
-    const data = await Batching.findAll({
-      where: {
-        deleted_at: null
-      },
-      include: [
-        {
-          model: Rising,
-          as: "rising_info",
-          required: true,
-          include: [
-            {
-              model: Cutting,
-              as: "cutting_info",
-              required: true,
-              include: [
-                {
-                  model: Autoclave,
-                  as: "autoclave",
-                  required: true,
-                  where: where(
-                    fn(
-                      "DATE",
-                      col("rising_info.cutting_info.autoclave.datetime")
-                    ),
-                    Op.eq,
-                    date
-                  ),
-                  include: [
-                    {
-                      model: Segregation,
-                      as: "segregation",
-                      required: false
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+    const data = await Segregation.findAll({
+      required: true,
+      where: where(fn("DATE", col("date")), Op.eq, date)
     });
 
     res.json(data);
@@ -119,15 +80,15 @@ exports.getAllSegregation = async (req, res) => {
 
 exports.getAutoclaveData = async (req, res) => {
   try {
-    const data = await Autoclave.findAll({
+    const data = await Segregation.findAll({
       attributes: [
-        [fn("DATE", col("datetime")), "Date"],
+        [fn("DATE", col("date")), "Date"],
         [fn("COUNT", col("id")), "total_records"],
         [fn("MIN", col("id")), "sample_id"]
       ],
       where: { deleted_at: null },
-      group: [fn("DATE", col("datetime"))],
-      order: [[literal("datetime"), "DESC"]]
+      group: [fn("DATE", col("date"))],
+      order: [[literal("date"), "DESC"]]
     });
 
     res.json(data);

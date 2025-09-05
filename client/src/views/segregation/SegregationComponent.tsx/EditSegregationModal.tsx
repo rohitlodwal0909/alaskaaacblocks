@@ -35,8 +35,9 @@ const EditSegregationModal = ({ show, setShowmodal, autoclave }) => {
 
   const [errors, setErrors] = useState<any>({});
 
+
 useEffect(() => {
-  const entry =   autoclave?.rising_info?.cutting_info?.autoclave?.segregation || {};
+  const entry =   autoclave || {};
 
   const sizes = Array.isArray(entry.size)
     ? entry.size

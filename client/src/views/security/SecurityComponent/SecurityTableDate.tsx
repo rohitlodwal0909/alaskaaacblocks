@@ -91,13 +91,13 @@ const SecurityTableDate = () => {
                   
                   <td className="py-3 px-4">
                     <div className="flex gap-2">
-                      <Tooltip content="Edit" placement="bottom">
+                      <Tooltip content="View" placement="bottom">
                         <Button
                           size="sm"
                           className="p-0 bg-lightsuccess text-success hover:bg-success hover:text-white"
                           onClick={() => handleView(item.id)}
                         >
-                          <Icon icon="solar:pen-outline" height={18} />
+                          <Icon icon="hugeicons:view" height={18} />
                         </Button>
                       </Tooltip>
 
