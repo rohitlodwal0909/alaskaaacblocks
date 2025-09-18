@@ -8,6 +8,7 @@ router.get("/api/get-segregation/:id", SegregationController.getAllSegregation);
 router.get("/api/get-autoclave-date", SegregationController.getAutoclaveData);
 
 router.get("/api/get-finishgood", SegregationController.getFinishGood);
+
 router.get(
   "/api/segregation-signle/:id",
   SegregationController.getSegregationById

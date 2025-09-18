@@ -58,21 +58,19 @@ exports.validateAndUpdateFinishGood = async (sizeList, quantityList) => {
       qtyToDeduct -= deduction;
 
       // Clean entire okPcs array (remove nulls, stringify all numbers)
-      const cleanedOkPcs = okPcs.map(pcs =>
+      const cleanedOkPcs = okPcs.map((pcs) =>
         pcs === null || pcs === undefined || isNaN(pcs) ? "0" : String(pcs)
       );
 
       // ✅ Only update this record
       await seg.update({
-        no_of_ok_pcs:cleanedOkPcs
+        no_of_ok_pcs: cleanedOkPcs
       });
     }
   }
 
   return { success: true };
 };
-
-
 
 exports.updateSegregationOnDispatchEdit = async (sizeList, quantityList) => {
   for (let i = 0; i < sizeList.length; i++) {
@@ -127,7 +125,7 @@ exports.updateSegregationOnDispatchEdit = async (sizeList, quantityList) => {
         okPcs[entry.index] = currentVal - deduction;
         qtyToDeduct -= deduction;
 
-        const cleanedOkPcs = okPcs.map(pcs =>
+        const cleanedOkPcs = okPcs.map((pcs) =>
           pcs === null || pcs === undefined || isNaN(pcs) ? "0" : String(pcs)
         );
 
@@ -151,7 +149,7 @@ exports.updateSegregationOnDispatchEdit = async (sizeList, quantityList) => {
         okPcs[entry.index] = currentVal + addition;
         qtyToAdd -= addition;
 
-        const cleanedOkPcs = okPcs.map(pcs =>
+        const cleanedOkPcs = okPcs.map((pcs) =>
           pcs === null || pcs === undefined || isNaN(pcs) ? "0" : String(pcs)
         );
 
@@ -165,4 +163,3 @@ exports.updateSegregationOnDispatchEdit = async (sizeList, quantityList) => {
 
   return { success: true };
 };
-

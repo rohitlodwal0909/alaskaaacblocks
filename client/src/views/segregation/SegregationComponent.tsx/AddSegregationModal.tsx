@@ -90,7 +90,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
   const validateForm = () => {
     const newErrors: any = {};
     formData.entries.forEach((entry, index) => {
-      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs || !entry.plate_no) {
+      if (!entry.size || !entry.receive_blocks || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs || !entry.plate_no) {
         newErrors[`entry_${index}`] = "All fields in this row are required";
       }
     });
@@ -110,6 +110,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
         ...formData,
           user_id: logindata?.admin?.id,
           size: formData.entries.map((row) => row.size),
+          receive_blocks:formData.entries.map((row) => row.receive_blocks),
           no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
           no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
           plate_no:formData.entries.map((row) => row.plate_no),

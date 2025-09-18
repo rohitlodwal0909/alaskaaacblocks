@@ -1,6 +1,6 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const {  Material ,AuthModel} = db;
+const { Material, AuthModel } = db;
 
 // CREATE Material entry
 exports.createMaterial = async (req, res) => {
@@ -18,10 +18,10 @@ exports.createMaterial = async (req, res) => {
       antiscalnt_chemical,
       dicromate,
       wood,
-      diesel	,
+      diesel,
       adhesive_bag,
       fly_ash,
-      user_id,
+      user_id
     } = req.body;
     // Create material entry
     const materialEntry = await Material.create({
@@ -37,10 +37,10 @@ exports.createMaterial = async (req, res) => {
       aluminium,
       antiscalnt_chemical,
       dicromate,
-       wood,
-      diesel	,
+      wood,
+      diesel,
       adhesive_bag,
-      fly_ash,
+      fly_ash
     });
 
     // Log entry (optional)
@@ -55,11 +55,11 @@ exports.createMaterial = async (req, res) => {
     const logMessage = `Material entry created by ${username} on ${entry_date} at ${entry_time}.`;
     await createLogEntry({
       user_id,
-      message: logMessage,
+      message: logMessage
     });
     res.status(201).json({
       message: "Material entry created successfully",
-      data: materialEntry,
+      data: materialEntry
     });
   } catch (error) {
     console.error("Create Material Error:", error);
@@ -71,12 +71,12 @@ exports.getAllMaterial = async (req, res) => {
   try {
     const data = await Material.findAll({
       where: {}, // optionally add filters here
-      order: [['created_at', 'DESC']], // optional: latest first
+      order: [["created_at", "DESC"]] // optional: latest first
     });
 
     res.status(200).json({
       message: "All Material entries fetched successfully",
-      data,
+      data
     });
   } catch (error) {
     console.error("Get All Material Error:", error);
@@ -84,11 +84,8 @@ exports.getAllMaterial = async (req, res) => {
   }
 };
 
-
-
 // Read By ID
 exports.getMaterialById = async (req, res) => {
-  
   try {
     const Material = await Material.findByPk(req.params.id);
     if (!Material)
@@ -119,10 +116,10 @@ exports.updateMaterial = async (req, res) => {
       aluminium: req.body.aluminium,
       antiscalnt_chemical: req.body.antiscalnt_chemical,
       dicromate: req.body.dicromate,
-       wood: req.body.wood,
-      diesel: req.body.diesel	,
+      wood: req.body.wood,
+      diesel: req.body.diesel,
       adhesive_bag: req.body.adhesive_bag,
-      fly_ash: req.body.fly_ash,
+      fly_ash: req.body.fly_ash
     });
 
     // 🔐 Logging
@@ -138,12 +135,12 @@ exports.updateMaterial = async (req, res) => {
 
     await createLogEntry({
       user_id,
-      message: logMessage,
+      message: logMessage
     });
 
     res.json({
       message: "Material entry updated successfully",
-      data: MaterialEntry,
+      data: MaterialEntry
     });
   } catch (error) {
     console.error("Update Material Error:", error);
@@ -158,17 +155,17 @@ exports.deleteMaterial = async (req, res) => {
     if (!segEntry) {
       return res.status(404).json({ message: "Material entry not found" });
     }
-        const user_id = segEntry?.user_id;
-           const now = new Date();
-          const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
-          const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
-        const user = await AuthModel.findByPk(user_id);
-        const username = user ? user?.name : "Unknown User";
-        const logMessage = `Material for vehicle number ${segEntry.vehicle_number} was deleted by ${username} on ${entry_date} at ${entry_time}.`;
-        await createLogEntry({
-          user_id,
-          message:logMessage
-        });
+    const user_id = segEntry?.user_id;
+    const now = new Date();
+    const entry_date = now.toISOString().split("T")[0]; // yyyy-mm-dd
+    const entry_time = now.toTimeString().split(" ")[0]; // HH:mm:ss
+    const user = await AuthModel.findByPk(user_id);
+    const username = user ? user?.name : "Unknown User";
+    const logMessage = `Material for vehicle number ${segEntry.vehicle_number} was deleted by ${username} on ${entry_date} at ${entry_time}.`;
+    await createLogEntry({
+      user_id,
+      message: logMessage
+    });
     await segEntry.destroy(); // soft delete (paranoid: true)
     res.json({ message: "Material entry deleted successfully" });
   } catch (error) {

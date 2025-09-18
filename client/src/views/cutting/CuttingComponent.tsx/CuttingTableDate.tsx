@@ -34,6 +34,16 @@ const CuttingTableDate = () => {
     return `${dd}-${mm}-${yyyy}`;
   };
 
+  const safeParse = (value: any) => {
+  if (!value || typeof value !== "string") return []; // return empty array if no data
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return []; // return empty array if parse fails
+  }
+};
+
+
 const getSizeSummary = (risingInfo: any[]) => {
   if (!risingInfo || risingInfo.length === 0) return [];
 
@@ -46,11 +56,11 @@ const getSizeSummary = (risingInfo: any[]) => {
     const c = r.cutting_info;
     if (!c) return;
 
-    // Parse arrays from JSON
-    const sizes = JSON.parse(c.size);
-    const okPcs = JSON.parse(c.ok_pcs).map(Number);
-    const middle = JSON.parse(c.middle_crack).map(Number);
-    const broken = JSON.parse(c.broken_pcs).map(Number);
+    // ✅ Use safeParse
+    const sizes = safeParse(c.size);
+    const okPcs = safeParse(c.ok_pcs).map(Number);
+    const middle = safeParse(c.middle_crack).map(Number);
+    const broken = safeParse(c.broken_pcs).map(Number);
 
     sizes.forEach((s: string, i: number) => {
       if (!sizeSummary[s]) {
@@ -62,16 +72,15 @@ const getSizeSummary = (risingInfo: any[]) => {
     });
   });
 
-  // return as an array for easier mapping
-  
   return Object.entries(sizeSummary).map(([size, counts]) => ({
     size,
     ok: counts.ok,
     middle: counts.middle,
     broken: counts.broken,
-    total: counts.ok + counts.middle + counts.broken, // total pcs
+    total: counts.ok + counts.middle + counts.broken,
   }));
 };
+
 
 
 

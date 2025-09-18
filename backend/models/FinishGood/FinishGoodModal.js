@@ -2,20 +2,23 @@ module.exports = (sequelize, DataTypes) => {
   const FinishGood = sequelize.define(
     "FinishGood",
     {
-       id: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: true
+      },
+      seg_id: {
+        type: DataTypes.INTEGER
       },
       size: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSON
       },
       no_of_ok_pcs: {
-         type: DataTypes.JSON,
+        type: DataTypes.JSON
       },
       deleted_at: {
-        type: DataTypes.DATE,
-      },
+        type: DataTypes.DATE
+      }
     },
     {
       tableName: "finishgood",
@@ -24,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true, // Enables soft delete using deleted_at
       createdAt: "created_at",
       updatedAt: "updated_at",
-      deletedAt: "deleted_at",
+      deletedAt: "deleted_at"
     }
   );
 
