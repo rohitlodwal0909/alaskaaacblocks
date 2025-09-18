@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: false
       },
+      middle_crack: {
+        type: DataTypes.JSON,
+        allowNull: false
+      },
+      ok_pcs: {
+        type: DataTypes.JSON,
+        allowNull: false
+      },
       datetime: {
         type: DataTypes.STRING,
         allowNull: false

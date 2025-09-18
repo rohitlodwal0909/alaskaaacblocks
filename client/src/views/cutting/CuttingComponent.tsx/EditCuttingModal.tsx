@@ -28,6 +28,8 @@ const EditCuttingModal = ({ show, setShowmodal, cuttingData }) => {
     operator_name: '',
     sizes: [''],
     broken_pcs: [''],
+    middle_crack: [''],
+    ok_pcs: [''],
     time: '',
     remark: '',
   });
@@ -54,7 +56,10 @@ const parseField = (field) => {
         id: info.id || '',
         operator_name: info.operator_name || '',
          sizes: parseField(info.size),
-      broken_pcs: parseField(info.broken_pcs),
+         broken_pcs: parseField(info.broken_pcs),
+         middle_crack: parseField(info.middle_crack),
+         ok_pcs: parseField(info.ok_pcs),
+
         time: info.time || '',
         remark: info.remark || '',
       });
@@ -89,7 +94,7 @@ const parseField = (field) => {
   };
 
   const validateForm = () => {
-    const required = ['operator_name', 'sizes', 'broken_pcs', 'time'];
+    const required = ['operator_name', 'sizes', 'broken_pcs','middle_crack','ok_pcs', 'time'];
     const newErrors = {};
     required.forEach((field) => {
       if (!formData[field] || formData[field].length === 0)
@@ -127,7 +132,7 @@ const parseField = (field) => {
   ];
 
   return (
-    <Modal show={show} onClose={() => setShowmodal(false)} size="3xl">
+    <Modal show={show} onClose={() => setShowmodal(false)} size="4xl">
       <ModalHeader>Edit Cutting Entry</ModalHeader>
       <ModalBody className="overflow-auto max-h-[85vh]">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
@@ -207,7 +212,7 @@ const parseField = (field) => {
       key={index}
       className="col-span-12 grid grid-cols-12 gap-3 items-end"
     >
-      <div className="col-span-5">
+      <div className="col-span-3">
         <Label value={`Size ${index + 1}`} />
         <select
           value={sizeValue}
@@ -225,7 +230,7 @@ const parseField = (field) => {
         </select>
       </div>
 
-      <div className="col-span-5">
+      <div className="col-span-3">
         <Label value={`Broken Pcs ${index + 1}`} />
         <TextInput
           type="number"
@@ -237,8 +242,31 @@ const parseField = (field) => {
           }
         />
       </div>
+      <div className="col-span-3">
+        <Label value={`Middle crack Pcs ${index + 1}`} />
+        <TextInput
+          type="number"
+          value={formData.middle_crack[index]}
+          className="form-rounded-md"
+          placeholder="Enter Middle crack Pcs"
+          onChange={(e) =>
+            handleMultiChange(index, 'middle_crack', e.target.value)
+          }
+        />
+      </div><div className="col-span-2">
+        <Label value={`Ok Pcs ${index + 1}`} />
+        <TextInput
+          type="number"
+          value={formData.ok_pcs[index]}
+          className="form-rounded-md"
+          placeholder="Enter Ok Pcs"
+          onChange={(e) =>
+            handleMultiChange(index, 'ok_pcs', e.target.value)
+          }
+        />
+      </div>
 
-      <div className="col-span-2 flex gap-1">
+      <div className="col-span-1 flex gap-1">
         {index === 0 ? (
           <Button type="button" color="success" onClick={addRow}>
             +

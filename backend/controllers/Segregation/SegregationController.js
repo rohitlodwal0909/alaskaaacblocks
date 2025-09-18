@@ -1,14 +1,6 @@
 const { createLogEntry } = require("../../helper/createLogEntry");
 const db = require("../../models");
-const {
-  Batching,
-  Rising,
-  Cutting,
-  Autoclave,
-  Segregation,
-  AuthModel,
-  FinishGood
-} = db;
+const { Segregation, AuthModel, FinishGood } = db;
 const { Op, fn, col, literal, where } = require("sequelize");
 // CREATE Segregation entry
 
@@ -17,6 +9,7 @@ exports.createSegregation = async (req, res) => {
     const segregationEntry = await Segregation.create({
       user_id: req.body.user_id,
       size: req.body.size,
+      receive_blocks: req.body.receive_blocks,
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
       plate_no: req.body.plate_no,
@@ -91,7 +84,23 @@ exports.getAutoclaveData = async (req, res) => {
       order: [[literal("date"), "DESC"]]
     });
 
-    res.json(data);
+    const result = [];
+    for (const g of data) {
+      // Access the alias you gave: g.get('Date')
+      const date = g.get("Date");
+      const data1 = await Segregation.findAll({
+        where: where(fn("DATE", col("date")), date)
+      });
+
+      result.push({
+        date,
+        total_records: g.get("total_records"),
+        sample_id: g.get("sample_id"),
+        segrication_info: data1
+      });
+    }
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -122,6 +131,7 @@ exports.updateSegregation = async (req, res) => {
     await segregation.update({
       mould_no: req.body.mould_no,
       size: req.body.size,
+      receive_blocks: req.body.receive_blocks,
       no_of_broken_pcs: req.body.no_of_broken_pcs,
       no_of_ok_pcs: req.body.no_of_ok_pcs,
       remark: req.body.remark,

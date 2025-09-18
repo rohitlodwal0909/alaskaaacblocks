@@ -14,7 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       size: {
         type: DataTypes.JSON
       },
+      receive_blocks: {
+        type: DataTypes.JSON
+      },
       no_of_broken_pcs: {
+        type: DataTypes.JSON
+      },
+      no_of_receive_pcs: {
         type: DataTypes.JSON
       },
       no_of_ok_pcs: {

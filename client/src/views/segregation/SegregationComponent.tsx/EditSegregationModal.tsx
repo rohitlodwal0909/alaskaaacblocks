@@ -36,6 +36,7 @@ const EditSegregationModal = ({ show, setShowmodal, autoclave }) => {
   const [errors, setErrors] = useState<any>({});
 
 
+
 useEffect(() => {
   const entry =   autoclave || {};
 
@@ -43,6 +44,12 @@ useEffect(() => {
     ? entry.size
     : typeof entry.size === "string" && entry.size.startsWith("[")
     ? JSON.parse(entry.size)
+    : [];
+
+     const recieveblock = Array.isArray(entry.receive_blocks)
+    ? entry.receive_blocks
+    : typeof entry.receive_blocks === "string" && entry.receive_blocks.startsWith("[")
+    ? JSON.parse(entry.receive_blocks)
     : [];
 
   const okPcs = Array.isArray(entry.no_of_ok_pcs)
@@ -61,18 +68,21 @@ useEffect(() => {
     : typeof entry.plate_no === "string" && entry.plate_no.startsWith("[")
     ? JSON.parse(entry.plate_no)
     : [];
+
   const entries = sizes.map((size, index) => ({
     size: size || '',
+    receive_blocks: recieveblock[index] || '',
     no_of_ok_pcs: okPcs[index] || '',
     no_of_broken_pcs: brokenPcs[index] || '',
     plate_no:plateno[index] || '',
   }));
 
+
   setFormData({
     id: entry?.id || '',
     mould_no: entry?.mould_no || '',
     operator_name: entry?.operator_name || '',
-    entries: entries.length ? entries : [{ size: '', no_of_ok_pcs: '', no_of_broken_pcs: '',plate_no:'' }],
+    entries: entries.length ? entries : [{ size: '', no_of_ok_pcs: '',receive_blocks:"", no_of_broken_pcs: '',plate_no:'' }],
     remark: entry?.remark || '',
   });
 }, [autoclave]);
@@ -86,9 +96,10 @@ useEffect(() => {
   const addEntryRow = () => {
     setFormData((prev) => ({
       ...prev,
-      entries: [...prev.entries, { size: '', no_of_ok_pcs: '', no_of_broken_pcs: '',plate_no:'' }],
+      entries: [...prev.entries, { size: '',receive_blocks:"", no_of_ok_pcs: '', no_of_broken_pcs: '',plate_no:'' }],
     }));
   };
+
 
   const removeEntryRow = (index) => {
     const updatedEntries = [...formData.entries];
@@ -104,7 +115,7 @@ useEffect(() => {
   const validateForm = () => {
     const newErrors: any = {};
     formData.entries.forEach((entry, index) => {
-      if (!entry.size || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs|| !entry.plate_no) {
+      if (!entry.size || !entry.receive_blocks || !entry.no_of_broken_pcs || !entry.no_of_ok_pcs|| !entry.plate_no) {
         newErrors[`entry_${index}`] = 'All fields in this row are required';
       }
     });
@@ -122,6 +133,7 @@ useEffect(() => {
         ...formData,
      
           size: formData.entries.map((row) => row.size),
+          receive_blocks: formData.entries.map((row) => row.receive_blocks),
        no_of_broken_pcs: formData.entries.map((row) => row.no_of_broken_pcs),
       no_of_ok_pcs: formData.entries.map((row) => row.no_of_ok_pcs),
       plate_no: formData.entries.map((row) => row.plate_no),
@@ -161,7 +173,7 @@ useEffect(() => {
                   {formData.entries.map((entry, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-10 gap-3 items-end  p-2 "
+                      className="grid grid-cols-12 gap-3 items-end  p-2 "
                     >
                       <div className="col-span-3">
                         <Label value={`Size `} />
@@ -179,6 +191,21 @@ useEffect(() => {
                         </select>
                       </div>
       
+       <div className="col-span-2">
+                        <Label value={`Recieve Blocks`} />
+                        <TextInput
+                          type="number"
+                          value={entry.receive_blocks}
+                     
+                    className="form-rounded-md"
+      
+                          onChange={(e) =>
+                            handleEntryChange(index, "receive_blocks", e.target.value)
+                          }
+                          placeholder="Enter Recieve Blocks"
+                        />
+                      </div>
+
                       <div className="col-span-2">
                         <Label value={`OK Pcs`} />
                         <TextInput

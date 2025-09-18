@@ -30,6 +30,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
     entries: [
       {
         size: "",
+        receive_blocks: "",
         no_of_broken_pcs: "",
         no_of_ok_pcs: "",
         plate_no:'',
@@ -68,7 +69,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
   const addEntryRow = () => {
     setFormData((prev) => ({
       ...prev,
-      entries: [...prev.entries, { size: "", no_of_broken_pcs: "", no_of_ok_pcs: "" , plate_no:'',}],
+      entries: [...prev.entries, { size: "", receive_blocks:"", no_of_broken_pcs: "", no_of_ok_pcs: "" , plate_no:'',}],
     }));
   };
 
@@ -122,7 +123,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
         operator_name:"",
         user_id: logindata?.admin?.id,
         datetime:'',
-        entries: [{ size: "", no_of_broken_pcs: "", no_of_ok_pcs: "",plate_no:"" }],
+        entries: [{ size: "", receive_blocks:"", no_of_broken_pcs: "", no_of_ok_pcs: "",plate_no:"" }],
         remark: "",
       });
 
@@ -173,11 +174,11 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
           {/* Mould No */}
          
           {/* Dynamic Entries */}
-          <div className="col-span-12 ">
+          <div className="col-span-12">
             {formData.entries.map((entry, index) => (
               <div
                 key={index}
-                className="grid grid-cols-10 gap-3 items-end  p-2 "
+                className="grid grid-cols-12 gap-3 items-end  p-2 "
               >
                 <div className="col-span-3">
                   <Label value={`Size `} />
@@ -196,13 +197,24 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
                 </div>
 
                 <div className="col-span-2">
+                  <Label value={`Recieve Blocks`} />
+                  <TextInput
+                    type="number"
+                    value={entry.receive_blocks}
+                    className="form-rounded-md"
+                    onChange={(e) =>
+                      handleEntryChange(index, "receive_blocks", e.target.value)
+                    }
+                    placeholder="Enter Recieve Blocks"
+                  />
+                </div>
+
+                <div className="col-span-2">
                   <Label value={`OK Pcs`} />
                   <TextInput
                     type="number"
                     value={entry.no_of_ok_pcs}
-               
-              className="form-rounded-md"
-
+                    className="form-rounded-md"
                     onChange={(e) =>
                       handleEntryChange(index, "no_of_ok_pcs", e.target.value)
                     }
@@ -223,7 +235,7 @@ const AddSegregationModal = ({ show, setShowmodal, logindata }) => {
                     placeholder="Enter Broken Pcs"
                   />
                 </div>
-  <div className="col-span-2">
+              <div className="col-span-2">
                   <Label value={`Plate No.`} />
                   <TextInput
                     type="number"

@@ -12,6 +12,8 @@ exports.createCutting = async (req, res) => {
       rising_id: req.body.rising_id,
       size: req.body.size,
       broken_pcs: req.body.broken_pcs,
+      middle_crack: req.body.middle_crack,
+      ok_pcs: req.body.ok_pcs,
       time: req.body.time,
       datetime: req.body.datetime,
       remark: req.body.remark
@@ -94,7 +96,31 @@ exports.getRisingDate = async (req, res) => {
       order: [[literal("rising_date"), "DESC"]]
     });
 
-    res.json(data);
+    const result = [];
+    for (const g of data) {
+      // Access the alias you gave: g.get('Date')
+      const date = g.get("Date");
+      const data1 = await Rising.findAll({
+        where: where(fn("DATE", col("rising_date")), date),
+        include: [
+          {
+            model: Cutting,
+            as: "cutting_info",
+            required: false,
+            where: { deleted_at: null }
+          }
+        ]
+      });
+
+      result.push({
+        date,
+        total_records: g.get("total_records"),
+        sample_id: g.get("sample_id"),
+        rising_info: data1
+      });
+    }
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -114,6 +140,8 @@ exports.updateCutting = async (req, res) => {
       operator_name: req.body.operator_name,
       size: req.body.size,
       broken_pcs: req.body.broken_pcs,
+      ok_pcs: req.body.ok_pcs,
+      middle_crack: req.body.middle_crack,
       time: req.body.time,
       remark: req.body.remark
     });

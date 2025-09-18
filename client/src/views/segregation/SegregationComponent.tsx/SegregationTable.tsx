@@ -103,7 +103,7 @@ const SegregationTable = () => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Operator Name", "Plate No." , "Ok Pcs", "Broken Pcs", "Size",  "Date", "Remark", "Action"].map((title) => (
+              {["Sr.No", "Operator Name", "Plate No.", "Size", "Recieve Blocks.", "Ok Pcs", "Broken Pcs",  "Date", "Remark", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -145,6 +145,22 @@ const SegregationTable = () => {
                         ? JSON.parse(seglist?.plate_no).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
                         : <div>{seglist?.plate_no} </div>}
                   </td>
+                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+
+                    {Array.isArray(seglist?.size)
+                      ? seglist?.size.join(", ")
+                      : typeof seglist?.size === "string" && seglist?.size.startsWith("[")
+                        ? JSON.parse(seglist?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.size} </div>}
+                  </td>
+                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+
+                    {Array.isArray(seglist?.receive_blocks)
+                      ? seglist?.receive_blocks.join(", ")
+                      : typeof seglist?.receive_blocks === "string" && seglist?.receive_blocks.startsWith("[")
+                        ? JSON.parse(seglist?.receive_blocks).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
+                        : <div>{seglist?.receive_blocks} </div>}
+                  </td>
 
 
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
@@ -170,14 +186,7 @@ const SegregationTable = () => {
                         ? JSON.parse(seglist?.no_of_broken_pcs).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
                         : <div>{seglist?.no_of_broken_pcs}</div>}
                   </td>
-                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
-
-                    {Array.isArray(seglist?.size)
-                      ? seglist?.size.join(", ")
-                      : typeof seglist?.size === "string" && seglist?.size.startsWith("[")
-                        ? JSON.parse(seglist?.size).map((val, idx) => <div key={idx}> {idx + 1}. {val}</div>)
-                        : <div>{seglist?.size} </div>}
-                  </td>
+                  
                   
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {seglist?.date || '-'}

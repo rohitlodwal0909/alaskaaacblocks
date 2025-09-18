@@ -79,7 +79,7 @@ const BatchingdateTable = ({ logindata }) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Batch Date", "Action"].map((title) => (
+              {["Sr.No", "Batch Date","Mould oil (liter)","Cement (kg)","Gypsum (kg)","Lime (kg)","Soluble Oil(liter)","Aluminium(Kg)","Dicromate(grm)","Hardner(liter)",  "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 text-left border-b px-4 text-gray-700 dark:text-gray-200"
@@ -105,6 +105,31 @@ const BatchingdateTable = ({ logindata }) => {
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     {item.batch_date ? formatDate(item.batch_date) : ""}
                   </td>
+                  <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_mould || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_cement || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_gypsum || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_lime || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_soluble || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_aluminium || "0"}
+                  </td>
+                    <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_dicromate || "0"}
+                  </td>
+                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.total_hardener || "0"}
+                  </td>
+
                   <td className="whitespace-nowrap py-3 px-4 text-gray-900 dark:text-gray-300">
                     <div className="flex justify-start gap-2">
                       <Tooltip content="View" placement="bottom">

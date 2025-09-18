@@ -6,7 +6,7 @@ import {
   ModalHeader,
   Label,
   TextInput,
-  Radio,   // 👈 Add kiya
+  Radio,
 } from "flowbite-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ import {
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const AddSecurityModal = ({ show, setShowmodal }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +34,7 @@ const AddSecurityModal = ({ show, setShowmodal }) => {
     in_time: "",
     out_time: "",
     signature: "",
+    date_time: "",
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -87,48 +89,70 @@ const AddSecurityModal = ({ show, setShowmodal }) => {
       <ModalHeader>Create Security Entry</ModalHeader>
       <ModalBody className="overflow-auto">
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
-         {fields.map(({ label, field, type = "text" }) => (
-  <div className="col-span-6" key={field}>
-    <Label value={label} />
-    <span className="text-red-700 ps-1">*</span>
+          {fields.map(({ label, field, type = "text" }) => (
+            <div className="col-span-6" key={field}>
+              <Label value={label} />
+              <span className="text-red-700 ps-1">*</span>
 
-    {type === "time" ? (
-      // ✅ Native Time Input (popup aayega)
-      
-     <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <TimePicker
-          value={formData[field] ? dayjs(formData[field], "HH:mm") : null}
-          onChange={(newValue) =>
-            handleChange(field, newValue ? newValue.format("HH:mm") : "")
-          }
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              error: !!errors[field],
-              helperText: errors[field],
-            },
-          }}
-        />
-      </LocalizationProvider>
-    ) : (
-      <TextInput
-        type={type}
-        value={formData[field]}
-        onChange={(e) => handleChange(field, e.target.value)}
-        placeholder={`Enter ${label.toLowerCase()}`}
-        className="form-rounded-md"
-        color={errors[field] ? "failure" : "gray"}
-      />
-    )}
+              {type === "time" ? (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    value={formData[field] ? dayjs(formData[field], "HH:mm") : null}
+                    onChange={(newValue) =>
+                      handleChange(field, newValue ? newValue.format("HH:mm") : "")
+                    }
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!errors[field],
+                        helperText: errors[field],
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              ) : (
+                <TextInput
+                  type={type}
+                  value={formData[field]}
+                  onChange={(e) => handleChange(field, e.target.value)}
+                  placeholder={`Enter ${label.toLowerCase()}`}
+                  className="form-rounded-md"
+                  color={errors[field] ? "failure" : "gray"}
+                />
+              )}
 
-    {errors[field] && (
-      <p className="text-red-500 text-xs">{errors[field]}</p>
-    )}
-  </div>
-))}
+              {errors[field] && (
+                <p className="text-red-500 text-xs">{errors[field]}</p>
+              )}
+            </div>
+          ))}
 
-
-
+          {/* ✅ Correct DateTime Picker */}
+          <div className="col-span-6">
+            <Label value="Date & Time" />
+            <span className="text-red-700 ps-1">*</span>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                value={formData.date_time ? dayjs(formData.date_time) : null}
+                onChange={(newValue) =>
+                  handleChange(
+                    "date_time",
+                    newValue ? newValue.format("YYYY-MM-DD HH:mm") : ""
+                  )
+                }
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.date_time,
+                    helperText: errors.date_time,
+                  },
+                }}
+              />
+            </LocalizationProvider>
+            {errors.date_time && (
+              <p className="text-red-500 text-xs">{errors.date_time}</p>
+            )}
+          </div>
 
           {/* Signature Radio */}
           <div className="col-span-6">

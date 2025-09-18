@@ -21,6 +21,50 @@ const SegregationTabledate = () => {
   const [addmodal, setAddmodal] = useState(false);
 
 
+const getSizeSummary = (SegragationInfo: any[]) => {
+  if (!Array.isArray(SegragationInfo) || SegragationInfo.length === 0) return [];
+
+  const sizeSummary: Record<
+    string,
+    { receiveBlocks: number; ok: number; middle: number; broken: number }
+  > = {};
+
+  SegragationInfo.forEach((item) => {
+    if (!item) return;
+
+    // Parse arrays safely (default to [])
+    const sizes = JSON.parse(item.size || "[]");
+    const okPcs = JSON.parse(item.no_of_ok_pcs || "[]").map(Number);
+    const receiveBlocks = JSON.parse(item.receive_blocks || "[]").map(Number);
+    const broken = JSON.parse(item.no_of_broken_pcs || "[]").map(Number);
+    const middle = JSON.parse(item.no_of_middle_crack_pcs || "[]").map(Number);
+
+    sizes.forEach((s: string, i: number) => {
+      if (!sizeSummary[s]) {
+        sizeSummary[s] = { receiveBlocks: 0, ok: 0, middle: 0, broken: 0 };
+      }
+
+      sizeSummary[s].ok += okPcs[i] || 0;
+      sizeSummary[s].receiveBlocks += receiveBlocks[i] || 0;
+      sizeSummary[s].middle += middle[i] || 0;
+      sizeSummary[s].broken += broken[i] || 0;
+    });
+  });
+
+  // return as array for easy mapping
+  return Object.entries(sizeSummary).map(([size, counts]) => ({
+    size,
+    ok: counts.ok,
+    middle: counts.middle,
+    broken: counts.broken,
+    receiveBlocks: counts.receiveBlocks,
+    percentage: counts.ok / counts.receiveBlocks * 100,
+    total: counts.ok + counts.middle + counts.broken, // total pcs
+  }));
+};
+
+
+
   useEffect(() => {
     dispatch(GetAutoclavedate());
   }, [dispatch]);
@@ -76,13 +120,12 @@ const SegregationTabledate = () => {
 
         
       </div>
-
       {/* 📊 Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {["Sr.No", "Date", "Action"].map((title) => (
+              {["Sr.No", "Date","Size","Total Receive Block","Total Broken Block","Total OK Block","Ratio Total Blocks %", "Action"].map((title) => (
                 <th
                   key={title}
                   className="text-base font-semibold py-3 px-4 text-left border-b text-gray-700 dark:text-gray-200"
@@ -108,10 +151,47 @@ const SegregationTabledate = () => {
                   </td>
 
                   {/* Date */}
-                  <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-                    {item.Date ? formatDate(item.Date) : "-"}
-                  </td>
+                   <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {item.date ? formatDate(item.date) : "-"}
+</td>
+                <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+  {getSizeSummary(item.segrication_info).map((s, i) => (
+    <div key={i}>
+      {s.size}
+    </div>
+  ))}
+</td>
+ <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+  {getSizeSummary(item.segrication_info).map((s, i) => (
+    <div key={i}>
+      {s.receiveBlocks}
+    </div>
+  ))}
+</td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+  {getSizeSummary(item.segrication_info).map((s, i) => (
+    <div key={i}>
+      {s.broken}
+    </div>
+  ))}
+</td>
+ <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+  {getSizeSummary(item.segrication_info).map((s, i) => (
+    <div key={i}>
+       {s.ok}
+    </div>
+  ))}
+</td>
 
+                  
+                  
+               
+                <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+  {getSizeSummary(item.segrication_info).map((s, i) => (
+    <div key={i}>
+       {s.percentage} {"%"}
+    </div>
+  ))}
+</td>
                   {/* Actions */}
                   <td className="py-3 px-4">
                     <div className="flex gap-2">

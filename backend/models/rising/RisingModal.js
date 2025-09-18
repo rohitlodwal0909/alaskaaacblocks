@@ -65,6 +65,11 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: "id",
       as: "cutting_info"
     });
+    Rising.hasMany(models.Cutting, {
+      foreignKey: "rising_id",
+      targetKey: "id",
+      as: "cutting_info_many"
+    });
   };
 
   return Rising;

@@ -1,23 +1,16 @@
 const db = require("../../models");
 const { Security } = db;
 const { Op, fn, col, literal, where } = require("sequelize");
+const dayjs = require("dayjs");
 
 // Create
 
 exports.createSecurity = async (req, res) => {
   try {
-    const today = new Date();
-    const formattedDate = today.toLocaleString("en-GB", {
-      timeZone: "Asia/Kolkata",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    });
-
-    const finalDate = formattedDate.replace(" at", ",");
+    const today = req.body.date_time;
+    const finalDate = dayjs(today)
+      .locale("en") // ensure English month short name
+      .format("DD MMM YYYY, hh:mm a");
 
     const log = await Security.create({
       ...req.body,

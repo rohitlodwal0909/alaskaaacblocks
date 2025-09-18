@@ -148,8 +148,15 @@ exports.getBatchingDatewise = async (req, res) => {
     const batchings = await Batching.findAll({
       attributes: [
         [fn("DATE", col("batch_date")), "batch_date"],
-        [fn("COUNT", col("id")), "total_records"],
-        [fn("MIN", col("id")), "sample_id"] // 👈 ek id return hogi
+        [fn("SUM", col("mould_oil_qty")), "total_mould"],
+        [fn("SUM", col("cement_qty")), "total_cement"],
+        [fn("SUM", col("gypsum_qty")), "total_gypsum"],
+        [fn("SUM", col("lime_qty")), "total_lime"],
+        [fn("SUM", col("soluble_oil_qty")), "total_soluble"],
+        [fn("SUM", col("aluminium_qty")), "total_aluminium"],
+        [fn("SUM", col("dicromate")), "total_dicromate"],
+        [fn("SUM", col("hardener_qty")), "total_hardener"],
+        [fn("MIN", col("id")), "sample_id"]
       ],
       where: { deleted_at: null },
       group: [fn("DATE", col("batch_date"))],

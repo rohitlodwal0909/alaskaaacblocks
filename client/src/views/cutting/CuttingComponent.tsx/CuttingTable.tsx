@@ -30,7 +30,7 @@ const CuttingTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch cutting data
-  useEffect(() => {
+  useEffect(() => { 
     if (id) {
       dispatch(GetCutting(id));
     }
@@ -109,8 +109,10 @@ const CuttingTable = () => {
                   "Sr.No",
                   "Mould No",
                   "Operator Name",
-                  "Broken Pcs",
                   "Size",
+                  "Broken Pcs",
+                  "Middle Crack Pcs",
+                  "Ok Pcs",
                   "Date & Time",
                   "Time",
                   "Remark",
@@ -149,7 +151,19 @@ const CuttingTable = () => {
                           c.toUpperCase()
                         )}
                       </td>
-
+ {/* Size */}
+                      <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                        {Array.isArray(cutting?.size)
+                          ? cutting?.size.join(", ")
+                          : typeof cutting?.size === "string" &&
+                            cutting?.size.startsWith("[")
+                          ? JSON.parse(cutting?.size).map((val: any, idx: number) => (
+                              <div key={idx}>
+                                {idx + 1}. {val}
+                              </div>
+                            ))
+                          : <div>{cutting?.size || "-"}</div>}
+                      </td>
                       {/* Broken Pcs */}
                       <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
                         {Array.isArray(cutting?.broken_pcs)
@@ -165,20 +179,37 @@ const CuttingTable = () => {
                             ))
                           : <div>{cutting?.broken_pcs || "-"}</div>}
                       </td>
-
-                      {/* Size */}
                       <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-                        {Array.isArray(cutting?.size)
-                          ? cutting?.size.join(", ")
-                          : typeof cutting?.size === "string" &&
-                            cutting?.size.startsWith("[")
-                          ? JSON.parse(cutting?.size).map((val: any, idx: number) => (
+                        {Array.isArray(cutting?.middle_crack)
+                          ? cutting?.middle_crack.map((val, idx) => (
+                              <div key={idx}>{val}</div>
+                            ))
+                          : typeof cutting?.middle_crack === "string" &&
+                            cutting?.middle_crack.startsWith("[")
+                          ? JSON.parse(cutting?.middle_crack).map((val: any, idx: number) => (
                               <div key={idx}>
                                 {idx + 1}. {val}
                               </div>
                             ))
-                          : <div>{cutting?.size || "-"}</div>}
+                          : <div>{cutting?.middle_crack || "-"}</div>}
                       </td>
+
+                       <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                        {Array.isArray(cutting?.ok_pcs)
+                          ? cutting?.ok_pcs.map((val, idx) => (
+                              <div key={idx}>{val}</div>
+                            ))
+                          : typeof cutting?.ok_pcs === "string" &&
+                            cutting?.ok_pcs.startsWith("[")
+                          ? JSON.parse(cutting?.ok_pcs).map((val: any, idx: number) => (
+                              <div key={idx}>
+                                {idx + 1}. {val}
+                              </div>
+                            ))
+                          : <div>{cutting?.ok_pcs || "-"}</div>}
+                      </td> 
+
+                     
 
                       {/* Date & Time */}
                       <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
