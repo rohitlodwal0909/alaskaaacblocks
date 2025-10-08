@@ -38,7 +38,7 @@ const formatTime = (time: string) => {
 
 
   return (
-    <div className="max-w-7xl mx-auto p-4 border border-black text-sm font-sans bg-white">
+    <div className="max-w-8xl mx-auto p-4 border border-black text-sm font-sans bg-white">
       {/* Header */}
       <div className="flex justify-between items-start border-b border-black pb-1 mb-2">
         <h2 className="font-bold uppercase text-base">Alaska Build Block Company</h2>
@@ -66,8 +66,14 @@ const formatTime = (time: string) => {
             <th className="border border-black px-2 py-1">Door Closing</th>
             <th className="border border-black px-2 py-1">Vacuum On</th>
             <th className="border border-black px-2 py-1">Vacuum Off</th>
-            <th className="border border-black px-2 py-1">Rising Pressure (Time)</th>
-            <th className="border border-black px-2 py-1">Rising Pressure (Value)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 1 (Time)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 1(Value)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 2 (Time)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 2 (Value)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 3 (Time)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 3 (Value)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 4 (Time)</th>
+            <th className="border border-black px-2 py-1">Rising Pressure 4 (Value)</th>
             <th className="border border-black px-2 py-1">Holding Pressure (Time)</th>
             <th className="border border-black px-2 py-1">Holding Pressure (Value)</th>
             <th className="border border-black px-2 py-1">Release Pressure (Time)</th>
@@ -83,8 +89,14 @@ const formatTime = (time: string) => {
       <td className="border px-2 py-1 text-center">{formatTime(r.door_closing_time)}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.vacuum_on_time)}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.vacuum_off_time)}</td>
-      <td className="border px-2 py-1 text-center">{formatTime(r.rising_pressure_time)}</td>
-      <td className="border px-2 py-1 text-center">{r.rising_pressure_value || "-"}</td>
+      <td className="border px-2 py-1 text-center">{formatTime(r.rising_pressure_time1)}</td>
+      <td className="border px-2 py-1 text-center">{r.rising_pressure_value1 || "-"}</td>
+      <td className="border px-2 py-1 text-center">{formatTime(r.rising_pressure_time2)}</td>
+      <td className="border px-2 py-1 text-center">{r.rising_pressure_value2 || "-"}</td>
+      <td className="border px-2 py-1 text-center">{formatTime(r.rising_pressure_time3)}</td>
+      <td className="border px-2 py-1 text-center">{r.rising_pressure_value3 || "-"}</td>
+      <td className="border px-2 py-1 text-center">{formatTime(r.rising_pressure_time4)}</td>
+      <td className="border px-2 py-1 text-center">{r.rising_pressure_value4 || "-"}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.holding_pressure_time)}</td>
       <td className="border px-2 py-1 text-center">{r.holding_pressure_value || "-"}</td>
       <td className="border px-2 py-1 text-center">{formatTime(r.release_pressure_time)}</td>

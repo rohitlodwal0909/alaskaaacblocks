@@ -74,8 +74,14 @@ const {id} = useParams();
                   door_closing_time: "",
                   vacuum_on_time: "",
                   vacuum_off_time: "",
-                  rising_pressure_time: "",
-                  rising_pressure_value: "",
+                  rising_pressure_time1: "",
+                  rising_pressure_value1: "",
+                  rising_pressure_time2: "",
+                  rising_pressure_value2: "",
+                  rising_pressure_time3: "",
+                  rising_pressure_value3: "",
+                  rising_pressure_time4: "",
+                  rising_pressure_value4: "",
                   holding_pressure_time: "",
                   holding_pressure_value: "",
                   release_pressure_time: "",
@@ -204,20 +210,67 @@ const handleSubmit = async (e: any) => {
                   )}
                 </div>
                 <div>
-                  <Label>Rising Pressure</Label>
+                  <Label>Rising Pressure 1</Label>
                   <div className="flex flex-col gap-1">
-                    {renderTime(row.rising_pressure_time, (val) =>
-                      handleRecordChange(idx, "rising_pressure_time", val)
+                    {renderTime(row.rising_pressure_time1, (val) =>
+                      handleRecordChange(idx, "rising_pressure_time1", val)
                     )}
                     <TextInput
                       type="number"
-                      value={row.rising_pressure_value}
+                      value={row.rising_pressure_value1}
                       onChange={(e) =>
-                        handleRecordChange(idx, "rising_pressure_value", e.target.value)
+                        handleRecordChange(idx, "rising_pressure_value1", e.target.value)
                       }
                     />
                   </div>
                 </div>
+                 <div>
+                                  <Label>Rising Pressure 2</Label>
+                                  <div className="flex flex-col gap-1">
+                                    {renderTime(row.rising_pressure_time2, (val) =>
+                                      handleRecordChange(idx, "rising_pressure_time2", val)
+                                    )}
+                                    <TextInput
+                                      type="number"
+                                      placeholder="kg/cm²"
+                                      value={row.rising_pressure_value2}
+                                      onChange={(e) =>
+                                        handleRecordChange(idx, "rising_pressure_value2", e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                 <div>
+                                  <Label>Rising Pressure 3</Label>
+                                  <div className="flex flex-col gap-1">
+                                    {renderTime(row.rising_pressure_time3, (val) =>
+                                      handleRecordChange(idx, "rising_pressure_time3", val)
+                                    )}
+                                    <TextInput
+                                      type="number"
+                                      placeholder="kg/cm²"
+                                      value={row.rising_pressure_value3}
+                                      onChange={(e) =>
+                                        handleRecordChange(idx, "rising_pressure_value3", e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div> <div>
+                                  <Label>Rising Pressure 4</Label>
+                                  <div className="flex flex-col gap-1">
+                                    {renderTime(row.rising_pressure_time4, (val) =>
+                                      handleRecordChange(idx, "rising_pressure_time4", val)
+                                    )}
+                                    <TextInput
+                                      type="number"
+                                      placeholder="kg/cm²"
+                                      value={row.rising_pressure_value4}
+                                      onChange={(e) =>
+                                        handleRecordChange(idx, "rising_pressure_value4", e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
                 <div>
                   <Label>Holding Pressure</Label>
                   <div className="flex flex-col gap-1">

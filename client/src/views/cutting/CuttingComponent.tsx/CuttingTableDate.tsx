@@ -44,19 +44,15 @@ const CuttingTableDate = () => {
 };
 
 
-const getSizeSummary = (risingInfo: any[]) => {
-  if (!risingInfo || risingInfo.length === 0) return [];
+const getSizeSummary = (risingInfo: any) => {
+  if (!Array.isArray(risingInfo) || risingInfo.length === 0) return [];
 
-  const sizeSummary: Record<
-    string,
-    { ok: number; middle: number; broken: number }
-  > = {};
+  const sizeSummary: Record<string, { ok: number; middle: number; broken: number }> = {};
 
   risingInfo.forEach((r) => {
     const c = r.cutting_info;
     if (!c) return;
 
-    // ✅ Use safeParse
     const sizes = safeParse(c.size);
     const okPcs = safeParse(c.ok_pcs).map(Number);
     const middle = safeParse(c.middle_crack).map(Number);
@@ -150,26 +146,26 @@ const getSizeSummary = (risingInfo: any[]) => {
                     {item.date ? formatDate(item.date) : "-"}
                   </td>
                    <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-                  {getSizeSummary(item.rising_info).map((s, i) => (
-                      <div key={i}>
-                        {s.size}
-                      </div>
-                    ))}                  </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-{getSizeSummary(item.rising_info).map((s, i) => (
-                      <div key={i}>
-                        {s.broken}
-                      </div>
-                    ))}                    </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-{getSizeSummary(item.rising_info).map((s, i) => (
-                      <div key={i}>
-                       {s.middle}
-                      </div>
-                    ))}                    </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
-{getSizeSummary(item.rising_info).map((s, i) => (
-                      <div key={i}>
-                       {s.ok}
-                      </div>
-                    ))}                    </td>
+                  {getSizeSummary(item?.rising_info || []).map((s, i) => (
+                  <div key={i}>{s.size}</div>
+                ))}               
+                    
+                    </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {getSizeSummary(item?.rising_info || []).map((s, i) => (
+                        <div key={i}>{s.broken}</div>
+                      ))}                 
+                                        
+                                        </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                    {getSizeSummary(item?.rising_info || []).map((s, i) => (
+                        <div key={i}>{s.middle}</div>
+                      ))}                  
+                                        
+                                        </td> <td className="py-3 px-4 text-gray-900 dark:text-gray-300">
+                      {getSizeSummary(item?.rising_info || []).map((s, i) => (
+                        <div key={i}>{s.ok}</div>
+                      ))}                  
+                    
+                     </td>
 
                   {/* Actions */}
                   <td className="py-3 px-4">

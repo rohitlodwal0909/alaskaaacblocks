@@ -99,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       mould_oil_qty: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false
       },
       created_at: {

@@ -59,6 +59,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       newErrors[field] = `${field} is required`;
     }
   });
+  console.log(newErrors);
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
@@ -66,6 +67,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+        // console.log('ddd')
    
     if (!validateForm()) return;
         console.log('ddd')
@@ -182,27 +184,27 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   {[
     { id: 'entry_time', label: 'Discharge Time', type: 'time', placeholder: 'Select Discharge Time' },
 
-    { id: 'mould_oil_qty', label: 'Mould Oil Qty (ml)', type: 'number', placeholder: 'Enter mould oil (ml)' },
-    { id: 'slurry_waste', label: 'Slurry Waste (ltr)', type: 'number', placeholder: 'Enter waste slurry (ltr)' },
-    { id: 'slurry_fresh', label: 'Slurry Fresh (ltr)', type: 'number', placeholder: 'Enter fresh slurry (ltr)' },
-    { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number', placeholder: 'Enter cement (kg)' },
-    { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number', placeholder: 'Enter lime (kg)' },
-    { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number', placeholder: 'Enter gypsum (kg)' },
-    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty (ltr)', type: 'number', placeholder: 'Enter soluble oil (ltr)' },
-    { id: 'aluminium_qty', label: 'Aluminium Powder (gm)', type: 'number', placeholder: 'Enter aluminium powder (gm)' },
-    { id: 'density', label: 'Density (kg/m3)', type: 'number', placeholder: 'Enter final density (kg/m³)' },
-    { id: 'flow_value', label: 'Flow Value', type: 'number', placeholder: 'Enter flow value' },
-    { id: 'temperature', label: 'Temperature (°C)', type: 'number', placeholder: 'Enter temperature (°C)' },
-    { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', placeholder: 'Enter Water Consume (ltr)' },
-    { id: 'dicromate', label: 'Dicromate (gm)', type: 'number', placeholder: 'Enter Dicromate (gm)' },
-    // { id: 'ph_booster', label: 'Ph Booster ', type: 'number', placeholder: 'Enter Ph Booster  ' },
-    // { id: 'nts_clate', label: 'NTS Clate ', type: 'number', placeholder: 'Enter NTS Clate' },
-    { id: 'hardener_qty', label: 'Hardner Qty (ltr)', type: 'number', placeholder: 'Enter hardner qty (ltr)' },
+    { id: 'mould_oil_qty', label: 'Mould Oil Qty (ml)', type: 'number', step: "0.01", placeholder: 'Enter mould oil (ml)' },
+    { id: 'slurry_waste', label: 'Slurry Waste (ltr)', type: 'number', step: "0.01", placeholder: 'Enter waste slurry (ltr)' },
+    { id: 'slurry_fresh', label: 'Slurry Fresh (ltr)', type: 'number', step: "0.01", placeholder: 'Enter fresh slurry (ltr)' },
+    { id: 'cement_qty', label: 'Cement Qty (kg)', type: 'number', step: "0.01", placeholder: 'Enter cement (kg)' },
+    { id: 'lime_qty', label: 'Lime Qty (kg)', type: 'number', step: "0.01", placeholder: 'Enter lime (kg)' },
+    { id: 'gypsum_qty', label: 'Gypsum Qty (kg)', type: 'number', step: "0.01", placeholder: 'Enter gypsum (kg)' },
+    { id: 'soluble_oil_qty', label: 'Soluble Oil Qty (ltr)', type: 'number', step: "0.01", placeholder: 'Enter soluble oil (ltr)' },
+    { id: 'aluminium_qty', label: 'Aluminium Powder (gm)', type: 'number', step: "0.01", placeholder: 'Enter aluminium powder (gm)' },
+    { id: 'density', label: 'Density (kg/m3)', type: 'number', step: "0.01", placeholder: 'Enter final density (kg/m³)' },
+    { id: 'flow_value', label: 'Flow Value', type: 'number', step: "0.01", placeholder: 'Enter flow value' },
+    { id: 'temperature', label: 'Temperature (°C)', type: 'number', step: "0.01", placeholder: 'Enter temperature (°C)' },
+    { id: 'water_consume', label: 'Water Consume (ltr)', type: 'number', step: "0.01", placeholder: 'Enter Water Consume (ltr)' },
+    { id: 'dicromate', label: 'Dicromate (gm)', type: 'number', step: "0.01", placeholder: 'Enter Dicromate (gm)' },
+    // { id: 'ph_booster', label: 'Ph Booster ', type: 'number', step: "0.01", placeholder: 'Enter Ph Booster  ' },
+    // { id: 'nts_clate', label: 'NTS Clate ', type: 'number', step: "0.01", placeholder: 'Enter NTS Clate' },
+    { id: 'hardener_qty', label: 'Hardner Qty (ltr)', type: 'number', step: "0.01", placeholder: 'Enter hardner qty (ltr)' },
     { id: 'mixing_time', label: 'mixing Time', type: 'time', placeholder: 'Select mixing time' },
     { id: 'datetime', label: 'Date & Time', type: 'datetime', placeholder: 'Select Date time' },
 
     { id: 'remark', label: 'Remark', type: 'text', placeholder: 'Enter remarks or QC notes' },
-  ].map(({ id, label, type = 'text', placeholder }) => {
+  ].map(({ id, label, type = 'text', step = "any", placeholder }) => {
   const isTextarea = id === 'remark';
   const isHalfWidth = id === 'remark' ;
   const columnSpan = isHalfWidth ? 'col-span-12' : 'col-span-4';
@@ -283,6 +285,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     <TextInput
       id={id}
       type={type}
+      step={step}
+
       value={formData[id]}
       placeholder={placeholder}
       onChange={(e) => handleChange(id, e.target.value)}
@@ -290,7 +294,7 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       onKeyDown={(e) => {
     if (
       type === "number" && 
-      ["e", "E", "+", "-", "."].includes(e.key)
+      ["e", "E", "+", "-"].includes(e.key)
     ) {
       e.preventDefault();
     }
