@@ -32,6 +32,7 @@ const {id} = useParams();
 
   const [formData, setFormData] = useState<any>({
     id: "",
+    datetime:'',
     operator_name: "",
     records: [],
   });
@@ -51,6 +52,7 @@ const {id} = useParams();
       setFormData({
         id: autoclave.id || "",
         operator_name: autoclave.operator_name || "",
+        datetime:autoclave.datetime || "",
         records:
           autoclave.records?.length > 0
             ? autoclave.records.map((r) => ({
@@ -112,6 +114,7 @@ const handleSubmit = async (e: any) => {
       autoclaveData: {
         id: formData.id,
         operator_name: formData.operator_name,
+        datetime: formData.datetime,
       },
       records: formData.records,
     };
@@ -160,8 +163,23 @@ const handleSubmit = async (e: any) => {
                 value={formData.operator_name}
                 onChange={(e) => handleChange("operator_name", e.target.value)}
               />
-            </div>
-          </div>
+                                  </div>
+
+           
+            <div>
+              
+                        <Label>Date & Time</Label>
+                        <input
+                          type="datetime-local"
+                          id="datetime"
+                          value={formData.datetime}
+                          onChange={(e) => handleChange("datetime", e.target.value)}
+                          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+          
+                      
+                    </div>
+                    </div>
 
           {/* --- Records Section --- */}
           {formData.records.map((row: any, idx: number) => (

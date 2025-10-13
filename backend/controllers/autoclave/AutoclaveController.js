@@ -115,9 +115,6 @@ exports.updateAutoclave = async (req, res) => {
     const { id } = req.params;
     const { autoclaveData, records } = req.body;
 
-    console.log(autoclaveData);
-    console.log(records);
-
     // 🔹 Find main Autoclave
     const autoclave = await Autoclave.findByPk(id, {
       include: [{ model: AutoclaveRecord, as: "records" }]
