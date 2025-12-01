@@ -193,6 +193,30 @@ exports.getBatching = async (req, res) => {
   }
 };
 
+exports.getAutofillRecord = async (req, res) => {
+  try {
+    const { operator } = req.query;
+
+    if (!operator) {
+      return res.status(400).json({ message: "Operator name is required" });
+    }
+
+    // Get latest record by operator_name
+    const lastRecord = await Batching.findOne({
+      where: { operator_name: operator },
+      order: [["id", "DESC"]] // last inserted
+    });
+
+    if (!lastRecord) {
+      return res.status(200).json(null);
+    }
+
+    return res.status(200).json(lastRecord);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 exports.getAllBatching = async (req, res) => {
   try {
     const batchings = await Batching.findAll({

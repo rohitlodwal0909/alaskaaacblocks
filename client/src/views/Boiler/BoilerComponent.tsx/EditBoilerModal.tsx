@@ -1,5 +1,3 @@
-
-
 import {
   Button,
   Modal,
@@ -17,7 +15,6 @@ import {   GetBoiler, updateBoiler } from "src/features/Boiler/BoilerSlice";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import { getDateTimeFromTimeString } from "src/utils/getDateTimeFromTimeString";
 import dayjs from "dayjs";
 
 const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
@@ -25,16 +22,16 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
 
   const fieldSetFields = [
     { id: "time", label: "Time", type: "text" },
-    { id: "feed_water_temp", label: "Feed Water Temp", type: "number" },
-    { id: "feed_water_tds", label: "Feed Water TDS", type: "number" },
-    { id: "water_meter_reading", label: "Water Meter Reading", type: "number" },
+    // { id: "feed_water_temp", label: "Feed Water Temp", type: "number" },
+    // { id: "feed_water_tds", label: "Feed Water TDS", type: "number" },
+    // { id: "water_meter_reading", label: "Water Meter Reading", type: "number" },
     { id: "steam_pressure", label: "Steam Pressure", type: "number" },
     { id: "stack_temp", label: "Stack Temp", type: "number" },
     { id: "inlet_temp", label: "Inlet Temp", type: "number" },
     { id: "fd_fan_reading", label: "FD Fan Reading", type: "number" },
    { id: "ph_booster", label: "PH Booster chemical (ltr)", type: "number" },
     { id: "antiscalnt_chemical", label: "Antiscalant Chemical (ltr)", type: "number" },
-    { id: "energy_meter_reading", label: "Energy Meter Reading", type: "number" },
+    // { id: "energy_meter_reading", label: "Energy Meter Reading", type: "number" },
   ];
 
   const initialData = {
@@ -79,7 +76,6 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
 
     for (let i = 0; i < maxLength; i++) {
       const reading: Record<string, any> = {};
-
       readingFieldKeys.forEach((key) => {
         reading[key] = parsedFields[key]?.[i] ?? "";
       });
@@ -131,6 +127,8 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
     const updated = formData.readings.filter((_, i) => i !== index);
     setFormData((prev) => ({ ...prev, readings: updated }));
   };
+
+
 
   const requiredFields = ["date", "shift", "done_by", "total_wood_consumption","time","blow_ph",'blow_tds'];
 
@@ -300,41 +298,41 @@ const EditBoilerModal = ({ show, setShowmodal, BoilerData , logindata  }) => {
         <div key={id}>
           <Label htmlFor={`${id}-${index}`} value={label} />
           <span className="text-red-700 ps-1">*</span>
+          
           {id == "time" ? (
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                value={reading[id] ? getDateTimeFromTimeString(reading[id]) : null}
-onChange={(value) => {
-  // Convert picked date-time back to time string (HH:mm:ss)
-  const formatted = value ? dayjs(value).format('HH:mm:ss') : '';
-  handleReadingChange(index, id, formatted);
-}}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    sx: {
-                      "& .MuiInputBase-root": {
-                        fontSize: "14px",
-                        backgroundColor: "#f1f5f9",
-                        borderRadius: "6px",
-                        height: "38px",
-                      },
-                       '& .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root': {
-            height: '42px',
-            fontSize: '14px',
-           
-            backgroundColor: '#f1f5f9',
-            borderRadius: '6px',
+           <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <TimePicker
+    value={
+      reading[id]
+        ? dayjs(reading[id], "HH:mm:ss")     // FIXED
+        : null
+    }
+    onChange={(value) => {
+      const formatted = value
+        ? dayjs(value).format("HH:mm:ss")   // FIXED
+        : "";
+      handleReadingChange(index, id, formatted);
+    }}
+    slotProps={{
+      textField: {
+        fullWidth: true,
+        sx: {
+          "& .MuiInputBase-root": {
+            fontSize: "14px",
+            backgroundColor: "#f1f5f9",
+            borderRadius: "6px",
+            height: "38px",
           },
-                      "& input": { padding: "9.5px 0" },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#cbd5e1",
-                      },
-                    },
-                  },
-                }}
-              />
-            </LocalizationProvider>
+          "& input": { padding: "9.5px 0" },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#cbd5e1",
+          },
+        },
+      },
+    }}
+  />
+</LocalizationProvider>
+
           ) : (
             <TextInput
               id={`${id}-${index}`}

@@ -243,12 +243,12 @@ const parseField = (field) => {
         />
       </div>
       <div className="col-span-3">
-        <Label value={`Middle crack Pcs ${index + 1}`} />
+        <Label value={`No of scrap pcs ${index + 1}`} />
         <TextInput
           type="number"
           value={formData.middle_crack[index]}
           className="form-rounded-md"
-          placeholder="Enter Middle crack Pcs"
+          placeholder="Enter scrap pcs"
           onChange={(e) =>
             handleMultiChange(index, 'middle_crack', e.target.value)
           }

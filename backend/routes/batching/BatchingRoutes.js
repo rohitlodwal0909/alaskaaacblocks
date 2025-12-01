@@ -9,6 +9,8 @@ router.get(
   BatchingController.getBatchingDatewise
 );
 router.get("/api/get-all-batching/:id", BatchingController.getBatching);
+router.get("/api/get-autofill-record", BatchingController.getAutofillRecord);
+
 router.put("/api/update-batching/:id", BatchingController.updateBatching);
 router.delete("/api/delete-batching/:id", BatchingController.deleteBatching);
 

@@ -21,16 +21,16 @@ const AddBoilerModal = ({ show, setShowmodal, logindata }) => {
 
   const fieldSetFields = [
     { id: "time", label: "Time", type: "text" },
-    { id: "feed_water_temp", label: "Feed Water Temp", type: "number" },
-    { id: "feed_water_tds", label: "Feed Water TDS", type: "number" },
-    { id: "water_meter_reading", label: "Water Meter Reading", type: "number" },
+    // { id: "feed_water_temp", label: "Feed Water Temp", type: "number" },
+    // { id: "feed_water_tds", label: "Feed Water TDS", type: "number" },
+    // { id: "water_meter_reading", label: "Water Meter Reading", type: "number" },
     { id: "steam_pressure", label: "Steam Pressure", type: "number" },
     { id: "stack_temp", label: "Stack Temp", type: "number" },
     { id: "inlet_temp", label: "Inlet Temp", type: "number" },
     { id: "fd_fan_reading", label: "FD Fan Reading", type: "number" },
     { id: "ph_booster", label: "PH Booster chemical (ltr)", type: "number" },
     { id: "antiscalnt_chemical", label: "Antiscalant Chemical (ltr) ", type: "number" },
-    { id: "energy_meter_reading", label: "Energy Meter Reading", type: "number" },
+    // { id: "energy_meter_reading", label: "Energy Meter Reading", type: "number" },
   ];
 
   const initialData = {

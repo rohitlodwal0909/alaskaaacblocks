@@ -5,6 +5,7 @@ import {apiUrl  }from '../../constants/contant'
 const initialState = {
   loading: false,
   error: null,
+  autofillRecord: {},
   batchingdata: [],         
   batching: [],         
   addResult: null,  
@@ -22,6 +23,22 @@ export const GetBatchingdate = createAsyncThunk(
       const errorMessage =
         error.response?.data?.message || "Failed to fetch user modules.";
       return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const getAutofillRecord = createAsyncThunk(
+  "autofill/getRecord",
+  async (operatorName: string, thunkAPI) => {
+    try {
+      const response = await axios.get(`${apiUrl}/get-autofill-record`, {
+        params: { operator: operatorName }
+      });
+      return response.data; // last record or null
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch autofill record."
+      );
     }
   }
 );
@@ -155,6 +172,18 @@ const BatchingSlice = createSlice({
       })
       .addCase(deleteBatching.rejected, (state, action) => {
         state.error = action.error.message;
+      })
+
+       .addCase(getAutofillRecord.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAutofillRecord.fulfilled, (state, action) => {
+        state.loading = false;
+        state.autofillRecord = action.payload || {}; // empty if deleted
+      })
+      .addCase(getAutofillRecord.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

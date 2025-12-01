@@ -4,13 +4,15 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/store';
 import { toast } from 'react-toastify';
-import { addBatching, GetBatchingdate } from 'src/features/batching/BatchingSlice';
+import { addBatching, GetBatchingdate,getAutofillRecord } from 'src/features/batching/BatchingSlice';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
   const dispatch = useDispatch<AppDispatch>();
+
+// const autofillRecord = useSelector((state: any) => state.batching.autofillRecord);
 
   const [formData, setFormData] = useState({
     user_id:logindata?.admin?.id,
@@ -29,10 +31,10 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     temperature: '',
     entry_time: '',
     hardener_qty: '',
-     water_consume:'',
-     mixing_time:'',
-     dicromate:'',
-     datetime:'',
+    water_consume:'',
+    mixing_time:'',
+    dicromate:'',
+    datetime:'',
     //  ph_booster: "",
     // nts_clate: "",
     remark: '',
@@ -42,10 +44,69 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
 
   const [errors, setErrors] = useState<any>({});
 
+  const clearForm = () => {
+  setFormData(formData);
+};
+
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setErrors(prev => ({ ...prev, [field]: '' }));
   };
+
+  const handleAutofill = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
+  };
+
+const applyAutofill = (record: any) => {
+  if (!record || Object.keys(record).length === 0) {
+    clearForm();  // If record deleted → reset form
+    return;
+  }
+
+  Object.keys(record).forEach((field) => {
+    if (field in formData) {
+      handleAutofill(field, record[field]);
+    }
+  });
+};
+
+const handleOperatorSearch = async (name: string) => {
+  handleAutofill("operator_name", name);
+
+  if (name.trim().length < 2) return;
+
+  const result = await dispatch(getAutofillRecord(name));
+
+  if (result.payload) {
+    applyAutofill(result.payload);
+  }else{
+     setFormData({
+    user_id:logindata?.admin?.id,
+    shift: '',
+    mould_no: '',
+    slurry_waste: '',
+    slurry_fresh: '',
+    cement_qty: '',
+    lime_qty: '',
+    gypsum_qty: '',
+    soluble_oil_qty: '',
+    aluminium_qty: '',
+    density: '',
+    flow_value: '',
+    temperature: '',
+    entry_time: '',
+    hardener_qty: '',
+    remark: '',
+    mould_oil_qty: '',
+    water_consume:'',
+    dicromate:'',
+    datetime:'',
+    mixing_time:'',
+  });
+  }
+};
+
 
   const validateForm = () => {
   const excludedFields = ["remark", "flow_value","hardener_qty"];
@@ -59,7 +120,6 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       newErrors[field] = `${field} is required`;
     }
   });
-  console.log(newErrors);
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
@@ -104,8 +164,6 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
     water_consume:'',
     dicromate:'',
     datetime:'',
-    // ph_booster: "",
-    // nts_clate: "",
     mixing_time:'',
   });
       setShowmodal(false)
@@ -158,7 +216,8 @@ const AddBatchModal = ({ show, setShowmodal, logindata ,batchingdata }) => {
       value={formData.operator_name}
       placeholder="Enter operator name"
         className='form-rounded-md'
-      onChange={(e) => handleChange('operator_name', e.target.value)}
+            onChange={(e) => handleOperatorSearch(e.target.value)}
+  
       color={errors.operator_name ? 'failure' : 'gray'}
     />
     {errors.operator_name && <p className="text-red-500 text-xs">{errors.operator_name}</p>}
